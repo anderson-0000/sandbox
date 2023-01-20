@@ -1,5 +1,5 @@
 #!/bin/bash
-echo -e "\n\n\n空いている窓の確認を開始します"
+echo -e "\n\n\n窓の開閉確認を開始します"
 rm -rf tmp
 mkdir tmp
 
@@ -35,6 +35,7 @@ then
   message=$(cat tmp/output.txt)
 else
   message="なし"
+  echo ">>>>>空いている窓<<<<<"
   echo "なし"
 fi
 
