@@ -15,7 +15,8 @@ for number in numbers:
       status_code = response.getcode()
       if status_code == 200:
           print("Status: " + str(status_code))
-          urllib.request.urlretrieve(url, filename)
+          with open(filename, mode="wb") as f:
+            f.write(response.read())
       else:
           print("Status: " + str(status_code))
   except urllib.error.HTTPError as e:
