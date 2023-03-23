@@ -1,0 +1,29 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata
+  name: deny-all-egress
+  namespace: testtesttest
+spec:
+  policyTypes:
+    - Egress
+  podSelector: {}
+  egress: []
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-3000-ingress
+  namespace: app
+spec:
+  podSelector:
+    matchLabels:
+      app: app
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: testtesttest
+    ports:
+    - protocol: TCP
+      port: 3000

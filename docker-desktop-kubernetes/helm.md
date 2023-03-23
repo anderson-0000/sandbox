@@ -34,6 +34,12 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo add grafana https://grafana.github.io/helm-charts
 ```
 
+- Calicoのリポジトリを追加
+```
+helm repo add projectcalico https://docs.tigera.io/calico/charts
+
+```
+
 - リポジトリ一覧表示
 ```
 helm repo list
