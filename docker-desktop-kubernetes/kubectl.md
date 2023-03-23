@@ -16,6 +16,11 @@ kubectl get nodes
 kubectl describe nodes
 ```
 
+- ログ確認
+```
+kubectl logs <ポッド名>
+```
+
 - ネームスペース確認
 ```
 kubectl get namespace
@@ -47,4 +52,12 @@ kubectl get service --all-namespaces
 kubectl apply -f <ポッドの定義ファイル>
 ```
 
-- デプロイメントの確認
+- ポッド削除
+```
+kubectl delete -f <ポッドの定義ファイル>
+```
+
+- 利用可能なAPIリソースの一覧を表示
+```
+kubectl api-resources
+```

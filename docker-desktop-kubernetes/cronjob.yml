@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cronjob
+spec:
+  schedule: "* * * * *" #毎分実行
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cron
+            image: ubuntu:latest
+            imagePullPolicy: IfNotPresent #イメージがローカルにない時はpull 
+            command: ["/bin/bash", "-c"]
+            args:
+              - |
+                uname -a
+                date
+          restartPolicy: OnFailure #podに問題が発生した時は新しいpodを開始

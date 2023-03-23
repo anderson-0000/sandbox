@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job
+spec:
+  template:
+    spec:
+      containers:
+      - name: ubuntu
+        image: ubuntu:latest
+        command: ["cat", "/etc/os-release"]
+      restartPolicy: Never #特にrestartする必要はないので通常のpodを作成
+  backoffLimit: 3 #再試行回数

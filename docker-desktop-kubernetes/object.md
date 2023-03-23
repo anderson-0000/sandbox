@@ -7,6 +7,11 @@ https://kubernetes.io/ja/docs/concepts/overview/working-with-objects/kubernetes-
 ## kind
   どの種類のオブジェクトを作成するか。この内容によってapiVersionがきまる。`Deployment` `Service` `StatefullSet` `CronJob` `Job` など。
 
+  以下コマンドで使える一覧が参考になる
+  ```
+  kubectl api-resources
+  ```
+
 ## metadata
   オブジェクトを一意に特定するための情報。`name:` `namespace:` など。
 
