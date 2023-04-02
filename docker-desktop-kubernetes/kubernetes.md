@@ -30,3 +30,36 @@ sgはAWS内でポッドとawsリソースの通信を制御するために使用
   - rbac managerとrbac lookupを使うと管理が少し楽になるらしい
   - podごとに権限分ける
 
+
+- kubernetesのセキュリティベストプラクティス
+  - CIS Kubernetes Benchmarks
+    https://www.cisecurity.org/benchmark/kubernetes
+    - kube-benchは実行中のクラスターが↑に準拠しているかチェックしてレポートしてくれるツール
+- 脆弱性チェック
+  - trivy
+- Dockerファイルの設定不備
+  - hadolint
+- kubernetesマニフェストとhelm chartの設定不備
+  - Polaris
+- イメージのマルウェア検知
+  - オープンソースだとない？
+  - やるならお金払ってprisma cloud など使う必要がある
+- ノード側のコンテナネイティブのセキュリティツール
+  - Falco
+
+- kubernetes のGUI化
+  - Lens Desktop
+    - kubernetes clusterの設定をguiで可視化できる
+    - prometeusメトリクスの可視化
+    - podのログの表示(pod単体ごとのログしか見れない)
+    - podへのログイン
+    - helm chartの￥検索とclusterへのデプロイ
+    - kubernetes dashboardとの違いはデプロイが不要で、ローカルのkubeconfigを読み込んでclusterにアクセスできる。
+
+- stern
+  - 同一プレフィックスのpod logや同一ラベルのログを一緒に見れる
+- kube-ps1
+  - 今どのクラスターに入っているか分かりやすく表示する
+- kube-ns
+  - kubectlで使われるデフォルトネームスペースを変更できる
+

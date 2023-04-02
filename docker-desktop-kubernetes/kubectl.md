@@ -61,3 +61,23 @@ kubectl delete -f <ポッドの定義ファイル>
 ```
 kubectl api-resources
 ```
+
+- podのオートスケール確認
+```
+kubectl get hpa -w
+```
+
+- 現在のコンテキスト(接続先)を調べる
+```
+kubectl config current-context
+```
+
+- コンテキストの一覧
+```
+kubectl config get-contexts
+```
+
+- コンテキスト切り替え
+```
+kubectl config use-context ${コンテキスト}
+```

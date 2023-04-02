@@ -10,3 +10,7 @@ Azure には、ネットワーク ポリシーを実装する 2 つの方法が�
 "Azure ネットワーク ポリシー マネージャー" と呼ばれる Azure の独自の実装。
 Tigera によって設立されたオープンソース ネットワークおよびネットワーク セキュリティ ソリューションである Calico ネットワーク ポリシー。
 ```
+
+
+- Azure Kubernetes Service のサポート ポリシー
+https://learn.microsoft.com/ja-jp/azure/aks/support-policies
