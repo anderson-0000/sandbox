@@ -47,6 +47,11 @@ kubectl describe pods <ポッド名> -n <名前空間>
 kubectl get service --all-namespaces
 ```
 
+- apply前確認
+```
+kubectl diff -f <ポッドの定義ファイル>
+```
+
 - ポッド作成
 ```
 kubectl apply -f <ポッドの定義ファイル>
