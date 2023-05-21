@@ -18,4 +18,5 @@ $ cdk8s synth
 # kubernetesクラスターにデプロイ
 $ kubectl apply -f dist/${プロジェクト名}.k8s.yaml
 
-
+# helmの変更可能なパラメータのYAMLファイルを出力する
+helm inspect values argo/argo-cd > default_value.yaml
