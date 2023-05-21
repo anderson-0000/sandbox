@@ -5,7 +5,6 @@ import (
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 	"github.com/cdk8s-team/cdk8s-plus-go/cdk8splus26/v2"
-
 )
 
 type MyChartProps struct {
@@ -30,36 +29,56 @@ func NewNameSpace(scope constructs.Construct, id string, props *MyChartProps) cd
 }
 
 func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
-        var cprops cdk8s.ChartProps
-        if props != nil {
-                cprops = props.ChartProps
-        }
-        chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
+	var cprops cdk8s.ChartProps
+	if props != nil {
+		cprops = props.ChartProps
+	}
+	chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
 
-        // define resources here
-        cdk8splus26.NewDeployment(chart, jsii.String("Deployment"), &cdk8splus26.DeploymentProps{
-        	Replicas: jsii.Number(3),
-        	Containers: &[]*cdk8splus26.ContainerProps{{
-        		Image: jsii.String("ubuntu"),
-        	}},
-        })
+	// define resources here
+	cdk8splus26.NewDeployment(chart, jsii.String("Deployment"), &cdk8splus26.DeploymentProps{
+		Replicas: jsii.Number(3),
+		Containers: &[]*cdk8splus26.ContainerProps{{
+			Image: jsii.String("ubuntu"),
+		}},
+	})
 
-        return chart
+	return chart
 }
 
 func NewHelmArgocd(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
-        var cprops cdk8s.ChartProps
-        if props != nil {
-                cprops = props.ChartProps
-        }
-        chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
+	var cprops cdk8s.ChartProps
+	if props != nil {
+		cprops = props.ChartProps
+	}
+	chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
 
-        // define resources here
-        cdk8s.NewHelm(chart, jsii.String("helm"), &cdk8s.HelmProps{
-          	Chart: jsii.String("argo/argo-cd"), //helm repo add argo https://argoproj.github.io/argo-helm が必要
-        })
+	// define resources here
+	dexConfig := `connectors:
+    - type: github
+      id: github
+      name: GitHub
+      config:
+        clientID: aabbccddeeff00112233
+        clientSecret: $dex.github.clientSecret # Alternatively $<some_K8S_secret>:dex.github.clientSecret
+        orgs:
+        - name: your-github-org`
 
-        return chart
+	cdk8s.NewHelm(chart, jsii.String("helm"), &cdk8s.HelmProps{
+		Chart: jsii.String("argo/argo-cd"), //helm repo add argo https://argoproj.github.io/argo-helm が必要
+		Values: &map[string]interface{}{
+			"configs": map[string]interface{}{
+				"cm": map[string]interface{}{
+					"create":                       true,
+					"application.instanceLabelKey": "argocd.argoproj.io/instance",
+					"testando":                     "show",
+					"dex.config":                   dexConfig,
+				},
+			},
+		},
+	})
+
+	return chart
 }
 
 func main() {
