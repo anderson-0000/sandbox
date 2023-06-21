@@ -3,3 +3,15 @@ kind: Namespace
 metadata:
   name: ando
 spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: arugocd
+spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: arugo-workflows
+spec: {}

@@ -24,6 +24,16 @@ func NewNameSpace(scope constructs.Construct, id string, props *MyChartProps) cd
 			Name: jsii.String("ando"),
 		},
 	})
+	cdk8splus26.NewNamespace(chart, jsii.String("ns-argocd"), &cdk8splus26.NamespaceProps{
+		Metadata: &cdk8s.ApiObjectMetadata{
+			Name: jsii.String("arugocd"),
+		},
+	})
+	cdk8splus26.NewNamespace(chart, jsii.String("ns-argo-workflows"), &cdk8splus26.NamespaceProps{
+		Metadata: &cdk8s.ApiObjectMetadata{
+			Name: jsii.String("arugo-workflows"),
+		},
+	})
 
 	return chart
 }
@@ -46,6 +56,29 @@ func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartPr
 	return chart
 }
 
+func NewRoleBinding(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
+	var cprops cdk8s.ChartProps
+	if props != nil {
+		cprops = props.ChartProps
+	}
+	chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
+
+	role := cdk8splus26.NewRole(chart, jsii.String("read-only"), &cdk8splus26.RoleProps{
+		Metadata: &cdk8s.ApiObjectMetadata{
+			Name: jsii.String("read-only"),
+		},
+	})
+
+	cdk8splus26.NewRoleBinding(chart, jsii.String("sa-read"), &cdk8splus26.RoleBindingProps{
+		Metadata: &cdk8s.ApiObjectMetadata{
+			Name: jsii.String("read"),
+		},
+		Role: role,
+	})
+
+	return chart
+}
+
 func NewHelmArgocd(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
 	var cprops cdk8s.ChartProps
 	if props != nil {
@@ -55,14 +88,14 @@ func NewHelmArgocd(scope constructs.Construct, id string, props *MyChartProps) c
 
 	// define resources here
 	dexConfig := `connectors:
-    - type: github
-      id: github
-      name: GitHub
-      config:
-        clientID: aabbccddeeff00112233
-        clientSecret: $dex.github.clientSecret # Alternatively $<some_K8S_secret>:dex.github.clientSecret
-        orgs:
-        - name: your-github-org`
+	- type: github
+		id: github
+		name: GitHub
+		config:
+			clientID: Iv1.441a977aa92f84fb
+			clientSecret: $dex.github.clientSecret # Alternatively $<some_K8S_secret>:dex.github.clientSecret
+			orgs:
+			- name: your-github-org`
 
 	cdk8s.NewHelm(chart, jsii.String("helm"), &cdk8s.HelmProps{
 		Chart: jsii.String("argo/argo-cd"), //helm repo add argo https://argoproj.github.io/argo-helm が必要
@@ -71,7 +104,6 @@ func NewHelmArgocd(scope constructs.Construct, id string, props *MyChartProps) c
 				"cm": map[string]interface{}{
 					"create":                       true,
 					"application.instanceLabelKey": "argocd.argoproj.io/instance",
-					"testando":                     "show",
 					"dex.config":                   dexConfig,
 				},
 			},
@@ -85,6 +117,7 @@ func main() {
 	app := cdk8s.NewApp(nil)
 	NewNameSpace(app, "create-ns-ando", nil)
 	NewDeploymentUbuntu(app, "ubuntu", nil)
+	NewRoleBinding(app, "rolebinding", nil)
 	NewHelmArgocd(app, "argocd", nil)
 	app.Synth()
 }
