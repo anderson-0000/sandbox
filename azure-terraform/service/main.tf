@@ -9,3 +9,8 @@ module "network" {
   network        = var.network
   resource_group = module.resource_group.this
 }
+
+module "kubernetes" {
+  source         = "../modules/kubernetes"
+  resource_group = module.resource_group.this
+}
