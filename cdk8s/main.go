@@ -110,7 +110,7 @@ func NewHelmArgocd(scope constructs.Construct, id string, props *MyChartProps) c
 
 func main() {
 	app := cdk8s.NewApp(nil)
-	NewNameSpace(app, "create-ns-ando", nil)
+	NewNameSpace(app, "ns", nil)
 	NewDeploymentUbuntu(app, "ubuntu", nil)
 	NewRoleBinding(app, "rolebinding", nil)
 	NewHelmArgocd(app, "argocd", nil)
