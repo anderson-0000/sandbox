@@ -49,7 +49,13 @@ func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartPr
 		Replicas: jsii.Number(1),
 		Containers: &[]*cdk8splus26.ContainerProps{{
 			Image: jsii.String("ubuntu"),
+			SecurityContext: &cdk8splus26.ContainerSecurityContextProps{
+				EnsureNonRoot: jsii.Bool(false),
+			},
 		}},
+		SecurityContext: &cdk8splus26.PodSecurityContextProps{
+			EnsureNonRoot: jsii.Bool(false),
+		},
 	})
 
 	return chart
