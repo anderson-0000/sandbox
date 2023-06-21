@@ -7,11 +7,11 @@ spec: {}
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: arugocd
+  name: argocd
 spec: {}
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: arugo-workflows
+  name: argo-workflows
 spec: {}

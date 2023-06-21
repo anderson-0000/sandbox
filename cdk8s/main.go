@@ -19,21 +19,16 @@ func NewNameSpace(scope constructs.Construct, id string, props *MyChartProps) cd
 	chart := cdk8s.NewChart(scope, jsii.String(id), &cprops) // idがファイル名になる
 
 	// define resources here
-	cdk8splus26.NewNamespace(chart, jsii.String("ns-ando"), &cdk8splus26.NamespaceProps{
-		Metadata: &cdk8s.ApiObjectMetadata{
-			Name: jsii.String("ando"),
-		},
-	})
-	cdk8splus26.NewNamespace(chart, jsii.String("ns-argocd"), &cdk8splus26.NamespaceProps{
-		Metadata: &cdk8s.ApiObjectMetadata{
-			Name: jsii.String("arugocd"),
-		},
-	})
-	cdk8splus26.NewNamespace(chart, jsii.String("ns-argo-workflows"), &cdk8splus26.NamespaceProps{
-		Metadata: &cdk8s.ApiObjectMetadata{
-			Name: jsii.String("arugo-workflows"),
-		},
-	})
+
+	namespaces := []string{"ando", "argocd", "argo-workflows"}
+
+	for _, ns := range namespaces {
+		cdk8splus26.NewNamespace(chart, jsii.String("ns-" + ns), &cdk8splus26.NamespaceProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name: jsii.String(ns),
+			},
+		})
+	}
 
 	return chart
 }
