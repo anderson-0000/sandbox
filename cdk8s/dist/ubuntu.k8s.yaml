@@ -1,11 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ubuntu-deployment-c88ceb6f
+  name: ubuntu
+  namespace: ubuntu
 spec:
   minReadySeconds: 0
   progressDeadlineSeconds: 600
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       cdk8s.io/metadata.addr: ubuntu-Deployment-c8d2edbb

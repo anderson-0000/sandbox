@@ -20,7 +20,7 @@ func NewNameSpace(scope constructs.Construct, id string, props *MyChartProps) cd
 
 	// define resources here
 
-	namespaces := []string{"ando", "argocd", "argo-workflows"}
+	namespaces := []string{"ando", "argocd", "argo-workflows", "ubuntu"}
 
 	for _, ns := range namespaces {
 		cdk8splus26.NewNamespace(chart, jsii.String("ns-" + ns), &cdk8splus26.NamespaceProps{
@@ -42,7 +42,11 @@ func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartPr
 
 	// define resources here
 	cdk8splus26.NewDeployment(chart, jsii.String("Deployment"), &cdk8splus26.DeploymentProps{
-		Replicas: jsii.Number(3),
+		Metadata: &cdk8s.ApiObjectMetadata{
+			Name: jsii.String("ubuntu"),
+			Namespace: jsii.String("ubuntu"),
+		},
+		Replicas: jsii.Number(1),
 		Containers: &[]*cdk8splus26.ContainerProps{{
 			Image: jsii.String("ubuntu"),
 		}},
