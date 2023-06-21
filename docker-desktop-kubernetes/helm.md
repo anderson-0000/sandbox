@@ -54,3 +54,13 @@ helm repo remove <リポジトリ名>
 ```
 helm repo update 
 ```
+
+- ローカルのhelmクライアントに保存したリポジトリを検索
+```
+helm search repo
+```
+
+- helmチャートでカスタマイズできる項目
+```
+helm inspect values <リポジトリ名> > values.yaml
+```
