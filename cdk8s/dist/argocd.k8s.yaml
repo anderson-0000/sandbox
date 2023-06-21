@@ -17304,7 +17304,7 @@ spec:
             - --save
             - ""
             - --appendonly
-            - no
+            - "no"
           image: public.ecr.aws/docker/library/redis:7.0.11-alpine
           imagePullPolicy: IfNotPresent
           name: redis

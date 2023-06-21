@@ -5,6 +5,7 @@ import (
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 	"github.com/cdk8s-team/cdk8s-plus-go/cdk8splus26/v2"
+	"github.com/cdk8s-team/cdk8s-plus-go/cdk8splus26/v2/k8s"
 )
 
 type MyChartProps struct {
@@ -38,27 +39,60 @@ func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartPr
 	if props != nil {
 		cprops = props.ChartProps
 	}
-	chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
+	c := cdk8s.NewChart(scope, jsii.String(id), &cprops) // idがファイル名になる
 
-	// define resources here
-	cdk8splus26.NewDeployment(chart, jsii.String("Deployment"), &cdk8splus26.DeploymentProps{
-		Metadata: &cdk8s.ApiObjectMetadata{
-			Name: jsii.String("ubuntu"),
+	k8s.NewKubeDeployment(c, jsii.String("ubuntu"), &k8s.KubeDeploymentProps{
+		Metadata: &k8s.ObjectMeta{
+			Name:      jsii.String("ubuntu"),
 			Namespace: jsii.String("ubuntu"),
 		},
-		Replicas: jsii.Number(1),
-		Containers: &[]*cdk8splus26.ContainerProps{{
-			Image: jsii.String("ubuntu"),
-			SecurityContext: &cdk8splus26.ContainerSecurityContextProps{
-				EnsureNonRoot: jsii.Bool(false),
+		Spec: &k8s.DeploymentSpec{
+			MinReadySeconds:        jsii.Number(0),
+			ProgressDeadlineSeconds: jsii.Number(600),
+			Replicas:               jsii.Number(1),
+			Selector: &k8s.LabelSelector{
+				MatchLabels: &map[string]*string{
+					"cdk8s.io/metadata.addr": jsii.String("ubuntu-deployment"),
+				},
 			},
-		}},
-		SecurityContext: &cdk8splus26.PodSecurityContextProps{
-			EnsureNonRoot: jsii.Bool(false),
+			Template: &k8s.PodTemplateSpec{
+				Metadata: &k8s.ObjectMeta{
+					Labels: &map[string]*string{
+						"cdk8s.io/metadata.addr": jsii.String("ubuntu-deployment"),
+					},
+				},
+				Spec: &k8s.PodSpec{
+					AutomountServiceAccountToken: jsii.Bool(false),
+					DnsPolicy:                    jsii.String("ClusterFirst"),
+					SetHostnameAsFqdn:            jsii.Bool(false),
+					SecurityContext: &k8s.PodSecurityContext{
+						FsGroupChangePolicy: jsii.String("Always"),
+						RunAsNonRoot:        jsii.Bool(false),
+					},
+					RestartPolicy: jsii.String("Always"),
+					HostNetwork:   jsii.Bool(false),
+					Containers: &[]*k8s.Container{{
+						Command: &[]*string{
+							jsii.String("/bin/bash"),
+						},
+						ImagePullPolicy: jsii.String("Always"),
+						Name:            jsii.String("main"),
+						Tty:             jsii.Bool(true),
+						Image:           jsii.String("ubuntu"),
+						SecurityContext: &k8s.SecurityContext{
+							AllowPrivilegeEscalation: jsii.Bool(false),
+							Privileged:               jsii.Bool(false),
+							ReadOnlyRootFilesystem:   jsii.Bool(true),
+							RunAsNonRoot:             jsii.Bool(false),
+						},
+						Stdin: jsii.Bool(true),
+					}},
+				},
+			},
 		},
 	})
 
-	return chart
+	return c
 }
 
 func NewRoleBinding(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {

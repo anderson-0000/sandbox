@@ -9,34 +9,26 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      cdk8s.io/metadata.addr: ubuntu-Deployment-c8d2edbb
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
+      cdk8s.io/metadata.addr: ubuntu-deployment
   template:
     metadata:
       labels:
-        cdk8s.io/metadata.addr: ubuntu-Deployment-c8d2edbb
+        cdk8s.io/metadata.addr: ubuntu-deployment
     spec:
       automountServiceAccountToken: false
       containers:
-        - image: ubuntu
+        - command:
+            - /bin/bash
+          image: ubuntu
           imagePullPolicy: Always
           name: main
-          resources:
-            limits:
-              cpu: 1500m
-              memory: 2048Mi
-            requests:
-              cpu: 1000m
-              memory: 512Mi
           securityContext:
             allowPrivilegeEscalation: false
             privileged: false
             readOnlyRootFilesystem: true
             runAsNonRoot: false
+          stdin: true
+          tty: true
       dnsPolicy: ClusterFirst
       hostNetwork: false
       restartPolicy: Always
