@@ -21,7 +21,7 @@ func NewNameSpace(scope constructs.Construct, id string, props *MyChartProps) cd
 
 	// define resources here
 
-	namespaces := []string{"testtesttest", "argocd", "argo-workflows", "ubuntu", "dex"}
+	namespaces := []string{"testtesttest", "argocd", "argo-workflows", "ubuntu", "dex", "ingress-nginx-controller"}
 
 	for _, ns := range namespaces {
 		cdk8splus26.NewNamespace(chart, jsii.String("ns-" + ns), &cdk8splus26.NamespaceProps{
@@ -130,7 +130,7 @@ func NewRoleBinding(scope constructs.Construct, id string, props *MyChartProps) 
         return chart
 }
 
-func NewHelmArgocd(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
+func NewArgocd(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
 	var cprops cdk8s.ChartProps
 	if props != nil {
 		cprops = props.ChartProps
@@ -165,7 +165,7 @@ func NewHelmArgocd(scope constructs.Construct, id string, props *MyChartProps) c
 	return chart
 }
 
-func NewHelmNginx(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
+func NewNginx(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
 	var cprops cdk8s.ChartProps
 	if props != nil {
 		cprops = props.ChartProps
@@ -181,12 +181,29 @@ func NewHelmNginx(scope constructs.Construct, id string, props *MyChartProps) cd
 	return chart
 }
 
+func NewIngressNginx(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
+	var cprops cdk8s.ChartProps
+	if props != nil {
+		cprops = props.ChartProps
+	}
+	chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
+
+	// define resources here
+	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
+		Namespace: jsii.String(id),
+		Chart: jsii.String("ingress-nginx/ingress-nginx"), //helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+	})
+
+	return chart
+}
+
 func main() {
 	app := cdk8s.NewApp(nil)
 	NewNameSpace(app, "ns", nil)
 	NewDeploymentUbuntu(app, "ubuntu", nil)
 	NewRoleBinding(app, "rolebinding", nil)
-	NewHelmArgocd(app, "argocd", nil)
-	NewHelmNginx(app, "nginx", nil)
+	NewArgocd(app, "argocd", nil)
+	NewNginx(app, "nginx", nil)
+	NewIngressNginx(app, "ingress-nginx-controller", nil)
 	app.Synth()
 }
