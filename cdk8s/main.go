@@ -96,26 +96,38 @@ func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartPr
 }
 
 func NewRoleBinding(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
-	var cprops cdk8s.ChartProps
-	if props != nil {
-		cprops = props.ChartProps
-	}
-	chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
+        var cprops cdk8s.ChartProps
+        if props != nil {
+                cprops = props.ChartProps
+        }
+        chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
 
-	role := cdk8splus26.NewRole(chart, jsii.String("read-only"), &cdk8splus26.RoleProps{
-		Metadata: &cdk8s.ApiObjectMetadata{
-			Name: jsii.String("read-only"),
-		},
-	})
+	// define resources here
+        roles := []struct {
+                name string
+                role string
+                sa   string
+        }{
+                {"read-only", "read-only", "sa-read-only"},
+                {"admin", "admin", "sa-admin"},
+        }
 
-	cdk8splus26.NewRoleBinding(chart, jsii.String("sa-read"), &cdk8splus26.RoleBindingProps{
-		Metadata: &cdk8s.ApiObjectMetadata{
-			Name: jsii.String("read"),
-		},
-		Role: role,
-	})
+        for _, r := range roles {
+                role := cdk8splus26.NewRole(chart, jsii.String(r.name), &cdk8splus26.RoleProps{
+                        Metadata: &cdk8s.ApiObjectMetadata{
+                                Name: jsii.String(r.role),
+                        },
+                })
 
-	return chart
+                cdk8splus26.NewRoleBinding(chart, jsii.String(r.sa), &cdk8splus26.RoleBindingProps{
+                        Metadata: &cdk8s.ApiObjectMetadata{
+                                Name: jsii.String(r.role),
+                        },
+                        Role: role,
+                })
+        }
+
+        return chart
 }
 
 func NewHelmArgocd(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
