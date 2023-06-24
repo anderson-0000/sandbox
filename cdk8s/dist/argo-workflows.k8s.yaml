@@ -1734,6 +1734,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: argo-workflows
+  namespace: argo-workflows
 spec:
   ingressClassName: nginx
   rules:
@@ -1742,7 +1743,7 @@ spec:
         paths:
           - backend:
               service:
-                name: argo-workflows
+                name: argo-workflows-c8b79b5a-server
                 port:
                   number: 2746
             path: /

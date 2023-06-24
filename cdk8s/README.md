@@ -27,3 +27,6 @@ http://localhost:80/
 
 - ubuntu
 kubectl exec -it $(kubectl get pods -o=name --field-selector=status.phase=Running -n ubuntu) /bin/bash -n ubuntu
+
+- arugo workflow
+http://argo-workflows.localhost/login

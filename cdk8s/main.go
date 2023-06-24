@@ -176,11 +176,15 @@ func NewArgoWorkflows(scope constructs.Construct, id string, props *MyChartProps
 	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
 		Namespace: jsii.String(id),
 		Chart: jsii.String("argo/argo-workflows"), //helm repo add argo https://argoproj.github.io/argo-helm
+		Values: &map[string]interface{}{
+			"nameOverride": id,
+		},
 	})
 
 	k8s.NewKubeIngress(chart, jsii.String(id + "-ingress"), &k8s.KubeIngressProps{
 	    Metadata: &k8s.ObjectMeta{
 	        Name: jsii.String(id),
+		Namespace: jsii.String(id),
 	    },
 	    Spec: &k8s.IngressSpec{
 	        IngressClassName: jsii.String("nginx"),
@@ -194,7 +198,7 @@ func NewArgoWorkflows(scope constructs.Construct, id string, props *MyChartProps
 	                            PathType: jsii.String("Prefix"),
 	                            Backend: &k8s.IngressBackend{
 	                                Service: &k8s.IngressServiceBackend{
-	                                    Name: jsii.String(id),
+	                                    Name: jsii.String("argo-workflows-c8b79b5a-server"),
 	                                    Port: &k8s.ServiceBackendPort{
 	                                        Number: jsii.Number(2746),
 	                                    },
