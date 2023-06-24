@@ -21,7 +21,7 @@ func NewNameSpace(scope constructs.Construct, id string, props *MyChartProps) cd
 
 	// define resources here
 
-	namespaces := []string{"ando", "argocd", "argo-workflows", "ubuntu"}
+	namespaces := []string{"testtesttest", "argocd", "argo-workflows", "ubuntu", "dex"}
 
 	for _, ns := range namespaces {
 		cdk8splus26.NewNamespace(chart, jsii.String("ns-" + ns), &cdk8splus26.NamespaceProps{
@@ -148,7 +148,8 @@ func NewHelmArgocd(scope constructs.Construct, id string, props *MyChartProps) c
 			orgs:
 			- name: your-github-org`
 
-	cdk8s.NewHelm(chart, jsii.String("helm"), &cdk8s.HelmProps{
+	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
+		Namespace: jsii.String(id),
 		Chart: jsii.String("argo/argo-cd"), //helm repo add argo https://argoproj.github.io/argo-helm が必要
 		Values: &map[string]interface{}{
 			"configs": map[string]interface{}{
@@ -164,11 +165,28 @@ func NewHelmArgocd(scope constructs.Construct, id string, props *MyChartProps) c
 	return chart
 }
 
+func NewHelmNginx(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
+	var cprops cdk8s.ChartProps
+	if props != nil {
+		cprops = props.ChartProps
+	}
+	chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
+
+	// define resources here
+	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
+		Namespace: jsii.String("testtesttest"),
+		Chart: jsii.String("bitnami/nginx"), //helm repo add bitnami https://charts.bitnami.com/bitnami
+	})
+
+	return chart
+}
+
 func main() {
 	app := cdk8s.NewApp(nil)
 	NewNameSpace(app, "ns", nil)
 	NewDeploymentUbuntu(app, "ubuntu", nil)
 	NewRoleBinding(app, "rolebinding", nil)
 	NewHelmArgocd(app, "argocd", nil)
+	NewHelmNginx(app, "nginx", nil)
 	app.Synth()
 }

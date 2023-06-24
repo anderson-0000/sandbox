@@ -20,3 +20,10 @@ $ kubectl apply -f dist/${プロジェクト名}.k8s.yaml
 
 # helmの変更可能なパラメータのYAMLファイルを出力する
 helm inspect values argo/argo-cd > default_value.yaml
+
+# pod アクセス
+- nginx
+http://localhost:80/
+
+- ubuntu
+kubectl exec -it $(kubectl get pods -o=name --field-selector=status.phase=Running -n ubuntu) /bin/bash -n ubuntu

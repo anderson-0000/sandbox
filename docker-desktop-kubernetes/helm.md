@@ -40,6 +40,11 @@ helm repo add projectcalico https://docs.tigera.io/calico/charts
 
 ```
 
+- Bitnamiのリポジトリを追加
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami
+```
+
 - リポジトリ一覧表示
 ```
 helm repo list

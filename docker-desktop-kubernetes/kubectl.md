@@ -86,3 +86,8 @@ kubectl config get-contexts
 ```
 kubectl config use-context ${コンテキスト}
 ```
+
+- 全ネームスペースの全サービスを表示
+```
+kubectl get all -A
+```
