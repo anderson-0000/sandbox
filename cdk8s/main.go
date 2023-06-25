@@ -226,6 +226,13 @@ func NewNginx(scope constructs.Construct, id string, props *MyChartProps) cdk8s.
 	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
 		Namespace: jsii.String("testtesttest"),
 		Chart: jsii.String("bitnami/nginx"), //helm repo add bitnami https://charts.bitnami.com/bitnami
+		Values: &map[string]interface{}{
+			"service": map[string]interface{}{
+				"ports": map[string]interface{}{
+					"http":  "8080",
+				},
+			},
+		},
 	})
 
 	return chart
