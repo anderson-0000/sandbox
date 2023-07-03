@@ -30,3 +30,13 @@ kubectl exec -it $(kubectl get pods -o=name --field-selector=status.phase=Runnin
 
 - arugo workflow
 http://argo-workflows.localhost/login
+
+
+- argocd 
+kubectl port-forward argocd-c8733361-server-54544d68c8-h9v7x 8080:argocd.remotehost:443 -n argocd
+
+http://localhost:8080
+
+- argocd cli login
+kubectl port-forward argocd-c8733361-server-54544d68c8-h9v7x 8080:grpc.argocd.remotehost:80 -n argocd
+argocd login localhost:8080

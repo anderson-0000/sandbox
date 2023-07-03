@@ -158,6 +158,23 @@ func NewArgocd(scope constructs.Construct, id string, props *MyChartProps) cdk8s
 					"application.instanceLabelKey": "argocd.argoproj.io/instance",
 					"dex.config":                   dexConfig,
 				},
+				"params": map[string]interface{}{
+					"server.insecure": "true",
+				},
+			},
+			"server": map[string]interface{}{
+				"ingress": map[string]interface{}{
+					"enabled": "true",
+					"hosts": []string{
+						"argocd.remotehost",
+					},
+				},
+				"ingressGrpc": map[string]interface{}{
+					"enabled": "true",
+					"hosts": []string{
+						"grpc.argocd.remotehost",
+					},
+				},
 			},
 		},
 	})

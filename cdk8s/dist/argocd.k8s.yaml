@@ -175,7 +175,7 @@ data:
   server.dex.server.strict.tls: "false"
   server.disable.auth: "false"
   server.enable.gzip: "false"
-  server.insecure: "false"
+  server.insecure: "true"
   server.log.format: text
   server.log.level: info
   server.repo.server.strict.tls: "false"
@@ -16522,7 +16522,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cmd-params: de164843e971e087277bbb021eac2efe23d8f21ef1f2026c6a54563429cf8658
+        checksum/cmd-params: 94dea71955b3c0c4d79e4070e307cae32ece691e41f210f0802f8aad17b1456e
       labels:
         app.kubernetes.io/component: repo-server
         app.kubernetes.io/instance: argocd-c8733361
@@ -16816,7 +16816,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cmd-params: de164843e971e087277bbb021eac2efe23d8f21ef1f2026c6a54563429cf8658
+        checksum/cmd-params: 94dea71955b3c0c4d79e4070e307cae32ece691e41f210f0802f8aad17b1456e
       labels:
         app.kubernetes.io/component: server
         app.kubernetes.io/instance: argocd-c8733361
@@ -17157,7 +17157,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cmd-params: de164843e971e087277bbb021eac2efe23d8f21ef1f2026c6a54563429cf8658
+        checksum/cmd-params: 94dea71955b3c0c4d79e4070e307cae32ece691e41f210f0802f8aad17b1456e
       labels:
         app.kubernetes.io/component: dex-server
         app.kubernetes.io/instance: argocd-c8733361
@@ -17349,7 +17349,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cmd-params: de164843e971e087277bbb021eac2efe23d8f21ef1f2026c6a54563429cf8658
+        checksum/cmd-params: 94dea71955b3c0c4d79e4070e307cae32ece691e41f210f0802f8aad17b1456e
       labels:
         app.kubernetes.io/component: application-controller
         app.kubernetes.io/instance: argocd-c8733361
@@ -17554,3 +17554,53 @@ spec:
                 path: ca.crt
             optional: true
             secretName: argocd-repo-server-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/instance: argocd-c8733361
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: argocd-server
+    app.kubernetes.io/part-of: argocd
+    helm.sh/chart: argo-cd-5.34.1
+  name: argocd-c8733361-server-grpc
+  namespace: argocd
+spec:
+  rules:
+    - host: grpc.argocd.remotehost
+      http:
+        paths:
+          - backend:
+              service:
+                name: argocd-c8733361-server
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/instance: argocd-c8733361
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: argocd-server
+    app.kubernetes.io/part-of: argocd
+    helm.sh/chart: argo-cd-5.34.1
+  name: argocd-c8733361-server
+  namespace: argocd
+spec:
+  rules:
+    - host: argocd.remotehost
+      http:
+        paths:
+          - backend:
+              service:
+                name: argocd-c8733361-server
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
