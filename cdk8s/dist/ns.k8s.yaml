@@ -33,3 +33,9 @@ kind: Namespace
 metadata:
   name: ingress-nginx-controller
 spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+spec: {}

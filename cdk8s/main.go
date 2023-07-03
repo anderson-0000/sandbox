@@ -21,7 +21,7 @@ func NewNameSpace(scope constructs.Construct, id string, props *MyChartProps) cd
 
 	// define resources here
 
-	namespaces := []string{"testtesttest", "argocd", "argo-workflows", "ubuntu", "dex", "ingress-nginx-controller"}
+	namespaces := []string{"testtesttest", "argocd", "argo-workflows", "ubuntu", "dex", "ingress-nginx-controller", "cert-manager"}
 
 	for _, ns := range namespaces {
 		cdk8splus26.NewNamespace(chart, jsii.String("ns-" + ns), &cdk8splus26.NamespaceProps{
@@ -254,6 +254,22 @@ func NewIngressNginx(scope constructs.Construct, id string, props *MyChartProps)
 	return chart
 }
 
+func NewCertManager(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
+	var cprops cdk8s.ChartProps
+	if props != nil {
+		cprops = props.ChartProps
+	}
+	chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
+
+	// define resources here
+	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
+		Namespace: jsii.String("cert-manager"),
+		Chart: jsii.String("jetstack/cert-manager"), //helm repo add jetstack https://charts.jetstack.io
+	})
+
+	return chart
+}
+
 func main() {
 	app := cdk8s.NewApp(nil)
 	NewNameSpace(app, "ns", nil)
@@ -263,5 +279,6 @@ func main() {
 	NewArgoWorkflows(app, "argo-workflows", nil)
 	NewNginx(app, "nginx", nil)
 	NewIngressNginx(app, "ingress-nginx-controller", nil)
+	NewCertManager(app, "cert-manager", nil)
 	app.Synth()
 }
