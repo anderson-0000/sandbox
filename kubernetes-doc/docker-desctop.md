@@ -2,5 +2,10 @@
 
 - 別のPCのdocker desctop kubernetesにkubectlで接続する
 
-kubernetesが動いてるPCで`cat ~/.kube/config`し、中身をローカルPCの`~/.kube/config`に貼り付け
-`ssh -L 6443:kubernetes.docker.internal:6443 -i ~/.ssh/id_rsa remotehost` でポートフォワードする
+```
+if ! ps aux | grep "6443:kubernetes.docker.internal:6443" | grep -v grep > /dev/null
+then
+  ssh -fN -L 6443:kubernetes.docker.internal:6443 remotehost
+fi
+ssh remotehost cat .kube/config > .kube/config
+```
