@@ -21,10 +21,19 @@ func NewNameSpace(scope constructs.Construct, id string, props *MyChartProps) cd
 
 	// define resources here
 
-	namespaces := []string{"testtesttest", "argocd", "argo-workflows", "ubuntu", "dex", "ingress-nginx-controller", "cert-manager"}
+	namespaces := []string{
+		"testtesttest",
+		"argocd",
+		"argo-workflows",
+		"ubuntu",
+		"dex",
+		"ingress-nginx-controller",
+		"cert-manager",
+		"geth",
+	}
 
 	for _, ns := range namespaces {
-		cdk8splus26.NewNamespace(chart, jsii.String("ns-" + ns), &cdk8splus26.NamespaceProps{
+		cdk8splus26.NewNamespace(chart, jsii.String("ns-"+ns), &cdk8splus26.NamespaceProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name: jsii.String(ns),
 			},
@@ -47,9 +56,9 @@ func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartPr
 			Namespace: jsii.String("ubuntu"),
 		},
 		Spec: &k8s.DeploymentSpec{
-			MinReadySeconds:        jsii.Number(0),
+			MinReadySeconds:         jsii.Number(0),
 			ProgressDeadlineSeconds: jsii.Number(600),
-			Replicas:               jsii.Number(1),
+			Replicas:                jsii.Number(1),
 			Selector: &k8s.LabelSelector{
 				MatchLabels: &map[string]*string{
 					"cdk8s.io/metadata.addr": jsii.String("ubuntu-deployment"),
@@ -96,38 +105,38 @@ func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartPr
 }
 
 func NewRoleBinding(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
-        var cprops cdk8s.ChartProps
-        if props != nil {
-                cprops = props.ChartProps
-        }
-        chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
+	var cprops cdk8s.ChartProps
+	if props != nil {
+		cprops = props.ChartProps
+	}
+	chart := cdk8s.NewChart(scope, jsii.String(id), &cprops)
 
 	// define resources here
-        roles := []struct {
-                name string
-                role string
-                sa   string
-        }{
-                {"read-only", "read-only", "sa-read-only"},
-                {"admin", "admin", "sa-admin"},
-        }
+	roles := []struct {
+		name string
+		role string
+		sa   string
+	}{
+		{"read-only", "read-only", "sa-read-only"},
+		{"admin", "admin", "sa-admin"},
+	}
 
-        for _, r := range roles {
-                role := cdk8splus26.NewRole(chart, jsii.String(r.name), &cdk8splus26.RoleProps{
-                        Metadata: &cdk8s.ApiObjectMetadata{
-                                Name: jsii.String(r.role),
-                        },
-                })
+	for _, r := range roles {
+		role := cdk8splus26.NewRole(chart, jsii.String(r.name), &cdk8splus26.RoleProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name: jsii.String(r.role),
+			},
+		})
 
-                cdk8splus26.NewRoleBinding(chart, jsii.String(r.sa), &cdk8splus26.RoleBindingProps{
-                        Metadata: &cdk8s.ApiObjectMetadata{
-                                Name: jsii.String(r.role),
-                        },
-                        Role: role,
-                })
-        }
+		cdk8splus26.NewRoleBinding(chart, jsii.String(r.sa), &cdk8splus26.RoleBindingProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name: jsii.String(r.role),
+			},
+			Role: role,
+		})
+	}
 
-        return chart
+	return chart
 }
 
 func NewArgocd(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
@@ -150,7 +159,7 @@ func NewArgocd(scope constructs.Construct, id string, props *MyChartProps) cdk8s
 
 	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
 		Namespace: jsii.String(id),
-		Chart: jsii.String("argo/argo-cd"), //helm repo add argo https://argoproj.github.io/argo-helm が必要
+		Chart:     jsii.String("argo/argo-cd"), //helm repo add argo https://argoproj.github.io/argo-helm が必要
 		Values: &map[string]interface{}{
 			"configs": map[string]interface{}{
 				"cm": map[string]interface{}{
@@ -192,41 +201,41 @@ func NewArgoWorkflows(scope constructs.Construct, id string, props *MyChartProps
 	// define resources here
 	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
 		Namespace: jsii.String(id),
-		Chart: jsii.String("argo/argo-workflows"), //helm repo add argo https://argoproj.github.io/argo-helm
+		Chart:     jsii.String("argo/argo-workflows"), //helm repo add argo https://argoproj.github.io/argo-helm
 		Values: &map[string]interface{}{
 			"nameOverride": id,
 		},
 	})
 
-	k8s.NewKubeIngress(chart, jsii.String(id + "-ingress"), &k8s.KubeIngressProps{
-	    Metadata: &k8s.ObjectMeta{
-	        Name: jsii.String(id),
-		Namespace: jsii.String(id),
-	    },
-	    Spec: &k8s.IngressSpec{
-	        IngressClassName: jsii.String("nginx"),
-	        Rules: &[]*k8s.IngressRule{
-	            {
-	                Host: jsii.String(id + ".localhost"),
-	                Http: &k8s.HttpIngressRuleValue{
-	                    Paths: &[]*k8s.HttpIngressPath{
-	                        {
-	                            Path:     jsii.String("/"),
-	                            PathType: jsii.String("Prefix"),
-	                            Backend: &k8s.IngressBackend{
-	                                Service: &k8s.IngressServiceBackend{
-	                                    Name: jsii.String("argo-workflows-c8b79b5a-server"),
-	                                    Port: &k8s.ServiceBackendPort{
-	                                        Number: jsii.Number(2746),
-	                                    },
-	                                },
-	                            },
-	                        },
-	                    },
-	                },
-	            },
-	        },
-	    },
+	k8s.NewKubeIngress(chart, jsii.String(id+"-ingress"), &k8s.KubeIngressProps{
+		Metadata: &k8s.ObjectMeta{
+			Name:      jsii.String(id),
+			Namespace: jsii.String(id),
+		},
+		Spec: &k8s.IngressSpec{
+			IngressClassName: jsii.String("nginx"),
+			Rules: &[]*k8s.IngressRule{
+				{
+					Host: jsii.String(id + ".localhost"),
+					Http: &k8s.HttpIngressRuleValue{
+						Paths: &[]*k8s.HttpIngressPath{
+							{
+								Path:     jsii.String("/"),
+								PathType: jsii.String("Prefix"),
+								Backend: &k8s.IngressBackend{
+									Service: &k8s.IngressServiceBackend{
+										Name: jsii.String("argo-workflows-c8b79b5a-server"),
+										Port: &k8s.ServiceBackendPort{
+											Number: jsii.Number(2746),
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	})
 
 	return chart
@@ -242,11 +251,11 @@ func NewNginx(scope constructs.Construct, id string, props *MyChartProps) cdk8s.
 	// define resources here
 	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
 		Namespace: jsii.String("testtesttest"),
-		Chart: jsii.String("bitnami/nginx"), //helm repo add bitnami https://charts.bitnami.com/bitnami
+		Chart:     jsii.String("bitnami/nginx"), //helm repo add bitnami https://charts.bitnami.com/bitnami
 		Values: &map[string]interface{}{
 			"service": map[string]interface{}{
 				"ports": map[string]interface{}{
-					"http":  "8080",
+					"http": "8080",
 				},
 			},
 		},
@@ -265,7 +274,7 @@ func NewIngressNginx(scope constructs.Construct, id string, props *MyChartProps)
 	// define resources here
 	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
 		Namespace: jsii.String(id),
-		Chart: jsii.String("ingress-nginx/ingress-nginx"), //helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+		Chart:     jsii.String("ingress-nginx/ingress-nginx"), //helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 	})
 
 	return chart
@@ -281,7 +290,7 @@ func NewCertManager(scope constructs.Construct, id string, props *MyChartProps) 
 	// define resources here
 	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
 		Namespace: jsii.String("cert-manager"),
-		Chart: jsii.String("jetstack/cert-manager"), //helm repo add jetstack https://charts.jetstack.io
+		Chart:     jsii.String("jetstack/cert-manager"), //helm repo add jetstack https://charts.jetstack.io
 	})
 
 	return chart

@@ -39,3 +39,9 @@ kind: Namespace
 metadata:
   name: cert-manager
 spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: geth
+spec: {}
