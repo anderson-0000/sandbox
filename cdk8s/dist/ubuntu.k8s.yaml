@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-ubuntu
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -43,15 +55,3 @@ spec:
         - name: pv-ubuntu
           persistentVolumeClaim:
             claimName: pvc-ubuntu
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pvc-ubuntu
-  namespace: ubuntu
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi

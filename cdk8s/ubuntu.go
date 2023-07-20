@@ -5,6 +5,7 @@ import (
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 	"github.com/cdk8s-team/cdk8s-plus-go/cdk8splus26/v2/k8s"
+	"github.com/cdk8s-team/cdk8s-plus-go/cdk8splus26/v2"
 )
 
 func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
@@ -13,6 +14,19 @@ func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartPr
 		cprops = props.ChartProps
 	}
 	c := cdk8s.NewChart(scope, jsii.String(id), &cprops) // idがファイル名になる
+
+	storage := 1.0
+//	var storage float64 = 1.0  //こっちでも同じ
+
+	cdk8splus26.NewPersistentVolumeClaim(c, jsii.String("pvc-ubuntu"), &cdk8splus26.PersistentVolumeClaimProps{
+		Metadata: &cdk8s.ApiObjectMetadata{
+			Name: jsii.String("pvc-ubuntu"),
+		},
+		AccessModes: &[]cdk8splus26.PersistentVolumeAccessMode{
+			cdk8splus26.PersistentVolumeAccessMode_READ_WRITE_ONCE,
+		},
+		Storage: cdk8s.Size_Gibibytes(&storage),
+	})
 
 	k8s.NewKubeDeployment(c, jsii.String("ubuntu"), &k8s.KubeDeploymentProps{
 		Metadata: &k8s.ObjectMeta{
@@ -55,11 +69,25 @@ func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartPr
 						SecurityContext: &k8s.SecurityContext{
 							AllowPrivilegeEscalation: jsii.Bool(false),
 							Privileged:               jsii.Bool(false),
-							ReadOnlyRootFilesystem:   jsii.Bool(true),
+							ReadOnlyRootFilesystem:   jsii.Bool(false),
 							RunAsNonRoot:             jsii.Bool(false),
 						},
 						Stdin: jsii.Bool(true),
+						VolumeMounts: &[]*k8s.VolumeMount{
+							{
+								Name: jsii.String("pv-ubuntu"),
+								MountPath: jsii.String("/mnt/pv"),
+							},
+						},
 					}},
+					Volumes: &[]*k8s.Volume{
+						{
+							Name: jsii.String("pv-ubuntu"),
+							PersistentVolumeClaim: &k8s.PersistentVolumeClaimVolumeSource{
+								ClaimName: jsii.String("pvc-ubuntu"),
+							},
+						},
+					},
 				},
 			},
 		},
