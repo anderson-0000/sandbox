@@ -56,5 +56,7 @@ func main() {
 	NewNginx(app, "nginx", nil)
 	NewIngressNginx(app, "ingress-nginx-controller", nil)
 	NewCertManager(app, "cert-manager", nil)
+	NewDeploymentGeth(app, "geth", nil)
+	NewPvAndPvc(app, "pv-and-pvc", nil)
 	app.Synth()
 }
