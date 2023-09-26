@@ -23,7 +23,7 @@ helm inspect values argo/argo-cd > default_value.yaml
 
 # pod アクセス
 - nginx
-http://localhost:80/
+http://test-site.remotehost/
 
 - ubuntu
 kubectl exec -it $(kubectl get pods -o=name --field-selector=status.phase=Running -n ubuntu) /bin/bash -n ubuntu
@@ -35,7 +35,7 @@ http://argo-workflows.localhost/login
 - argocd 
 kubectl port-forward argocd-c8733361-server-54544d68c8-h9v7x 8080:argocd.remotehost:443 -n argocd
 
-http://localhost:8080
+http://argocd.remotehost
 
 - argocd cli login
 kubectl port-forward argocd-c8733361-server-54544d68c8-h9v7x 8080:grpc.argocd.remotehost:80 -n argocd
