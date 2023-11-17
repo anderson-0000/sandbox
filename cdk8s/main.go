@@ -50,6 +50,7 @@ func main() {
 	app := cdk8s.NewApp(nil)
 	NewNameSpace(app, "ns", nil)
 	NewDeploymentUbuntu(app, "ubuntu", nil)
+	NewDeploymentCdk8sUbuntu(app, "ubuntu-cdk8s", nil)
 	NewRoleBinding(app, "rolebinding", nil)
 	NewArgocd(app, "argocd", nil)
 	NewArgoWorkflows(app, "argo-workflows", nil)

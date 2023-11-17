@@ -16,7 +16,7 @@ func NewDeploymentGeth(scope constructs.Construct, id string, props *MyChartProp
 
 	// define resources here
 	// localnet
-	replicas:= float64(1.0)
+	replicas := float64(1.0)
 
 	cdk8splus26.NewDeployment(chart, jsii.String(id), &cdk8splus26.DeploymentProps{
 		Metadata: &cdk8s.ApiObjectMetadata{
@@ -25,7 +25,7 @@ func NewDeploymentGeth(scope constructs.Construct, id string, props *MyChartProp
 		Replicas: &replicas,
 		Containers: &[]*cdk8splus26.ContainerProps{
 			{
-				Name: jsii.String(id),
+				Name:  jsii.String(id),
 				Image: jsii.String("ethereum/client-go:latest"),
 				Args: &[]*string{
 					jsii.String("--ipcdisable"),

@@ -4,8 +4,8 @@ import (
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
-	"github.com/cdk8s-team/cdk8s-plus-go/cdk8splus26/v2/k8s"
 	"github.com/cdk8s-team/cdk8s-plus-go/cdk8splus26/v2"
+	"github.com/cdk8s-team/cdk8s-plus-go/cdk8splus26/v2/k8s"
 )
 
 func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartProps) cdk8s.Chart {
@@ -16,17 +16,32 @@ func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartPr
 	c := cdk8s.NewChart(scope, jsii.String(id), &cprops) // idがファイル名になる
 
 	storage := 1.0
-//	var storage float64 = 1.0  //こっちでも同じ
+	//	var storage float64 = 1.0  //こっちでも同じ
 
-	cdk8splus26.NewPersistentVolumeClaim(c, jsii.String("pvc-ubuntu"), &cdk8splus26.PersistentVolumeClaimProps{
-		Metadata: &cdk8s.ApiObjectMetadata{
-			Name: jsii.String("pvc-ubuntu"),
+	//	cdk8splus26.NewPersistentVolumeClaim(c, jsii.String("pvc-ubuntu"), &cdk8splus26.PersistentVolumeClaimProps{
+	//		Metadata: &cdk8s.ApiObjectMetadata{
+	//			Name: jsii.String("pvc-ubuntu"),
+	//		},
+	//		AccessModes: &[]cdk8splus26.PersistentVolumeAccessMode{
+	//			cdk8splus26.PersistentVolumeAccessMode_READ_WRITE_ONCE,
+	//		},
+	//		Storage: cdk8s.Size_Gibibytes(&storage),
+	//	})
+
+	//↑を改行して書く
+	cdk8splus26.NewPersistentVolumeClaim(
+		c,
+		jsii.String("pvc-ubuntu"),
+		&cdk8splus26.PersistentVolumeClaimProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name: jsii.String("pvc-ubuntu"),
+			},
+			AccessModes: &[]cdk8splus26.PersistentVolumeAccessMode{
+				cdk8splus26.PersistentVolumeAccessMode_READ_WRITE_ONCE,
+			},
+			Storage: cdk8s.Size_Gibibytes(&storage),
 		},
-		AccessModes: &[]cdk8splus26.PersistentVolumeAccessMode{
-			cdk8splus26.PersistentVolumeAccessMode_READ_WRITE_ONCE,
-		},
-		Storage: cdk8s.Size_Gibibytes(&storage),
-	})
+	)
 
 	k8s.NewKubeDeployment(c, jsii.String("ubuntu"), &k8s.KubeDeploymentProps{
 		Metadata: &k8s.ObjectMeta{
@@ -75,7 +90,7 @@ func NewDeploymentUbuntu(scope constructs.Construct, id string, props *MyChartPr
 						Stdin: jsii.Bool(true),
 						VolumeMounts: &[]*k8s.VolumeMount{
 							{
-								Name: jsii.String("pv-ubuntu"),
+								Name:      jsii.String("pv-ubuntu"),
 								MountPath: jsii.String("/mnt/pv"),
 							},
 						},

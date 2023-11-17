@@ -17568,7 +17568,6 @@ metadata:
   name: argocd-c8733361-server-grpc
   namespace: argocd
 spec:
-  ingressClassName: nginx
   rules:
     - host: grpc.argocd.remotehost
       http:
@@ -17594,7 +17593,6 @@ metadata:
   name: argocd-c8733361-server
   namespace: argocd
 spec:
-  ingressClassName: nginx
   rules:
     - host: argocd.remotehost
       http:

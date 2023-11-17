@@ -19,23 +19,23 @@ func NewPvAndPvc(scope constructs.Construct, id string, props *MyChartProps) cdk
 	storageByte := 1073741824.0 //1Giのこと
 
 	k8s.NewKubePersistentVolume(c, jsii.String("pv1"), &k8s.KubePersistentVolumeProps{
-                Metadata: &k8s.ObjectMeta{
-                        Name: jsii.String("pv1"),
-                },
-                Spec: &k8s.PersistentVolumeSpec{
-                        AccessModes: &[]*string{
+		Metadata: &k8s.ObjectMeta{
+			Name: jsii.String("pv1"),
+		},
+		Spec: &k8s.PersistentVolumeSpec{
+			AccessModes: &[]*string{
 				jsii.String("ReadWriteOnce"),
 			},
-                        Capacity: &map[string]k8s.Quantity{
-                                "storage": k8s.Quantity_FromNumber(&storageByte),
-                        },
-                        PersistentVolumeReclaimPolicy: jsii.String("Delete"),
-                        HostPath: &k8s.HostPathVolumeSource{
-                                Path: jsii.String("/var/lib/k8s-pvs/pv1/pv1"),
-                        },
+			Capacity: &map[string]k8s.Quantity{
+				"storage": k8s.Quantity_FromNumber(&storageByte),
+			},
+			PersistentVolumeReclaimPolicy: jsii.String("Delete"),
+			HostPath: &k8s.HostPathVolumeSource{
+				Path: jsii.String("/var/lib/k8s-pvs/pv1/pv1"),
+			},
 			StorageClassName: jsii.String(""),
-                },
-        })
+		},
+	})
 
 	cdk8splus26.NewPersistentVolumeClaim(c, jsii.String("pvc1"), &cdk8splus26.PersistentVolumeClaimProps{
 		Metadata: &cdk8s.ApiObjectMetadata{
@@ -44,8 +44,8 @@ func NewPvAndPvc(scope constructs.Construct, id string, props *MyChartProps) cdk
 		AccessModes: &[]cdk8splus26.PersistentVolumeAccessMode{
 			cdk8splus26.PersistentVolumeAccessMode_READ_WRITE_ONCE,
 		},
-		Storage: cdk8s.Size_Gibibytes(&storage),
-		Volume: cdk8splus26.PersistentVolume_FromPersistentVolumeName(c, jsii.String("pv1-volume-name"), jsii.String("pv1")),
+		Storage:          cdk8s.Size_Gibibytes(&storage),
+		Volume:           cdk8splus26.PersistentVolume_FromPersistentVolumeName(c, jsii.String("pv1-volume-name"), jsii.String("pv1")),
 		StorageClassName: jsii.String(""),
 	})
 
