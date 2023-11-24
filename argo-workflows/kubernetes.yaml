@@ -38,3 +38,13 @@ roleRef:
   name: pod-patch-role
   apiGroup: rbac.authorization.k8s.io
 
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ci-test-configmap
+  namespace: ci
+data:
+  key1: "value1"
+  key2: "value2"
+  key3: "value3"
