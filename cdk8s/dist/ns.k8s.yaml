@@ -45,3 +45,9 @@ kind: Namespace
 metadata:
   name: geth
 spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ci
+spec: {}

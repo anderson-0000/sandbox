@@ -25,6 +25,7 @@ func NewNameSpace(scope constructs.Construct, id string, props *MyChartProps) cd
 		"ingress-nginx-controller",
 		"cert-manager",
 		"geth",
+		"ci",
 	}
 
 	for _, ns := range namespaces {
