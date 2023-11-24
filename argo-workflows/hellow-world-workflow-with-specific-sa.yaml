@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: hello-world-
+  namespace: ci
+spec:
+  serviceAccountName: hello-world-sa  # 追加
+  entrypoint: steps
+  templates:
+    - name: steps
+      steps:
+        - - name: step1
+            template: hello-world-from-alpine
+        - - name: step2
+            template: hello-world-from-ubuntu
+
+    - name: hello-world-from-alpine
+      container:
+        image: alpine
+        command: 
+          - echo
+        args: 
+          - "Hello world from Alpine Linux Container!"
+
+    - name: hello-world-from-ubuntu
+      container:
+        image: ubuntu
+        command: 
+          - echo
+        args: 
+          - "Hello world from Ubuntu Container!"

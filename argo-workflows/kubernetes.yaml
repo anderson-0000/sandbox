@@ -1,0 +1,40 @@
+## kubectl apply -f でapplyする
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hello-world-sa
+  namespace: ci
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: input-script-echo-sa
+  namespace: ci
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: ci
+  name: pod-patch-role
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["patch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-patch-role-binding
+  namespace: ci
+subjects:
+- kind: ServiceAccount
+  name: input-script-echo-sa
+  namespace: ci
+roleRef:
+  kind: Role
+  name: pod-patch-role
+  apiGroup: rbac.authorization.k8s.io
+

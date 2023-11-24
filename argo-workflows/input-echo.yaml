@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: input-echo-
+  namespace: ci
+spec:
+  serviceAccountName: hello-world-sa
+  entrypoint: steps
+  arguments:
+    parameters:
+    - name: message
+      value: this is input message
+  templates:
+    - name: steps
+      steps:
+        - - name: step1
+            template: input-echo-from-alpine
+        - - name: step2
+            template: input-echo-from-ubuntu
+
+    - name: input-echo-from-alpine
+      container:
+        image: alpine
+        command: 
+          - echo
+        args: 
+          - "{{workflow.parameters.message}}"
+
+    - name: input-echo-from-ubuntu
+      container:
+        image: ubuntu
+        command: 
+          - echo
+        args: 
+          - "{{workflow.parameters.message}}"

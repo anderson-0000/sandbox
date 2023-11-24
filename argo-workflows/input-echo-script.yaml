@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: input-script-echo-
+  namespace: ci
+spec:
+  serviceAccountName: input-script-echo-sa
+  entrypoint: steps
+  arguments:
+    parameters:
+    - name: message
+      value: this is input message
+  templates:
+    - name: steps
+      steps:
+        - - name: step1
+            template: input-script-echo-from-alpine
+        - - name: step2
+            template: input-script-echo-from-ubuntu
+            arguments:
+              parameters:
+              - name: message
+                value: "{{steps.step1.outputs.result}}"
+
+    - name: input-script-echo-from-alpine
+      script:
+        image: alpine
+        command: 
+          - ash
+        source: |
+          echo "{{workflow.parameters.message}}"
+
+    - name: input-script-echo-from-ubuntu
+      inputs:
+        parameters:
+        - name: message
+      script:
+        image: ubuntu
+        command: 
+          - bash
+        source: | 
+          echo "{{inputs.parameters.message}}"
