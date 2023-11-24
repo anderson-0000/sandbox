@@ -5,7 +5,8 @@ metadata:
     app.kubernetes.io/instance: nginx-c8fdc19c
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: nginx
-    helm.sh/chart: nginx-15.0.2
+    app.kubernetes.io/version: 1.25.3
+    helm.sh/chart: nginx-15.4.3
   name: nginx-c8fdc19c
   namespace: testtesttest
 spec:
@@ -27,11 +28,13 @@ metadata:
     app.kubernetes.io/instance: nginx-c8fdc19c
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: nginx
-    helm.sh/chart: nginx-15.0.2
+    app.kubernetes.io/version: 1.25.3
+    helm.sh/chart: nginx-15.4.3
   name: nginx-c8fdc19c
   namespace: testtesttest
 spec:
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app.kubernetes.io/instance: nginx-c8fdc19c
@@ -45,7 +48,8 @@ spec:
         app.kubernetes.io/instance: nginx-c8fdc19c
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: nginx
-        helm.sh/chart: nginx-15.0.2
+        app.kubernetes.io/version: 1.25.3
+        helm.sh/chart: nginx-15.4.3
     spec:
       affinity:
         podAntiAffinity:
@@ -64,7 +68,7 @@ spec:
               value: "false"
             - name: NGINX_HTTP_PORT_NUMBER
               value: "8080"
-          image: docker.io/bitnami/nginx:1.25.1-debian-11-r0
+          image: docker.io/bitnami/nginx:1.25.3-debian-11-r1
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 6
@@ -89,7 +93,21 @@ spec:
           resources:
             limits: {}
             requests: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
       hostIPC: false
       hostNetwork: false
+      securityContext:
+        fsGroup: 1001
+        sysctls: []
       serviceAccountName: default
       shareProcessNamespace: false

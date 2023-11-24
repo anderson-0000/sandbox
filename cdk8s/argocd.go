@@ -51,6 +51,7 @@ func NewArgocd(scope constructs.Construct, id string, props *MyChartProps) cdk8s
 					"hosts": []string{
 						"grpc.argocd.remotehost",
 					},
+					"ingressClassName": "nginx",
 				},
 			},
 		},
