@@ -1,0 +1,8 @@
+package cronworkflow _argoprojio
+
+
+type CronWorkflowSpecWorkflowSpecTemplatesDagTasksArgumentsArtifactsHttpAuthClientCert struct {
+	ClientCertSecret *CronWorkflowSpecWorkflowSpecTemplatesDagTasksArgumentsArtifactsHttpAuthClientCertClientCertSecret `field:"optional" json:"clientCertSecret" yaml:"clientCertSecret"`
+	ClientKeySecret *CronWorkflowSpecWorkflowSpecTemplatesDagTasksArgumentsArtifactsHttpAuthClientCertClientKeySecret `field:"optional" json:"clientKeySecret" yaml:"clientKeySecret"`
+}
+

@@ -1,0 +1,8 @@
+package workflowtemplates _argoprojio
+
+
+type WorkflowTemplateSpecTemplateDefaultsResourceManifestFromArtifactHttpAuthBasicAuth struct {
+	PasswordSecret *WorkflowTemplateSpecTemplateDefaultsResourceManifestFromArtifactHttpAuthBasicAuthPasswordSecret `field:"optional" json:"passwordSecret" yaml:"passwordSecret"`
+	UsernameSecret *WorkflowTemplateSpecTemplateDefaultsResourceManifestFromArtifactHttpAuthBasicAuthUsernameSecret `field:"optional" json:"usernameSecret" yaml:"usernameSecret"`
+}
+

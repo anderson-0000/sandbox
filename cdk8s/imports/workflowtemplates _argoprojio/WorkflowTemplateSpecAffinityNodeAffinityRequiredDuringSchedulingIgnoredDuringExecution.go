@@ -1,0 +1,7 @@
+package workflowtemplates _argoprojio
+
+
+type WorkflowTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution struct {
+	NodeSelectorTerms *[]*WorkflowTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms `field:"required" json:"nodeSelectorTerms" yaml:"nodeSelectorTerms"`
+}
+

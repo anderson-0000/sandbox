@@ -1,0 +1,8 @@
+package cronworkflow _argoprojio
+
+
+type CronWorkflowSpecWorkflowSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms struct {
+	MatchExpressions *[]*CronWorkflowSpecWorkflowSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions `field:"optional" json:"matchExpressions" yaml:"matchExpressions"`
+	MatchFields *[]*CronWorkflowSpecWorkflowSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields `field:"optional" json:"matchFields" yaml:"matchFields"`
+}
+

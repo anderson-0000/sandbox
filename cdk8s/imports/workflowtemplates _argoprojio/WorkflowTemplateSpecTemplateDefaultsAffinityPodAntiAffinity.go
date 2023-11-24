@@ -1,0 +1,8 @@
+package workflowtemplates _argoprojio
+
+
+type WorkflowTemplateSpecTemplateDefaultsAffinityPodAntiAffinity struct {
+	PreferredDuringSchedulingIgnoredDuringExecution *[]*WorkflowTemplateSpecTemplateDefaultsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution `field:"optional" json:"preferredDuringSchedulingIgnoredDuringExecution" yaml:"preferredDuringSchedulingIgnoredDuringExecution"`
+	RequiredDuringSchedulingIgnoredDuringExecution *[]*WorkflowTemplateSpecTemplateDefaultsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution `field:"optional" json:"requiredDuringSchedulingIgnoredDuringExecution" yaml:"requiredDuringSchedulingIgnoredDuringExecution"`
+}
+

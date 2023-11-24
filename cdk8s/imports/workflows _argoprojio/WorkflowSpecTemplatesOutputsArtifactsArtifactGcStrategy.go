@@ -1,0 +1,14 @@
+package workflows _argoprojio
+
+
+type WorkflowSpecTemplatesOutputsArtifactsArtifactGcStrategy string
+
+const (
+	// OnWorkflowCompletion.
+	WorkflowSpecTemplatesOutputsArtifactsArtifactGcStrategy_ON_WORKFLOW_COMPLETION WorkflowSpecTemplatesOutputsArtifactsArtifactGcStrategy = "ON_WORKFLOW_COMPLETION"
+	// OnWorkflowDeletion.
+	WorkflowSpecTemplatesOutputsArtifactsArtifactGcStrategy_ON_WORKFLOW_DELETION WorkflowSpecTemplatesOutputsArtifactsArtifactGcStrategy = "ON_WORKFLOW_DELETION"
+	// Never.
+	WorkflowSpecTemplatesOutputsArtifactsArtifactGcStrategy_NEVER WorkflowSpecTemplatesOutputsArtifactsArtifactGcStrategy = "NEVER"
+)
+

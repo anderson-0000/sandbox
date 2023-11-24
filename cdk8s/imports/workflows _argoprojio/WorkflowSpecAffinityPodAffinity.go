@@ -1,0 +1,8 @@
+package workflows _argoprojio
+
+
+type WorkflowSpecAffinityPodAffinity struct {
+	PreferredDuringSchedulingIgnoredDuringExecution *[]*WorkflowSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution `field:"optional" json:"preferredDuringSchedulingIgnoredDuringExecution" yaml:"preferredDuringSchedulingIgnoredDuringExecution"`
+	RequiredDuringSchedulingIgnoredDuringExecution *[]*WorkflowSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution `field:"optional" json:"requiredDuringSchedulingIgnoredDuringExecution" yaml:"requiredDuringSchedulingIgnoredDuringExecution"`
+}
+

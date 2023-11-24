@@ -1,0 +1,8 @@
+package cronworkflow _argoprojio
+
+
+type CronWorkflowSpecWorkflowSpecTemplateDefaultsResourceManifestFromArtifactHttpAuthBasicAuth struct {
+	PasswordSecret *CronWorkflowSpecWorkflowSpecTemplateDefaultsResourceManifestFromArtifactHttpAuthBasicAuthPasswordSecret `field:"optional" json:"passwordSecret" yaml:"passwordSecret"`
+	UsernameSecret *CronWorkflowSpecWorkflowSpecTemplateDefaultsResourceManifestFromArtifactHttpAuthBasicAuthUsernameSecret `field:"optional" json:"usernameSecret" yaml:"usernameSecret"`
+}
+

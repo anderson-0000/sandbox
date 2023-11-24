@@ -2,3 +2,6 @@ language: go
 app: go run .
 imports:
   - k8s
+  - cronworkflow :=https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/base/crds/full/argoproj.io_cronworkflows.yaml
+  - workflows :=https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/base/crds/full/argoproj.io_workflows.yaml
+  - workflowtemplates :=https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/base/crds/full/argoproj.io_workflowtemplates.yaml
