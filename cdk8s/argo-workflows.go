@@ -21,10 +21,11 @@ func NewArgoWorkflows(scope constructs.Construct, id string, props *MyChartProps
 		Values: &map[string]interface{}{
 			"nameOverride": id,
 			"server": map[string]interface{}{
+				"authMode": "server",
 				"ingress": map[string]interface{}{
 					"enabled": "true",
 					"hosts": []string{
-						"argo-workflows.localhost",
+						"argo-workflows.remotehost",
 					},
 					"ingressClassName": "nginx",
 				},

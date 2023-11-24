@@ -1702,6 +1702,7 @@ spec:
         - args:
             - server
             - --configmap=argo-workflows-c8b79b5a-workflow-controller-configmap
+            - --auth-mode=server
             - --secure=false
             - --loglevel
             - info
@@ -1765,7 +1766,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: argo-workflows.localhost
+    - host: argo-workflows.remotehost
       http:
         paths:
           - backend:
