@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: hello-world-workflow-
+  namespace: ci
+spec:
+  entrypoint: hello-world-template
+  templates:
+  - name: hello-world-template
+    steps:
+    - - name: execute-hello-world-template
+        templateRef:
+          name: hello-world ## template名
+          template: steps ## templateのtemplates名
+
