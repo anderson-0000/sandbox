@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate  # 変更
+metadata:
+  name: time
+  namespace: ci
+spec:
+  entrypoint: steps
+  templates:
+    - name: steps
+      steps:
+        - - name: step1
+            template: time-from-alpine
+        - - name: step2
+            template: time-from-ubuntu
+
+    - name: time-from-alpine
+      container:
+        image: alpine
+        command: 
+          - date 
+        args:
+          - "+%Y/%m/%d %H:%M:%S:%T"
+
+    - name: time-from-ubuntu
+      container:
+        image: ubuntu
+        command: 
+          - date
+        args: 
+          - "+%Y/%m/%d %H:%M:%S:%T"

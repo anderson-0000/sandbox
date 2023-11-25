@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: time-cronworkflow
+  namespace: ci
+spec:
+  schedule: "0 * * * *"
+  ## 既存のジョブが実行中の場合に新しいジョブを開始するか。"Allow", "Forbid", "Replace" が選べる
+  ## Allow（デフォルト）：CronJobは同時に実行するジョブを許可
+  ## Forbid：同時に実行は許可しない。
+  ## Replace：前のジョブがまだ終了していない時はそのジョブはキャンセルし、次のジョブが実行。
+  concurrencyPolicy: "Replace"
+  startingDeadlineSeconds: 0 # スケジュール時間を過ぎてからジョブが開始できる最大時間（秒）。0は制限なし
+  workflowSpec: # ここにWorkflowのspecを配置。
+    entrypoint: time-template
+    templates:
+    - name: time-template
+      steps:
+      - - name: execute-time-template
+          templateRef:
+            name: time ## template名
+            template: steps ## templateのtemplates名
+

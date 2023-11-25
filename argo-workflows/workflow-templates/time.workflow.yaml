@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: time-workflow-
+  namespace: ci
+spec:
+  entrypoint: time-template
+  templates:
+  - name: time-template
+    steps:
+    - - name: execute-time-template
+        templateRef:
+          name: time ## template名
+          template: steps ## templateのtemplates名
+
