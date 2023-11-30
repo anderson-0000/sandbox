@@ -59,7 +59,7 @@ func main() {
 	NewCertManager(app, "cert-manager", nil)
 	NewDeploymentGeth(app, "geth", nil)
 	NewPvAndPvc(app, "pv-and-pvc", nil)
-	//	NewPrometheus(app, "prometheus", nil)
+	NewPrometheus(app, "prometheus", nil)
 	//	NewGrafana(app, "grafana", nil)
 	app.Synth()
 }

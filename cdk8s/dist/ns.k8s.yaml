@@ -51,3 +51,15 @@ kind: Namespace
 metadata:
   name: ci
 spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prometheus
+spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grafana
+spec: {}
