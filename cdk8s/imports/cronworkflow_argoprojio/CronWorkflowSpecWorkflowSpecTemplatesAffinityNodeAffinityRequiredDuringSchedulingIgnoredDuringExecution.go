@@ -1,0 +1,7 @@
+package cronworkflow_argoprojio
+
+
+type CronWorkflowSpecWorkflowSpecTemplatesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution struct {
+	NodeSelectorTerms *[]*CronWorkflowSpecWorkflowSpecTemplatesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms `field:"required" json:"nodeSelectorTerms" yaml:"nodeSelectorTerms"`
+}
+

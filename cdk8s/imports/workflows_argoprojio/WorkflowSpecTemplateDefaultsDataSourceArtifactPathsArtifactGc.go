@@ -1,0 +1,9 @@
+package workflows_argoprojio
+
+
+type WorkflowSpecTemplateDefaultsDataSourceArtifactPathsArtifactGc struct {
+	PodMetadata *WorkflowSpecTemplateDefaultsDataSourceArtifactPathsArtifactGcPodMetadata `field:"optional" json:"podMetadata" yaml:"podMetadata"`
+	ServiceAccountName *string `field:"optional" json:"serviceAccountName" yaml:"serviceAccountName"`
+	Strategy WorkflowSpecTemplateDefaultsDataSourceArtifactPathsArtifactGcStrategy `field:"optional" json:"strategy" yaml:"strategy"`
+}
+

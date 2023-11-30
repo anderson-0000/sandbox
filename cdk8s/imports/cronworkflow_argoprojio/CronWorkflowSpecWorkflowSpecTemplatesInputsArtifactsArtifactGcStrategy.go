@@ -1,0 +1,14 @@
+package cronworkflow_argoprojio
+
+
+type CronWorkflowSpecWorkflowSpecTemplatesInputsArtifactsArtifactGcStrategy string
+
+const (
+	// OnWorkflowCompletion.
+	CronWorkflowSpecWorkflowSpecTemplatesInputsArtifactsArtifactGcStrategy_ON_WORKFLOW_COMPLETION CronWorkflowSpecWorkflowSpecTemplatesInputsArtifactsArtifactGcStrategy = "ON_WORKFLOW_COMPLETION"
+	// OnWorkflowDeletion.
+	CronWorkflowSpecWorkflowSpecTemplatesInputsArtifactsArtifactGcStrategy_ON_WORKFLOW_DELETION CronWorkflowSpecWorkflowSpecTemplatesInputsArtifactsArtifactGcStrategy = "ON_WORKFLOW_DELETION"
+	// Never.
+	CronWorkflowSpecWorkflowSpecTemplatesInputsArtifactsArtifactGcStrategy_NEVER CronWorkflowSpecWorkflowSpecTemplatesInputsArtifactsArtifactGcStrategy = "NEVER"
+)
+
