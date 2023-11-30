@@ -31,9 +31,9 @@ func NewDeploymentCdk8sUbuntu(scope constructs.Construct, id string, props *MyCh
 		},
 	})
 
-//	ubuntu.ApiObject().AddJsonPatch(cdk8s.JsonPatch_Add(jsii.String("/spec/template/spec/containers/0/stdin"), true))
-//	ubuntu.ApiObject().AddJsonPatch(cdk8s.JsonPatch_Add(jsii.String("/spec/template/spec/containers/0/tty"), true))
-// ↑↓は同じ
+	//	ubuntu.ApiObject().AddJsonPatch(cdk8s.JsonPatch_Add(jsii.String("/spec/template/spec/containers/0/stdin"), true))
+	//	ubuntu.ApiObject().AddJsonPatch(cdk8s.JsonPatch_Add(jsii.String("/spec/template/spec/containers/0/tty"), true))
+	// ↑↓は同じ
 
 	ubuntu.ApiObject().AddJsonPatch(
 		cdk8s.JsonPatch_Add(jsii.String("/spec/template/spec/containers/0/stdin"), true),

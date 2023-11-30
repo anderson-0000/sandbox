@@ -26,6 +26,8 @@ func NewNameSpace(scope constructs.Construct, id string, props *MyChartProps) cd
 		"cert-manager",
 		"geth",
 		"ci",
+		"prometheus",
+		"grafana",
 	}
 
 	for _, ns := range namespaces {
