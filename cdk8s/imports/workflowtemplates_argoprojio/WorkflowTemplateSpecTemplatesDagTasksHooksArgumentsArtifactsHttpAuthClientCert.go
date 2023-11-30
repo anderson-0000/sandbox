@@ -1,0 +1,8 @@
+package workflowtemplates_argoprojio
+
+
+type WorkflowTemplateSpecTemplatesDagTasksHooksArgumentsArtifactsHttpAuthClientCert struct {
+	ClientCertSecret *WorkflowTemplateSpecTemplatesDagTasksHooksArgumentsArtifactsHttpAuthClientCertClientCertSecret `field:"optional" json:"clientCertSecret" yaml:"clientCertSecret"`
+	ClientKeySecret *WorkflowTemplateSpecTemplatesDagTasksHooksArgumentsArtifactsHttpAuthClientCertClientKeySecret `field:"optional" json:"clientKeySecret" yaml:"clientKeySecret"`
+}
+
