@@ -17,31 +17,35 @@ func NewGrafana(scope constructs.Construct, id string, props *MyChartProps) cdk8
 	// define resources here
 	cdk8s.NewHelm(chart, jsii.String(id), &cdk8s.HelmProps{
 		Namespace: jsii.String(id),
-		Chart:     jsii.String("bitnami/grafana"), //helm search repo grafana
+		Chart:     jsii.String("grafana/grafana"), //helm search repo grafana
 		Values: &map[string]interface{}{
 			"datasources": map[string]interface{}{
 				"datasources.yaml": map[string]interface{}{
 					"apiVersion": 1,
-					"datasources": map[string]interface{}{
-						"name":  "Prometheus",
-						"type":   "prometheus",
-						"access": "proxy",
-						"url":    "http://prometheus-c899c4b6-server.prometheus.svc.cluster.local",
+					"datasources": []map[string]interface{}{
+						{
+							"name":   "Prometheus",
+							"type":   "prometheus",
+							"access": "proxy",
+							"url":    "http://prometheus-c899c4b6-server.prometheus.svc.cluster.local",
+						},
 					},
 				},
 			},
 			"dashboardProviders": map[string]interface{}{
 				"dashboardproviders.yaml": map[string]interface{}{
 					"apiVersion": 1,
-					"providers": map[string]interface{}{
-						"name":            "default",
-						"orgId":           1,
-						"folder":          "",
-						"type":            "file",
-						"disableDeletion": false,
-						"editable":        true,
-						"options": map[string]interface{}{
-							"path": "/var/lib/grafana/dashboards/default",
+					"providers": []map[string]interface{}{
+						{
+							"name":            "default",
+							"orgId":           1,
+							"folder":          "",
+							"type":            "file",
+							"disableDeletion": false,
+							"editable":        true,
+							"options": map[string]interface{}{
+								"path": "/var/lib/grafana/dashboards/default",
+							},
 						},
 					},
 				},
@@ -55,7 +59,7 @@ func NewGrafana(scope constructs.Construct, id string, props *MyChartProps) cdk8
 				},
 			},
 			"ingress": map[string]interface{}{
-				"enabled": true,
+				"enabled":          true,
 				"ingressClassName": "nginx",
 				"hosts": []string{
 					"grafana.remotehost",

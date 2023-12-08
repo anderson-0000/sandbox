@@ -19,13 +19,13 @@ func NewPrometheus(scope constructs.Construct, id string, props *MyChartProps) c
 		Chart:     jsii.String("prometheus-community/prometheus"), //helm search repo prometheus
 		Values: &map[string]interface{}{
 			"server": map[string]interface{}{
-                                "ingress": map[string]interface{}{
-                                        "enabled": true,
-                                        "hosts": []string{
-                                                "prometheus.remotehost",
-                                        },  
-                                        "ingressClassName": "nginx",
-                                },  
+				"ingress": map[string]interface{}{
+					"enabled": true,
+					"hosts": []string{
+						"prometheus.remotehost",
+					},
+					"ingressClassName": "nginx",
+				},
 				"persistentVolume": map[string]bool{
 					"enabled": false,
 				},
