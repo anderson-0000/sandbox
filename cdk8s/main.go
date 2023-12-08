@@ -60,6 +60,6 @@ func main() {
 	NewDeploymentGeth(app, "geth", nil)
 	NewPvAndPvc(app, "pv-and-pvc", nil)
 	NewPrometheus(app, "prometheus", nil)
-	//	NewGrafana(app, "grafana", nil)
+	NewGrafana(app, "grafana", nil)
 	app.Synth()
 }

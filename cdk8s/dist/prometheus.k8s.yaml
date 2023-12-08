@@ -61,7 +61,7 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
     app.kubernetes.io/version: v2.48.0
-    helm.sh/chart: prometheus-25.8.0
+    helm.sh/chart: prometheus-25.8.1
   name: prometheus-c899c4b6-server
   namespace: prometheus
 ---
@@ -99,7 +99,7 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
     app.kubernetes.io/version: v2.48.0
-    helm.sh/chart: prometheus-25.8.0
+    helm.sh/chart: prometheus-25.8.1
   name: prometheus-c899c4b6-server
   namespace: prometheus
 data:
@@ -667,7 +667,7 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
     app.kubernetes.io/version: v2.48.0
-    helm.sh/chart: prometheus-25.8.0
+    helm.sh/chart: prometheus-25.8.1
   name: prometheus-c899c4b6-server
 rules:
   - apiGroups:
@@ -739,7 +739,7 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
     app.kubernetes.io/version: v2.48.0
-    helm.sh/chart: prometheus-25.8.0
+    helm.sh/chart: prometheus-25.8.1
   name: prometheus-c899c4b6-server
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -880,7 +880,7 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
     app.kubernetes.io/version: v2.48.0
-    helm.sh/chart: prometheus-25.8.0
+    helm.sh/chart: prometheus-25.8.1
   name: prometheus-c899c4b6-server
   namespace: prometheus
 spec:
@@ -1149,7 +1149,7 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
     app.kubernetes.io/version: v2.48.0
-    helm.sh/chart: prometheus-25.8.0
+    helm.sh/chart: prometheus-25.8.1
   name: prometheus-c899c4b6-server
   namespace: prometheus
 spec:
@@ -1171,13 +1171,13 @@ spec:
         app.kubernetes.io/name: prometheus
         app.kubernetes.io/part-of: prometheus
         app.kubernetes.io/version: v2.48.0
-        helm.sh/chart: prometheus-25.8.0
+        helm.sh/chart: prometheus-25.8.1
     spec:
       containers:
         - args:
             - --watched-dir=/etc/config
             - --reload-url=http://127.0.0.1:9090/-/reload
-          image: quay.io/prometheus-operator/prometheus-config-reloader:v0.67.0
+          image: quay.io/prometheus-operator/prometheus-config-reloader:v0.70.0
           imagePullPolicy: IfNotPresent
           name: prometheus-server-configmap-reload
           volumeMounts:
@@ -1324,7 +1324,7 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
     app.kubernetes.io/version: v2.48.0
-    helm.sh/chart: prometheus-25.8.0
+    helm.sh/chart: prometheus-25.8.1
   name: prometheus-c899c4b6-server
   namespace: prometheus
 spec:

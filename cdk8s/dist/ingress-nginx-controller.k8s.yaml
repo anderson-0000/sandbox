@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580
   namespace: ingress-nginx-controller
 automountServiceAccountToken: true
@@ -23,7 +23,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-controller
   namespace: ingress-nginx-controller
 data:
@@ -38,7 +38,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580
 rules:
   - apiGroups:
@@ -121,7 +121,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -142,7 +142,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580
   namespace: ingress-nginx-controller
 rules:
@@ -234,7 +234,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580
   namespace: ingress-nginx-controller
 roleRef:
@@ -256,7 +256,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-controller-admission
   namespace: ingress-nginx-controller
 spec:
@@ -281,7 +281,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-controller
   namespace: ingress-nginx-controller
 spec:
@@ -315,7 +315,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-controller
   namespace: ingress-nginx-controller
 spec:
@@ -336,7 +336,7 @@ spec:
         app.kubernetes.io/name: ingress-nginx
         app.kubernetes.io/part-of: ingress-nginx
         app.kubernetes.io/version: 1.9.4
-        helm.sh/chart: ingress-nginx-4.8.3
+        helm.sh/chart: ingress-nginx-4.8.4
     spec:
       containers:
         - args:
@@ -403,13 +403,17 @@ spec:
               cpu: 100m
               memory: 90Mi
           securityContext:
-            allowPrivilegeEscalation: true
+            allowPrivilegeEscalation: false
             capabilities:
               add:
                 - NET_BIND_SERVICE
               drop:
                 - ALL
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
             runAsUser: 101
+            seccompProfile:
+              type: RuntimeDefault
           volumeMounts:
             - mountPath: /usr/local/certificates/
               name: webhook-cert
@@ -434,7 +438,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: nginx
 spec:
   controller: k8s.io/ingress-nginx
@@ -449,7 +453,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-admission
 webhooks:
   - admissionReviewVersions:
@@ -474,34 +478,6 @@ webhooks:
           - ingresses
     sideEffects: None
 ---
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  annotations:
-    helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade
-    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
-  labels:
-    app.kubernetes.io/component: admission-webhook
-    app.kubernetes.io/instance: ingress-nginx-controller-c82c4580
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
-  name: ingress-nginx-controller-c82c4580-admission
-  namespace: ingress-nginx-controller
-spec:
-  egress:
-    - {}
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/component: admission-webhook
-      app.kubernetes.io/instance: ingress-nginx-controller-c82c4580
-      app.kubernetes.io/name: ingress-nginx
-  policyTypes:
-    - Ingress
-    - Egress
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -515,7 +491,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-admission
   namespace: ingress-nginx-controller
 ---
@@ -532,7 +508,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-admission
 rules:
   - apiGroups:
@@ -556,7 +532,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-admission
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -580,7 +556,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-admission
   namespace: ingress-nginx-controller
 rules:
@@ -605,7 +581,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-admission
   namespace: ingress-nginx-controller
 roleRef:
@@ -630,7 +606,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-admission-create
   namespace: ingress-nginx-controller
 spec:
@@ -643,7 +619,7 @@ spec:
         app.kubernetes.io/name: ingress-nginx
         app.kubernetes.io/part-of: ingress-nginx
         app.kubernetes.io/version: 1.9.4
-        helm.sh/chart: ingress-nginx-4.8.3
+        helm.sh/chart: ingress-nginx-4.8.4
       name: ingress-nginx-controller-c82c4580-admission-create
     spec:
       containers:
@@ -662,13 +638,17 @@ spec:
           name: create
           securityContext:
             allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65532
+            seccompProfile:
+              type: RuntimeDefault
       nodeSelector:
         kubernetes.io/os: linux
       restartPolicy: OnFailure
-      securityContext:
-        fsGroup: 2000
-        runAsNonRoot: true
-        runAsUser: 2000
       serviceAccountName: ingress-nginx-controller-c82c4580-admission
 ---
 apiVersion: batch/v1
@@ -684,7 +664,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.9.4
-    helm.sh/chart: ingress-nginx-4.8.3
+    helm.sh/chart: ingress-nginx-4.8.4
   name: ingress-nginx-controller-c82c4580-admission-patch
   namespace: ingress-nginx-controller
 spec:
@@ -697,7 +677,7 @@ spec:
         app.kubernetes.io/name: ingress-nginx
         app.kubernetes.io/part-of: ingress-nginx
         app.kubernetes.io/version: 1.9.4
-        helm.sh/chart: ingress-nginx-4.8.3
+        helm.sh/chart: ingress-nginx-4.8.4
       name: ingress-nginx-controller-c82c4580-admission-patch
     spec:
       containers:
@@ -718,11 +698,15 @@ spec:
           name: patch
           securityContext:
             allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65532
+            seccompProfile:
+              type: RuntimeDefault
       nodeSelector:
         kubernetes.io/os: linux
       restartPolicy: OnFailure
-      securityContext:
-        fsGroup: 2000
-        runAsNonRoot: true
-        runAsUser: 2000
       serviceAccountName: ingress-nginx-controller-c82c4580-admission

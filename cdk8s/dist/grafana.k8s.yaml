@@ -1,0 +1,232 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/instance: grafana-c8afff4c
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/version: 10.2.2
+    helm.sh/chart: grafana-9.6.5
+  name: grafana-c8afff4c
+  namespace: grafana
+automountServiceAccountToken: false
+secrets:
+  - name: grafana-c8afff4c-admin
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/instance: grafana-c8afff4c
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/version: 10.2.2
+    helm.sh/chart: grafana-9.6.5
+  name: grafana-c8afff4c-admin
+  namespace: grafana
+data:
+  GF_SECURITY_ADMIN_PASSWORD: UElBcktQZTZUYg==
+type: Opaque
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/instance: grafana-c8afff4c
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/version: 10.2.2
+    helm.sh/chart: grafana-9.6.5
+  name: grafana-c8afff4c-envvars
+  namespace: grafana
+data:
+  GF_AUTH_LDAP_ALLOW_SIGN_UP: "false"
+  GF_AUTH_LDAP_CONFIG_FILE: /opt/bitnami/grafana/conf/ldap.toml
+  GF_AUTH_LDAP_ENABLED: "false"
+  GF_INSTALL_PLUGINS: ""
+  GF_PATHS_CONFIG: /opt/bitnami/grafana/conf/grafana.ini
+  GF_PATHS_DATA: /opt/bitnami/grafana/data
+  GF_PATHS_LOGS: /opt/bitnami/grafana/logs
+  GF_PATHS_PLUGINS: /opt/bitnami/grafana/data/plugins
+  GF_PATHS_PROVISIONING: /opt/bitnami/grafana/conf/provisioning
+  GF_SECURITY_ADMIN_USER: admin
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/instance: grafana-c8afff4c
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/version: 10.2.2
+    helm.sh/chart: grafana-9.6.5
+  name: grafana-c8afff4c
+  namespace: grafana
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/instance: grafana-c8afff4c
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/version: 10.2.2
+    helm.sh/chart: grafana-9.6.5
+  name: grafana-c8afff4c
+  namespace: grafana
+spec:
+  ports:
+    - name: http
+      port: 3000
+      protocol: TCP
+      targetPort: dashboard
+  selector:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/instance: grafana-c8afff4c
+    app.kubernetes.io/name: grafana
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/instance: grafana-c8afff4c
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/version: 10.2.2
+    helm.sh/chart: grafana-9.6.5
+  name: grafana-c8afff4c
+  namespace: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: grafana
+      app.kubernetes.io/instance: grafana-c8afff4c
+      app.kubernetes.io/name: grafana
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: 511437dd8a98c32c1cd4fb2279fe6de2e9d658e1126fd4d08f377ece99f7800e
+        checksum/dashboard-provider: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+        checksum/secret: e1d6e9a8be681b5e35c90963df7428dd569a7ef91318b9c0495933961d76f41e
+      labels:
+        app.kubernetes.io/component: grafana
+        app.kubernetes.io/instance: grafana-c8afff4c
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: grafana
+        app.kubernetes.io/version: 10.2.2
+        helm.sh/chart: grafana-9.6.5
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: grafana
+                    app.kubernetes.io/instance: grafana-c8afff4c
+                    app.kubernetes.io/name: grafana
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+      containers:
+        - env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: GF_SECURITY_ADMIN_PASSWORD
+                  name: grafana-c8afff4c-admin
+          envFrom:
+            - configMapRef:
+                name: grafana-c8afff4c-envvars
+          image: docker.io/bitnami/grafana:10.2.2-debian-11-r3
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /api/health
+              port: dashboard
+              scheme: HTTP
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: grafana
+          ports:
+            - containerPort: 3000
+              name: dashboard
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /api/health
+              port: dashboard
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            limits: {}
+            requests: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /opt/bitnami/grafana/data
+              name: data
+      securityContext:
+        fsGroup: 1001
+      serviceAccountName: grafana-c8afff4c
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: grafana-c8afff4c
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/instance: grafana-c8afff4c
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/version: 10.2.2
+    helm.sh/chart: grafana-9.6.5
+  name: grafana-c8afff4c
+  namespace: grafana
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: grafana.local
+      http:
+        paths:
+          - backend:
+              service:
+                name: grafana-c8afff4c
+                port:
+                  name: http
+            path: /
+            pathType: ImplementationSpecific
