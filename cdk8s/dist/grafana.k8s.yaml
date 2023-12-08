@@ -26,7 +26,7 @@ metadata:
   name: grafana-c8afff4c-admin
   namespace: grafana
 data:
-  GF_SECURITY_ADMIN_PASSWORD: UElBcktQZTZUYg==
+  GF_SECURITY_ADMIN_PASSWORD: V0t2MEtjNUhzVw==
 type: Opaque
 ---
 apiVersion: v1
@@ -123,7 +123,7 @@ spec:
       annotations:
         checksum/config: 511437dd8a98c32c1cd4fb2279fe6de2e9d658e1126fd4d08f377ece99f7800e
         checksum/dashboard-provider: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
-        checksum/secret: e1d6e9a8be681b5e35c90963df7428dd569a7ef91318b9c0495933961d76f41e
+        checksum/secret: aa808cc43a916bd1570c69bb345afe061b9824a171ad93df73749c8897a2aca5
       labels:
         app.kubernetes.io/component: grafana
         app.kubernetes.io/instance: grafana-c8afff4c

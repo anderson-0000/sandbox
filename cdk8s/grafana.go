@@ -56,10 +56,10 @@ func NewGrafana(scope constructs.Construct, id string, props *MyChartProps) cdk8
 			},
 			"ingress": map[string]interface{}{
 				"enabled": true,
-				"hosts": []string{
-					"grafanaaaa.remotehost",
-				},
 				"ingressClassName": "nginx",
+				"hosts": []string{
+					"grafana.remotehost",
+				},
 			},
 		},
 	})
