@@ -37,8 +37,8 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             privileged: false
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
           stdin: true
           tty: true
       dnsPolicy: ClusterFirst

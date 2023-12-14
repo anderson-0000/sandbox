@@ -27,6 +27,10 @@ func NewDeploymentCdk8sUbuntu(scope constructs.Construct, id string, props *MyCh
 					jsii.String("/bin/bash"),
 				},
 				Name: jsii.String("main"),
+				SecurityContext: &cdk8splus26.ContainerSecurityContextProps{
+					EnsureNonRoot:          jsii.Bool(false),
+					ReadOnlyRootFilesystem: jsii.Bool(false),
+				},
 			},
 		},
 	})
@@ -41,3 +45,4 @@ func NewDeploymentCdk8sUbuntu(scope constructs.Construct, id string, props *MyCh
 	)
 	return c
 }
+
