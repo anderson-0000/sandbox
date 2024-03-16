@@ -13,7 +13,8 @@ $ vi main.go
 の行にコードを追加
 
 # kubernetes マニュフェストを作成
-$ cdk8s synth
+$ ENV=dev cdk8s synth --output dist/${ENV}
+$ ENV=stg cdk8s synth --output dist/${ENV}
 
 # kubernetesクラスターにデプロイ
 $ kubectl apply -f dist/${プロジェクト名}.k8s.yaml

@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-application-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-application-controller
   namespace: argocd
 automountServiceAccountToken: true
@@ -22,8 +22,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-applicationset-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-applicationset-controller
   namespace: argocd
 automountServiceAccountToken: true
@@ -37,8 +37,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-notifications-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-notifications-controller
   namespace: argocd
 automountServiceAccountToken: true
@@ -52,8 +52,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-repo-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-repo-server
   namespace: argocd
 automountServiceAccountToken: true
@@ -67,8 +67,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-server
   namespace: argocd
 automountServiceAccountToken: true
@@ -82,8 +82,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-dex-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-dex-server
   namespace: argocd
 automountServiceAccountToken: true
@@ -97,8 +97,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-notifications-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-notifications-secret
   namespace: argocd
 type: Opaque
@@ -112,8 +112,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-secret
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-secret
   namespace: argocd
 type: Opaque
@@ -127,8 +127,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-cm
   namespace: argocd
 data:
@@ -148,6 +148,7 @@ data:
   server.rbac.log.enforce.enable: "false"
   timeout.hard.reconciliation: 0s
   timeout.reconciliation: 180s
+  url: https://argocd.example.com
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -158,8 +159,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-cmd-params-cm
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-cmd-params-cm
   namespace: argocd
 data:
@@ -202,8 +203,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-gpg-keys-cm
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-gpg-keys-cm
   namespace: argocd
 ---
@@ -216,13 +217,13 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-notifications-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-notifications-cm
   namespace: argocd
 data:
   context: |
-    argocdUrl:
+    argocdUrl: https://argocd.example.com
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -233,13 +234,14 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-rbac-cm
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-rbac-cm
   namespace: argocd
 data:
   policy.csv: ""
   policy.default: ""
+  policy.matchMode: glob
   scopes: "[groups]"
 ---
 apiVersion: v1
@@ -250,8 +252,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-ssh-known-hosts-cm
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-ssh-known-hosts-cm
   namespace: argocd
 data:
@@ -279,10 +281,49 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-tls-certs-cm
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-tls-certs-cm
   namespace: argocd
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/instance: argocd-c8733361
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: argocd-redis
+    app.kubernetes.io/part-of: argocd
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
+  name: argocd-c8733361-redis-health-configmap
+  namespace: argocd
+data:
+  redis_liveness.sh: |
+    response=$(
+      redis-cli \
+        -h localhost \
+        -p 6379 \
+        ping
+    )
+    if [ "$response" != "PONG" ] && [ "${response:0:7}" != "LOADING" ] ; then
+      echo "$response"
+      exit 1
+    fi
+    echo "response=$response"
+  redis_readiness.sh: |
+    response=$(
+      redis-cli \
+        -h localhost \
+        -p 6379 \
+        ping
+    )
+    if [ "$response" != "PONG" ] ; then
+      echo "$response"
+      exit 1
+    fi
+    echo "response=$response"
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -553,6 +594,11 @@ spec:
                                 type: string
                               description: CommonLabels is a list of additional labels to add to rendered manifests
                               type: object
+                            components:
+                              description: Components specifies a list of kustomize components to add to the kustomization before building
+                              items:
+                                type: string
+                              type: array
                             forceCommonAnnotations:
                               description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                               type: boolean
@@ -823,6 +869,11 @@ spec:
                                   type: string
                                 description: CommonLabels is a list of additional labels to add to rendered manifests
                                 type: object
+                              components:
+                                description: Components specifies a list of kustomize components to add to the kustomization before building
+                                items:
+                                  type: string
+                                type: array
                               forceCommonAnnotations:
                                 description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                                 type: boolean
@@ -1183,6 +1234,11 @@ spec:
                             type: string
                           description: CommonLabels is a list of additional labels to add to rendered manifests
                           type: object
+                        components:
+                          description: Components specifies a list of kustomize components to add to the kustomization before building
+                          items:
+                            type: string
+                          type: array
                         forceCommonAnnotations:
                           description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                           type: boolean
@@ -1453,6 +1509,11 @@ spec:
                               type: string
                             description: CommonLabels is a list of additional labels to add to rendered manifests
                             type: object
+                          components:
+                            description: Components specifies a list of kustomize components to add to the kustomization before building
+                            items:
+                              type: string
+                            type: array
                           forceCommonAnnotations:
                             description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                             type: boolean
@@ -1843,6 +1904,11 @@ spec:
                                   type: string
                                 description: CommonLabels is a list of additional labels to add to rendered manifests
                                 type: object
+                              components:
+                                description: Components specifies a list of kustomize components to add to the kustomization before building
+                                items:
+                                  type: string
+                                type: array
                               forceCommonAnnotations:
                                 description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                                 type: boolean
@@ -2113,6 +2179,11 @@ spec:
                                     type: string
                                   description: CommonLabels is a list of additional labels to add to rendered manifests
                                   type: object
+                                components:
+                                  description: Components specifies a list of kustomize components to add to the kustomization before building
+                                  items:
+                                    type: string
+                                  type: array
                                 forceCommonAnnotations:
                                   description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                                   type: boolean
@@ -2489,6 +2560,11 @@ spec:
                                         type: string
                                       description: CommonLabels is a list of additional labels to add to rendered manifests
                                       type: object
+                                    components:
+                                      description: Components specifies a list of kustomize components to add to the kustomization before building
+                                      items:
+                                        type: string
+                                      type: array
                                     forceCommonAnnotations:
                                       description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                                       type: boolean
@@ -2759,6 +2835,11 @@ spec:
                                           type: string
                                         description: CommonLabels is a list of additional labels to add to rendered manifests
                                         type: object
+                                      components:
+                                        description: Components specifies a list of kustomize components to add to the kustomization before building
+                                        items:
+                                          type: string
+                                        type: array
                                       forceCommonAnnotations:
                                         description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                                         type: boolean
@@ -3130,6 +3211,11 @@ spec:
                                     type: string
                                   description: CommonLabels is a list of additional labels to add to rendered manifests
                                   type: object
+                                components:
+                                  description: Components specifies a list of kustomize components to add to the kustomization before building
+                                  items:
+                                    type: string
+                                  type: array
                                 forceCommonAnnotations:
                                   description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                                   type: boolean
@@ -3400,6 +3486,11 @@ spec:
                                       type: string
                                     description: CommonLabels is a list of additional labels to add to rendered manifests
                                     type: object
+                                  components:
+                                    description: Components specifies a list of kustomize components to add to the kustomization before building
+                                    items:
+                                      type: string
+                                    type: array
                                   forceCommonAnnotations:
                                     description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                                     type: boolean
@@ -3793,6 +3884,11 @@ spec:
                                     type: string
                                   description: CommonLabels is a list of additional labels to add to rendered manifests
                                   type: object
+                                components:
+                                  description: Components specifies a list of kustomize components to add to the kustomization before building
+                                  items:
+                                    type: string
+                                  type: array
                                 forceCommonAnnotations:
                                   description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                                   type: boolean
@@ -4063,6 +4159,11 @@ spec:
                                       type: string
                                     description: CommonLabels is a list of additional labels to add to rendered manifests
                                     type: object
+                                  components:
+                                    description: Components specifies a list of kustomize components to add to the kustomization before building
+                                    items:
+                                      type: string
+                                    type: array
                                   forceCommonAnnotations:
                                     description: ForceCommonAnnotations specifies whether to force applying common annotations to resources for Kustomize apps
                                     type: boolean
@@ -4470,6 +4571,10 @@ spec:
                                             additionalProperties:
                                               type: string
                                             type: object
+                                          components:
+                                            items:
+                                              type: string
+                                            type: array
                                           forceCommonAnnotations:
                                             type: boolean
                                           forceCommonLabels:
@@ -4680,6 +4785,10 @@ spec:
                                               additionalProperties:
                                                 type: string
                                               type: object
+                                            components:
+                                              items:
+                                                type: string
+                                              type: array
                                             forceCommonAnnotations:
                                               type: boolean
                                             forceCommonLabels:
@@ -5049,6 +5158,10 @@ spec:
                                             additionalProperties:
                                               type: string
                                             type: object
+                                          components:
+                                            items:
+                                              type: string
+                                            type: array
                                           forceCommonAnnotations:
                                             type: boolean
                                           forceCommonLabels:
@@ -5259,6 +5372,10 @@ spec:
                                               additionalProperties:
                                                 type: string
                                               type: object
+                                            components:
+                                              items:
+                                                type: string
+                                              type: array
                                             forceCommonAnnotations:
                                               type: boolean
                                             forceCommonLabels:
@@ -5632,6 +5749,10 @@ spec:
                                             additionalProperties:
                                               type: string
                                             type: object
+                                          components:
+                                            items:
+                                              type: string
+                                            type: array
                                           forceCommonAnnotations:
                                             type: boolean
                                           forceCommonLabels:
@@ -5842,6 +5963,10 @@ spec:
                                               additionalProperties:
                                                 type: string
                                               type: object
+                                            components:
+                                              items:
+                                                type: string
+                                              type: array
                                             forceCommonAnnotations:
                                               type: boolean
                                             forceCommonLabels:
@@ -6195,6 +6320,10 @@ spec:
                                             additionalProperties:
                                               type: string
                                             type: object
+                                          components:
+                                            items:
+                                              type: string
+                                            type: array
                                           forceCommonAnnotations:
                                             type: boolean
                                           forceCommonLabels:
@@ -6405,6 +6534,10 @@ spec:
                                               additionalProperties:
                                                 type: string
                                               type: object
+                                            components:
+                                              items:
+                                                type: string
+                                              type: array
                                             forceCommonAnnotations:
                                               type: boolean
                                             forceCommonLabels:
@@ -6782,6 +6915,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -6992,6 +7129,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -7361,6 +7502,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -7571,6 +7716,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -7944,6 +8093,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -8154,6 +8307,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -8507,6 +8664,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -8717,6 +8878,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -9080,6 +9245,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -9290,6 +9459,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -9833,6 +10006,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -10043,6 +10220,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -10581,6 +10762,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -10791,6 +10976,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -11158,6 +11347,10 @@ spec:
                                             additionalProperties:
                                               type: string
                                             type: object
+                                          components:
+                                            items:
+                                              type: string
+                                            type: array
                                           forceCommonAnnotations:
                                             type: boolean
                                           forceCommonLabels:
@@ -11368,6 +11561,10 @@ spec:
                                               additionalProperties:
                                                 type: string
                                               type: object
+                                            components:
+                                              items:
+                                                type: string
+                                              type: array
                                             forceCommonAnnotations:
                                               type: boolean
                                             forceCommonLabels:
@@ -11745,6 +11942,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -11955,6 +12156,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -12324,6 +12529,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -12534,6 +12743,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -12907,6 +13120,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -13117,6 +13334,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -13470,6 +13691,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -13680,6 +13905,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -14043,6 +14272,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -14253,6 +14486,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -14796,6 +15033,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -15006,6 +15247,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -15544,6 +15789,10 @@ spec:
                                                       additionalProperties:
                                                         type: string
                                                       type: object
+                                                    components:
+                                                      items:
+                                                        type: string
+                                                      type: array
                                                     forceCommonAnnotations:
                                                       type: boolean
                                                     forceCommonLabels:
@@ -15754,6 +16003,10 @@ spec:
                                                         additionalProperties:
                                                           type: string
                                                         type: object
+                                                      components:
+                                                        items:
+                                                          type: string
+                                                        type: array
                                                       forceCommonAnnotations:
                                                         type: boolean
                                                       forceCommonLabels:
@@ -16125,6 +16378,10 @@ spec:
                                             additionalProperties:
                                               type: string
                                             type: object
+                                          components:
+                                            items:
+                                              type: string
+                                            type: array
                                           forceCommonAnnotations:
                                             type: boolean
                                           forceCommonLabels:
@@ -16335,6 +16592,10 @@ spec:
                                               additionalProperties:
                                                 type: string
                                               type: object
+                                            components:
+                                              items:
+                                                type: string
+                                              type: array
                                             forceCommonAnnotations:
                                               type: boolean
                                             forceCommonLabels:
@@ -16695,6 +16956,10 @@ spec:
                                             additionalProperties:
                                               type: string
                                             type: object
+                                          components:
+                                            items:
+                                              type: string
+                                            type: array
                                           forceCommonAnnotations:
                                             type: boolean
                                           forceCommonLabels:
@@ -16905,6 +17170,10 @@ spec:
                                               additionalProperties:
                                                 type: string
                                               type: object
+                                            components:
+                                              items:
+                                                type: string
+                                              type: array
                                             forceCommonAnnotations:
                                               type: boolean
                                             forceCommonLabels:
@@ -17448,6 +17717,10 @@ spec:
                                             additionalProperties:
                                               type: string
                                             type: object
+                                          components:
+                                            items:
+                                              type: string
+                                            type: array
                                           forceCommonAnnotations:
                                             type: boolean
                                           forceCommonLabels:
@@ -17658,6 +17931,10 @@ spec:
                                               additionalProperties:
                                                 type: string
                                               type: object
+                                            components:
+                                              items:
+                                                type: string
+                                              type: array
                                             forceCommonAnnotations:
                                               type: boolean
                                             forceCommonLabels:
@@ -18196,6 +18473,10 @@ spec:
                                             additionalProperties:
                                               type: string
                                             type: object
+                                          components:
+                                            items:
+                                              type: string
+                                            type: array
                                           forceCommonAnnotations:
                                             type: boolean
                                           forceCommonLabels:
@@ -18406,6 +18687,10 @@ spec:
                                               additionalProperties:
                                                 type: string
                                               type: object
+                                            components:
+                                              items:
+                                                type: string
+                                              type: array
                                             forceCommonAnnotations:
                                               type: boolean
                                             forceCommonLabels:
@@ -18848,6 +19133,10 @@ spec:
                                   additionalProperties:
                                     type: string
                                   type: object
+                                components:
+                                  items:
+                                    type: string
+                                  type: array
                                 forceCommonAnnotations:
                                   type: boolean
                                 forceCommonLabels:
@@ -19058,6 +19347,10 @@ spec:
                                     additionalProperties:
                                       type: string
                                     type: object
+                                  components:
+                                    items:
+                                      type: string
+                                    type: array
                                   forceCommonAnnotations:
                                     type: boolean
                                   forceCommonLabels:
@@ -19217,6 +19510,8 @@ spec:
                     - metadata
                     - spec
                   type: object
+                templatePatch:
+                  type: string
               required:
                 - generators
                 - template
@@ -19349,13 +19644,13 @@ spec:
                     description: ApplicationDestination holds information about the application's destination
                     properties:
                       name:
-                        description: Name is an alternate way of specifying the target cluster by its symbolic name
+                        description: Name is an alternate way of specifying the target cluster by its symbolic name. This must be set if Server is not set.
                         type: string
                       namespace:
                         description: Namespace specifies the target namespace for the application's resources. The namespace will only be set for namespace-scoped resources that have not set a value for .metadata.namespace
                         type: string
                       server:
-                        description: Server specifies the URL of the target cluster and must be set to the Kubernetes control plane API
+                        description: Server specifies the URL of the target cluster's Kubernetes control plane API. This must be set if Name is not set.
                         type: string
                     type: object
                   type: array
@@ -19555,8 +19850,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-application-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-application-controller
 rules:
   - apiGroups:
@@ -19579,44 +19874,45 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-notifications-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-notifications-controller
 rules:
   - apiGroups:
       - argoproj.io
     resources:
       - applications
+      - appprojects
     verbs:
       - get
       - list
       - watch
       - update
       - patch
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    app.kubernetes.io/component: repo-server
-    app.kubernetes.io/instance: argocd-c8733361
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: argocd-repo-server
-    app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
-  name: argocd-c8733361-repo-server
-rules:
   - apiGroups:
-      - "*"
+      - ""
     resources:
-      - "*"
+      - configmaps
+      - secrets
     verbs:
-      - "*"
-  - nonResourceURLs:
-      - "*"
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resourceNames:
+      - argocd-notifications-cm
+    resources:
+      - configmaps
     verbs:
-      - "*"
+      - get
+  - apiGroups:
+      - ""
+    resourceNames:
+      - argocd-notifications-secret
+    resources:
+      - secrets
+    verbs:
+      - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -19627,8 +19923,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-server
 rules:
   - apiGroups:
@@ -19684,8 +19980,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-application-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-application-controller
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -19705,8 +20001,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-notifications-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-notifications-controller
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -19721,34 +20017,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
-    app.kubernetes.io/component: repo-server
-    app.kubernetes.io/instance: argocd-c8733361
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: argocd-repo-server
-    app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
-  name: argocd-c8733361-repo-server
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: argocd-c8733361-repo-server
-subjects:
-  - kind: ServiceAccount
-    name: argocd-c8733361-repo-server
-    namespace: argocd
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  labels:
     app.kubernetes.io/component: server
     app.kubernetes.io/instance: argocd-c8733361
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-server
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -19768,8 +20043,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-application-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-application-controller
   namespace: argocd
 rules:
@@ -19802,6 +20077,14 @@ rules:
     verbs:
       - create
       - list
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -19812,8 +20095,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-applicationset-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-applicationset-controller
   namespace: argocd
 rules:
@@ -19906,8 +20189,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-notifications-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-notifications-controller
   namespace: argocd
 rules:
@@ -19956,8 +20239,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-repo-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-repo-server
   namespace: argocd
 ---
@@ -19970,8 +20253,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-server
   namespace: argocd
 rules:
@@ -20019,8 +20302,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-dex-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-dex-server
   namespace: argocd
 rules:
@@ -20043,8 +20326,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-application-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-application-controller
   namespace: argocd
 roleRef:
@@ -20065,8 +20348,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-applicationset-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-applicationset-controller
   namespace: argocd
 roleRef:
@@ -20087,8 +20370,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-notifications-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-notifications-controller
   namespace: argocd
 roleRef:
@@ -20109,8 +20392,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-repo-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-repo-server
   namespace: argocd
 roleRef:
@@ -20131,8 +20414,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-server
   namespace: argocd
 roleRef:
@@ -20153,8 +20436,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-dex-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-dex-server
   namespace: argocd
 roleRef:
@@ -20175,13 +20458,13 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-applicationset-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-applicationset-controller
   namespace: argocd
 spec:
   ports:
-    - name: webhook
+    - name: http-webhook
       port: 7000
       targetPort: webhook
   selector:
@@ -20198,13 +20481,13 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-repo-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-repo-server
   namespace: argocd
 spec:
   ports:
-    - name: https-repo-server
+    - name: tcp-repo-server
       port: 8081
       protocol: TCP
       targetPort: repo-server
@@ -20221,8 +20504,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-server
   namespace: argocd
 spec:
@@ -20249,8 +20532,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-dex-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-dex-server
   namespace: argocd
 spec:
@@ -20276,8 +20559,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-redis
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-redis
   namespace: argocd
 spec:
@@ -20298,8 +20581,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-applicationset-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-applicationset-controller
   namespace: argocd
 spec:
@@ -20312,15 +20595,15 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cmd-params: 513fc49ce149c15cc9a3867d8a1c207a0bd777f9e216f410736792d3809f001a
+        checksum/cmd-params: b197e1473e84da56239d344802fac8aad5943e328fdf32fc875463bd6381507b
       labels:
         app.kubernetes.io/component: applicationset-controller
         app.kubernetes.io/instance: argocd-c8733361
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: argocd-applicationset-controller
         app.kubernetes.io/part-of: argocd
-        app.kubernetes.io/version: v2.9.3
-        helm.sh/chart: argo-cd-5.51.6
+        app.kubernetes.io/version: v2.10.3
+        helm.sh/chart: argo-cd-6.7.2
     spec:
       affinity:
         podAntiAffinity:
@@ -20462,7 +20745,13 @@ spec:
                   key: applicationsetcontroller.allowed.scm.providers
                   name: argocd-cmd-params-cm
                   optional: true
-          image: quay.io/argoproj/argocd:v2.9.3
+            - name: ARGOCD_APPLICATIONSET_CONTROLLER_ENABLE_SCM_PROVIDERS
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.enable.scm.providers
+                  name: argocd-cmd-params-cm
+                  optional: true
+          image: quay.io/argoproj/argocd:v2.10.3
           imagePullPolicy: IfNotPresent
           name: applicationset-controller
           ports:
@@ -20536,8 +20825,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-notifications-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-notifications-controller
   namespace: argocd
 spec:
@@ -20557,8 +20846,8 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: argocd-notifications-controller
         app.kubernetes.io/part-of: argocd
-        app.kubernetes.io/version: v2.9.3
-        helm.sh/chart: argo-cd-5.51.6
+        app.kubernetes.io/version: v2.10.3
+        helm.sh/chart: argo-cd-6.7.2
     spec:
       affinity:
         podAntiAffinity:
@@ -20577,6 +20866,7 @@ spec:
             - --logformat=text
             - --namespace=argocd
             - --argocd-repo-server=argocd-c8733361-repo-server:8081
+            - --secret-name=argocd-notifications-secret
           env:
             - name: ARGOCD_NOTIFICATIONS_CONTROLLER_LOGLEVEL
               valueFrom:
@@ -20596,7 +20886,13 @@ spec:
                   key: application.namespaces
                   name: argocd-cmd-params-cm
                   optional: true
-          image: quay.io/argoproj/argocd:v2.9.3
+            - name: ARGOCD_NOTIFICATION_CONTROLLER_SELF_SERVICE_NOTIFICATION_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  key: notificationscontroller.selfservice.enabled
+                  name: argocd-cmd-params-cm
+                  optional: true
+          image: quay.io/argoproj/argocd:v2.10.3
           imagePullPolicy: IfNotPresent
           name: notifications-controller
           ports:
@@ -20647,8 +20943,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-repo-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-repo-server
   namespace: argocd
 spec:
@@ -20661,16 +20957,16 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cm: 49f13fe5a4b8ec9bf3eae3f391607dedb2c2eae3befdf8f1a322f02c0ec85466
-        checksum/cmd-params: 513fc49ce149c15cc9a3867d8a1c207a0bd777f9e216f410736792d3809f001a
+        checksum/cm: 77a7b27f914d0525bac5bf8dd32a39d5d7e7bb69acfcc8a5a7f38d2272936a4b
+        checksum/cmd-params: b197e1473e84da56239d344802fac8aad5943e328fdf32fc875463bd6381507b
       labels:
         app.kubernetes.io/component: repo-server
         app.kubernetes.io/instance: argocd-c8733361
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: argocd-repo-server
         app.kubernetes.io/part-of: argocd
-        app.kubernetes.io/version: v2.9.3
-        helm.sh/chart: argo-cd-5.51.6
+        app.kubernetes.io/version: v2.10.3
+        helm.sh/chart: argo-cd-6.7.2
     spec:
       affinity:
         podAntiAffinity:
@@ -20687,6 +20983,8 @@ spec:
             - --port=8081
             - --metrics-port=8084
           env:
+            - name: ARGOCD_REPO_SERVER_NAME
+              value: argocd-c8733361-repo-server
             - name: ARGOCD_RECONCILIATION_TIMEOUT
               valueFrom:
                 configMapKeyRef:
@@ -20795,6 +21093,18 @@ spec:
                   key: otlp.address
                   name: argocd-cmd-params-cm
                   optional: true
+            - name: ARGOCD_REPO_SERVER_OTLP_INSECURE
+              valueFrom:
+                configMapKeyRef:
+                  key: otlp.insecure
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_REPO_SERVER_OTLP_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  key: otlp.headers
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_REPO_SERVER_MAX_COMBINED_DIRECTORY_MANIFESTS_SIZE
               valueFrom:
                 configMapKeyRef:
@@ -20843,13 +21153,25 @@ spec:
                   key: reposerver.enable.git.submodule
                   name: argocd-cmd-params-cm
                   optional: true
+            - name: ARGOCD_GIT_LS_REMOTE_PARALLELISM_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  key: reposerver.git.lsremote.parallelism.limit
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_GIT_REQUEST_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: reposerver.git.request.timeout
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: HELM_CACHE_HOME
               value: /helm-working-dir
             - name: HELM_CONFIG_HOME
               value: /helm-working-dir
             - name: HELM_DATA_HOME
               value: /helm-working-dir
-          image: quay.io/argoproj/argocd:v2.9.3
+          image: quay.io/argoproj/argocd:v2.10.3
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
@@ -20911,7 +21233,7 @@ spec:
             - -n
             - /usr/local/bin/argocd
             - /var/run/argocd/argocd-cmp-server
-          image: quay.io/argoproj/argocd:v2.9.3
+          image: quay.io/argoproj/argocd:v2.10.3
           imagePullPolicy: IfNotPresent
           name: copyutil
           securityContext:
@@ -20969,8 +21291,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-server
   namespace: argocd
 spec:
@@ -20983,15 +21305,16 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cmd-params: 513fc49ce149c15cc9a3867d8a1c207a0bd777f9e216f410736792d3809f001a
+        checksum/cm: 77a7b27f914d0525bac5bf8dd32a39d5d7e7bb69acfcc8a5a7f38d2272936a4b
+        checksum/cmd-params: b197e1473e84da56239d344802fac8aad5943e328fdf32fc875463bd6381507b
       labels:
         app.kubernetes.io/component: server
         app.kubernetes.io/instance: argocd-c8733361
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: argocd-server
         app.kubernetes.io/part-of: argocd
-        app.kubernetes.io/version: v2.9.3
-        helm.sh/chart: argo-cd-5.51.6
+        app.kubernetes.io/version: v2.10.3
+        helm.sh/chart: argo-cd-6.7.2
     spec:
       affinity:
         podAntiAffinity:
@@ -21008,6 +21331,8 @@ spec:
             - --port=8080
             - --metrics-port=8083
           env:
+            - name: ARGOCD_SERVER_NAME
+              value: argocd-c8733361-server
             - name: ARGOCD_SERVER_INSECURE
               valueFrom:
                 configMapKeyRef:
@@ -21212,6 +21537,18 @@ spec:
                   key: otlp.address
                   name: argocd-cmd-params-cm
                   optional: true
+            - name: ARGOCD_SERVER_OTLP_INSECURE
+              valueFrom:
+                configMapKeyRef:
+                  key: otlp.insecure
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_SERVER_OTLP_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  key: otlp.headers
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_APPLICATION_NAMESPACES
               valueFrom:
                 configMapKeyRef:
@@ -21224,7 +21561,25 @@ spec:
                   key: server.enable.proxy.extension
                   name: argocd-cmd-params-cm
                   optional: true
-          image: quay.io/argoproj/argocd:v2.9.3
+            - name: ARGOCD_K8SCLIENT_RETRY_MAX
+              valueFrom:
+                configMapKeyRef:
+                  key: server.k8sclient.retry.max
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8SCLIENT_RETRY_BASE_BACKOFF
+              valueFrom:
+                configMapKeyRef:
+                  key: server.k8sclient.retry.base.backoff
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_API_CONTENT_TYPES
+              valueFrom:
+                configMapKeyRef:
+                  key: server.api.content.types
+                  name: argocd-cmd-params-cm
+                  optional: true
+          image: quay.io/argoproj/argocd:v2.10.3
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
@@ -21325,8 +21680,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-dex-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-dex-server
   namespace: argocd
 spec:
@@ -21339,15 +21694,15 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cmd-params: 513fc49ce149c15cc9a3867d8a1c207a0bd777f9e216f410736792d3809f001a
+        checksum/cmd-params: b197e1473e84da56239d344802fac8aad5943e328fdf32fc875463bd6381507b
       labels:
         app.kubernetes.io/component: dex-server
         app.kubernetes.io/instance: argocd-c8733361
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: argocd-dex-server
         app.kubernetes.io/part-of: argocd
-        app.kubernetes.io/version: v2.9.3
-        helm.sh/chart: argo-cd-5.51.6
+        app.kubernetes.io/version: v2.10.3
+        helm.sh/chart: argo-cd-6.7.2
     spec:
       affinity:
         podAntiAffinity:
@@ -21372,7 +21727,7 @@ spec:
                   key: dexserver.disable.tls
                   name: argocd-cmd-params-cm
                   optional: true
-          image: ghcr.io/dexidp/dex:v2.37.0
+          image: ghcr.io/dexidp/dex:v2.38.0
           imagePullPolicy: IfNotPresent
           name: dex-server
           ports:
@@ -21409,7 +21764,7 @@ spec:
             - -n
             - /usr/local/bin/argocd
             - /shared/argocd-dex
-          image: quay.io/argoproj/argocd:v2.9.3
+          image: quay.io/argoproj/argocd:v2.10.3
           imagePullPolicy: IfNotPresent
           name: copyutil
           resources: {}
@@ -21455,8 +21810,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-redis
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-redis
   namespace: argocd
 spec:
@@ -21473,8 +21828,8 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: argocd-redis
         app.kubernetes.io/part-of: argocd
-        app.kubernetes.io/version: v2.9.3
-        helm.sh/chart: argo-cd-5.51.6
+        app.kubernetes.io/version: v2.10.3
+        helm.sh/chart: argo-cd-6.7.2
     spec:
       affinity:
         podAntiAffinity:
@@ -21491,7 +21846,7 @@ spec:
             - ""
             - --appendonly
             - "no"
-          image: public.ecr.aws/docker/library/redis:7.0.13-alpine
+          image: public.ecr.aws/docker/library/redis:7.2.4-alpine
           imagePullPolicy: IfNotPresent
           name: redis
           ports:
@@ -21505,6 +21860,9 @@ spec:
               drop:
                 - ALL
             readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /health
+              name: health
       dnsPolicy: ClusterFirst
       securityContext:
         runAsNonRoot: true
@@ -21513,6 +21871,11 @@ spec:
           type: RuntimeDefault
       serviceAccountName: default
       terminationGracePeriodSeconds: 30
+      volumes:
+        - configMap:
+            defaultMode: 493
+            name: argocd-c8733361-redis-health-configmap
+          name: health
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -21523,8 +21886,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-application-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-application-controller
   namespace: argocd
 spec:
@@ -21538,16 +21901,16 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cm: 49f13fe5a4b8ec9bf3eae3f391607dedb2c2eae3befdf8f1a322f02c0ec85466
-        checksum/cmd-params: 513fc49ce149c15cc9a3867d8a1c207a0bd777f9e216f410736792d3809f001a
+        checksum/cm: 77a7b27f914d0525bac5bf8dd32a39d5d7e7bb69acfcc8a5a7f38d2272936a4b
+        checksum/cmd-params: b197e1473e84da56239d344802fac8aad5943e328fdf32fc875463bd6381507b
       labels:
         app.kubernetes.io/component: application-controller
         app.kubernetes.io/instance: argocd-c8733361
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: argocd-application-controller
         app.kubernetes.io/part-of: argocd
-        app.kubernetes.io/version: v2.9.3
-        helm.sh/chart: argo-cd-5.51.6
+        app.kubernetes.io/version: v2.10.3
+        helm.sh/chart: argo-cd-6.7.2
     spec:
       affinity:
         podAntiAffinity:
@@ -21565,6 +21928,8 @@ spec:
           env:
             - name: ARGOCD_CONTROLLER_REPLICAS
               value: "1"
+            - name: ARGOCD_APPLICATION_CONTROLLER_NAME
+              value: argocd-c8733361-application-controller
             - name: ARGOCD_RECONCILIATION_TIMEOUT
               valueFrom:
                 configMapKeyRef:
@@ -21576,6 +21941,18 @@ spec:
                 configMapKeyRef:
                   key: timeout.hard.reconciliation
                   name: argocd-cm
+                  optional: true
+            - name: ARGOCD_RECONCILIATION_JITTER
+              valueFrom:
+                configMapKeyRef:
+                  key: timeout.reconciliation.jitter
+                  name: argocd-cm
+                  optional: true
+            - name: ARGOCD_REPO_ERROR_GRACE_PERIOD_SECONDS
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.repo.error.grace.period.seconds
+                  name: argocd-cmd-params-cm
                   optional: true
             - name: ARGOCD_APPLICATION_CONTROLLER_REPO_SERVER
               valueFrom:
@@ -21691,6 +22068,18 @@ spec:
                   key: otlp.address
                   name: argocd-cmd-params-cm
                   optional: true
+            - name: ARGOCD_APPLICATION_CONTROLLER_OTLP_INSECURE
+              valueFrom:
+                configMapKeyRef:
+                  key: otlp.insecure
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_APPLICATION_CONTROLLER_OTLP_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  key: otlp.headers
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_APPLICATION_NAMESPACES
               valueFrom:
                 configMapKeyRef:
@@ -21709,7 +22098,25 @@ spec:
                   key: controller.kubectl.parallelism.limit
                   name: argocd-cmd-params-cm
                   optional: true
-          image: quay.io/argoproj/argocd:v2.9.3
+            - name: ARGOCD_K8SCLIENT_RETRY_MAX
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.k8sclient.retry.max
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8SCLIENT_RETRY_BASE_BACKOFF
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.k8sclient.retry.base.backoff
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_APPLICATION_CONTROLLER_SERVER_SIDE_DIFF
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.diff.server.side
+                  name: argocd-cmd-params-cm
+                  optional: true
+          image: quay.io/argoproj/argocd:v2.10.3
           imagePullPolicy: IfNotPresent
           name: application-controller
           ports:
@@ -21768,21 +22175,21 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-server-grpc
   namespace: argocd
 spec:
   ingressClassName: nginx
   rules:
-    - host: grpc.argocd.remotehost
+    - host: grpc.argocd.example.com
       http:
         paths:
           - backend:
               service:
                 name: argocd-c8733361-server
                 port:
-                  number: 80
+                  number: 443
             path: /
             pathType: Prefix
 ---
@@ -21795,14 +22202,14 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v2.9.3
-    helm.sh/chart: argo-cd-5.51.6
+    app.kubernetes.io/version: v2.10.3
+    helm.sh/chart: argo-cd-6.7.2
   name: argocd-c8733361-server
   namespace: argocd
 spec:
   ingressClassName: nginx
   rules:
-    - host: argocd.remotehost
+    - host: argocd.example.com
       http:
         paths:
           - backend:

@@ -5,8 +5,8 @@ metadata:
     app.kubernetes.io/instance: prometheus-c899c4b6
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: alertmanager
-    app.kubernetes.io/version: v0.26.0
-    helm.sh/chart: alertmanager-1.7.0
+    app.kubernetes.io/version: v0.27.0
+    helm.sh/chart: alertmanager-1.9.0
   name: prometheus-c899c4b6-alertmanager
   namespace: prometheus
 automountServiceAccountToken: true
@@ -21,7 +21,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/part-of: kube-state-metrics
     app.kubernetes.io/version: 2.10.1
-    helm.sh/chart: kube-state-metrics-5.15.2
+    helm.sh/chart: kube-state-metrics-5.16.4
   name: prometheus-c899c4b6-kube-state-metrics
   namespace: prometheus
 ---
@@ -35,7 +35,7 @@ metadata:
     app.kubernetes.io/name: prometheus-node-exporter
     app.kubernetes.io/part-of: prometheus-node-exporter
     app.kubernetes.io/version: 1.7.0
-    helm.sh/chart: prometheus-node-exporter-4.24.0
+    helm.sh/chart: prometheus-node-exporter-4.30.3
   name: prometheus-c899c4b6-prometheus-node-exporter
   namespace: prometheus
 ---
@@ -46,10 +46,11 @@ metadata:
     app.kubernetes.io/instance: prometheus-c899c4b6
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: prometheus-pushgateway
-    app.kubernetes.io/version: v1.6.2
-    helm.sh/chart: prometheus-pushgateway-2.4.2
+    app.kubernetes.io/version: v1.7.0
+    helm.sh/chart: prometheus-pushgateway-2.8.0
   name: prometheus-c899c4b6-prometheus-pushgateway
   namespace: prometheus
+automountServiceAccountToken: true
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -60,8 +61,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
-    app.kubernetes.io/version: v2.48.1
-    helm.sh/chart: prometheus-25.8.2
+    app.kubernetes.io/version: v2.50.1
+    helm.sh/chart: prometheus-25.17.0
   name: prometheus-c899c4b6-server
   namespace: prometheus
 ---
@@ -72,8 +73,8 @@ metadata:
     app.kubernetes.io/instance: prometheus-c899c4b6
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: alertmanager
-    app.kubernetes.io/version: v0.26.0
-    helm.sh/chart: alertmanager-1.7.0
+    app.kubernetes.io/version: v0.27.0
+    helm.sh/chart: alertmanager-1.9.0
   name: prometheus-c899c4b6-alertmanager
   namespace: prometheus
 data:
@@ -98,8 +99,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
-    app.kubernetes.io/version: v2.48.1
-    helm.sh/chart: prometheus-25.8.2
+    app.kubernetes.io/version: v2.50.1
+    helm.sh/chart: prometheus-25.17.0
   name: prometheus-c899c4b6-server
   namespace: prometheus
 data:
@@ -453,7 +454,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/part-of: kube-state-metrics
     app.kubernetes.io/version: 2.10.1
-    helm.sh/chart: kube-state-metrics-5.15.2
+    helm.sh/chart: kube-state-metrics-5.16.4
   name: prometheus-c899c4b6-kube-state-metrics
 rules:
   - apiGroups:
@@ -666,8 +667,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
-    app.kubernetes.io/version: v2.48.1
-    helm.sh/chart: prometheus-25.8.2
+    app.kubernetes.io/version: v2.50.1
+    helm.sh/chart: prometheus-25.17.0
   name: prometheus-c899c4b6-server
 rules:
   - apiGroups:
@@ -718,7 +719,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/part-of: kube-state-metrics
     app.kubernetes.io/version: 2.10.1
-    helm.sh/chart: kube-state-metrics-5.15.2
+    helm.sh/chart: kube-state-metrics-5.16.4
   name: prometheus-c899c4b6-kube-state-metrics
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -738,8 +739,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
-    app.kubernetes.io/version: v2.48.1
-    helm.sh/chart: prometheus-25.8.2
+    app.kubernetes.io/version: v2.50.1
+    helm.sh/chart: prometheus-25.17.0
   name: prometheus-c899c4b6-server
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -757,8 +758,8 @@ metadata:
     app.kubernetes.io/instance: prometheus-c899c4b6
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: alertmanager
-    app.kubernetes.io/version: v0.26.0
-    helm.sh/chart: alertmanager-1.7.0
+    app.kubernetes.io/version: v0.27.0
+    helm.sh/chart: alertmanager-1.9.0
   name: prometheus-c899c4b6-alertmanager
   namespace: prometheus
 spec:
@@ -779,8 +780,8 @@ metadata:
     app.kubernetes.io/instance: prometheus-c899c4b6
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: alertmanager
-    app.kubernetes.io/version: v0.26.0
-    helm.sh/chart: alertmanager-1.7.0
+    app.kubernetes.io/version: v0.27.0
+    helm.sh/chart: alertmanager-1.9.0
   name: prometheus-c899c4b6-alertmanager-headless
   namespace: prometheus
 spec:
@@ -806,7 +807,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/part-of: kube-state-metrics
     app.kubernetes.io/version: 2.10.1
-    helm.sh/chart: kube-state-metrics-5.15.2
+    helm.sh/chart: kube-state-metrics-5.16.4
   name: prometheus-c899c4b6-kube-state-metrics
   namespace: prometheus
 spec:
@@ -832,7 +833,7 @@ metadata:
     app.kubernetes.io/name: prometheus-node-exporter
     app.kubernetes.io/part-of: prometheus-node-exporter
     app.kubernetes.io/version: 1.7.0
-    helm.sh/chart: prometheus-node-exporter-4.24.0
+    helm.sh/chart: prometheus-node-exporter-4.30.3
   name: prometheus-c899c4b6-prometheus-node-exporter
   namespace: prometheus
 spec:
@@ -855,8 +856,8 @@ metadata:
     app.kubernetes.io/instance: prometheus-c899c4b6
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: prometheus-pushgateway
-    app.kubernetes.io/version: v1.6.2
-    helm.sh/chart: prometheus-pushgateway-2.4.2
+    app.kubernetes.io/version: v1.7.0
+    helm.sh/chart: prometheus-pushgateway-2.8.0
   name: prometheus-c899c4b6-prometheus-pushgateway
   namespace: prometheus
 spec:
@@ -879,8 +880,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
-    app.kubernetes.io/version: v2.48.1
-    helm.sh/chart: prometheus-25.8.2
+    app.kubernetes.io/version: v2.50.1
+    helm.sh/chart: prometheus-25.17.0
   name: prometheus-c899c4b6-server
   namespace: prometheus
 spec:
@@ -906,7 +907,7 @@ metadata:
     app.kubernetes.io/name: prometheus-node-exporter
     app.kubernetes.io/part-of: prometheus-node-exporter
     app.kubernetes.io/version: 1.7.0
-    helm.sh/chart: prometheus-node-exporter-4.24.0
+    helm.sh/chart: prometheus-node-exporter-4.30.3
   name: prometheus-c899c4b6-prometheus-node-exporter
   namespace: prometheus
 spec:
@@ -926,7 +927,7 @@ spec:
         app.kubernetes.io/name: prometheus-node-exporter
         app.kubernetes.io/part-of: prometheus-node-exporter
         app.kubernetes.io/version: 1.7.0
-        helm.sh/chart: prometheus-node-exporter-4.24.0
+        helm.sh/chart: prometheus-node-exporter-4.30.3
     spec:
       automountServiceAccountToken: false
       containers:
@@ -1018,7 +1019,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/part-of: kube-state-metrics
     app.kubernetes.io/version: 2.10.1
-    helm.sh/chart: kube-state-metrics-5.15.2
+    helm.sh/chart: kube-state-metrics-5.16.4
   name: prometheus-c899c4b6-kube-state-metrics
   namespace: prometheus
 spec:
@@ -1039,7 +1040,7 @@ spec:
         app.kubernetes.io/name: kube-state-metrics
         app.kubernetes.io/part-of: kube-state-metrics
         app.kubernetes.io/version: 2.10.1
-        helm.sh/chart: kube-state-metrics-5.15.2
+        helm.sh/chart: kube-state-metrics-5.16.4
     spec:
       containers:
         - args:
@@ -1048,26 +1049,35 @@ spec:
           image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.10.1
           imagePullPolicy: IfNotPresent
           livenessProbe:
+            failureThreshold: 3
             httpGet:
               path: /healthz
               port: 8080
+              scheme: HTTP
             initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
             timeoutSeconds: 5
           name: kube-state-metrics
           ports:
             - containerPort: 8080
               name: http
           readinessProbe:
+            failureThreshold: 3
             httpGet:
               path: /
               port: 8080
+              scheme: HTTP
             initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
             timeoutSeconds: 5
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
                 - ALL
+            readOnlyRootFilesystem: true
       hostNetwork: false
       securityContext:
         fsGroup: 65534
@@ -1085,8 +1095,8 @@ metadata:
     app.kubernetes.io/instance: prometheus-c899c4b6
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: prometheus-pushgateway
-    app.kubernetes.io/version: v1.6.2
-    helm.sh/chart: prometheus-pushgateway-2.4.2
+    app.kubernetes.io/version: v1.7.0
+    helm.sh/chart: prometheus-pushgateway-2.8.0
   name: prometheus-c899c4b6-prometheus-pushgateway
   namespace: prometheus
 spec:
@@ -1103,11 +1113,12 @@ spec:
         app.kubernetes.io/instance: prometheus-c899c4b6
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: prometheus-pushgateway
-        app.kubernetes.io/version: v1.6.2
-        helm.sh/chart: prometheus-pushgateway-2.4.2
+        app.kubernetes.io/version: v1.7.0
+        helm.sh/chart: prometheus-pushgateway-2.8.0
     spec:
+      automountServiceAccountToken: true
       containers:
-        - image: quay.io/prometheus/pushgateway:v1.6.2
+        - image: quay.io/prometheus/pushgateway:v1.7.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -1148,8 +1159,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
-    app.kubernetes.io/version: v2.48.1
-    helm.sh/chart: prometheus-25.8.2
+    app.kubernetes.io/version: v2.50.1
+    helm.sh/chart: prometheus-25.17.0
   name: prometheus-c899c4b6-server
   namespace: prometheus
 spec:
@@ -1170,14 +1181,14 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: prometheus
         app.kubernetes.io/part-of: prometheus
-        app.kubernetes.io/version: v2.48.1
-        helm.sh/chart: prometheus-25.8.2
+        app.kubernetes.io/version: v2.50.1
+        helm.sh/chart: prometheus-25.17.0
     spec:
       containers:
         - args:
             - --watched-dir=/etc/config
             - --reload-url=http://127.0.0.1:9090/-/reload
-          image: quay.io/prometheus-operator/prometheus-config-reloader:v0.70.0
+          image: quay.io/prometheus-operator/prometheus-config-reloader:v0.71.2
           imagePullPolicy: IfNotPresent
           name: prometheus-server-configmap-reload
           volumeMounts:
@@ -1191,7 +1202,7 @@ spec:
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
             - --web.enable-lifecycle
-          image: quay.io/prometheus/prometheus:v2.48.1
+          image: quay.io/prometheus/prometheus:v2.50.1
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
@@ -1245,11 +1256,12 @@ metadata:
     app.kubernetes.io/instance: prometheus-c899c4b6
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: alertmanager
-    app.kubernetes.io/version: v0.26.0
-    helm.sh/chart: alertmanager-1.7.0
+    app.kubernetes.io/version: v0.27.0
+    helm.sh/chart: alertmanager-1.9.0
   name: prometheus-c899c4b6-alertmanager
   namespace: prometheus
 spec:
+  minReadySeconds: 0
   replicas: 1
   revisionHistoryLimit: 10
   selector:
@@ -1260,7 +1272,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 882b4f74b94301a8aed98f6fdb2e3997f48ca6ba987525fdad4c454248f3d317
+        checksum/config: 8602783db99a8cc4353a75bce444fefb156df7403e628ae9c1d6cc2b40e095a3
       labels:
         app.kubernetes.io/instance: prometheus-c899c4b6
         app.kubernetes.io/name: alertmanager
@@ -1276,7 +1288,7 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: status.podIP
-          image: quay.io/prometheus/alertmanager:v0.26.0
+          image: quay.io/prometheus/alertmanager:v0.27.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -1323,8 +1335,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: prometheus
-    app.kubernetes.io/version: v2.48.1
-    helm.sh/chart: prometheus-25.8.2
+    app.kubernetes.io/version: v2.50.1
+    helm.sh/chart: prometheus-25.17.0
   name: prometheus-c899c4b6-server
   namespace: prometheus
 spec:

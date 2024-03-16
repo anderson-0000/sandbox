@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-ubuntu
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu
+  namespace: ubuntu
+spec:
+  minReadySeconds: 0
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      cdk8s.io/metadata.addr: ubuntu-deployment
+  template:
+    metadata:
+      labels:
+        cdk8s.io/metadata.addr: ubuntu-deployment
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - command:
+            - /bin/bash
+          image: ubuntu
+          imagePullPolicy: Always
+          name: main
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          stdin: true
+          tty: true
+          volumeMounts:
+            - mountPath: /mnt/pv
+              name: pv-ubuntu
+      dnsPolicy: ClusterFirst
+      hostNetwork: false
+      restartPolicy: Always
+      securityContext:
+        fsGroupChangePolicy: Always
+        runAsNonRoot: false
+      setHostnameAsFQDN: false
+      volumes:
+        - name: pv-ubuntu
+          persistentVolumeClaim:
+            claimName: pvc-ubuntu

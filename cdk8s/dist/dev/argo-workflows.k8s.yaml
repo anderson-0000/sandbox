@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-workflow-controller
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-workflow-controller
   namespace: argo-workflows
 ---
@@ -20,7 +20,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-server
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-server
   namespace: argo-workflows
 ---
@@ -33,7 +33,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-cm
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-workflow-controller-configmap
   namespace: argo-workflows
 data:
@@ -953,7 +953,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-workflow-controller
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
     rbac.authorization.k8s.io/aggregate-to-view: "true"
   name: argo-workflows-c8b79b5a-view
 rules:
@@ -990,7 +990,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-server
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
   name: argo-workflows-c8b79b5a-edit
 rules:
@@ -1032,7 +1032,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-server
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
   name: argo-workflows-c8b79b5a-admin
 rules:
@@ -1043,8 +1043,6 @@ rules:
       - workflows/finalizers
       - workfloweventbindings
       - workfloweventbindings/finalizers
-      - workflowtasksets
-      - workflowtasksets/finalizers
       - workflowtemplates
       - workflowtemplates/finalizers
       - cronworkflows
@@ -1076,7 +1074,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-workflow-controller
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-workflow-controller
 rules:
   - apiGroups:
@@ -1220,7 +1218,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-workflow-controller
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-workflow-controller-cluster-template
 rules:
   - apiGroups:
@@ -1242,7 +1240,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-server
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-server
 rules:
   - apiGroups:
@@ -1311,7 +1309,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-server
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-server-cluster-template
 rules:
   - apiGroups:
@@ -1336,7 +1334,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-workflow-controller
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-workflow-controller
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -1356,7 +1354,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-workflow-controller
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-workflow-controller-cluster-template
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -1376,7 +1374,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-server
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-server
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -1396,7 +1394,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-server
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-server-cluster-template
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -1416,7 +1414,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-workflow-controller
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-workflow
   namespace: default
 rules:
@@ -1473,7 +1471,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-workflow-controller
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-workflow
   namespace: argo-workflows
 rules:
@@ -1530,7 +1528,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-workflow-controller
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-workflow
   namespace: default
 roleRef:
@@ -1551,7 +1549,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-workflow-controller
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-workflow
   namespace: argo-workflows
 roleRef:
@@ -1572,8 +1570,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-server
     app.kubernetes.io/part-of: argo-workflows
-    app.kubernetes.io/version: v3.5.2
-    helm.sh/chart: argo-workflows-0.39.9
+    app.kubernetes.io/version: v3.5.5
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-server
   namespace: argo-workflows
 spec:
@@ -1595,8 +1593,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-workflow-controller
     app.kubernetes.io/part-of: argo-workflows
-    app.kubernetes.io/version: v3.5.2
-    helm.sh/chart: argo-workflows-0.39.9
+    app.kubernetes.io/version: v3.5.5
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-workflow-controller
   namespace: argo-workflows
 spec:
@@ -1614,15 +1612,15 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: argo-workflows-workflow-controller
         app.kubernetes.io/part-of: argo-workflows
-        app.kubernetes.io/version: v3.5.2
-        helm.sh/chart: argo-workflows-0.39.9
+        app.kubernetes.io/version: v3.5.5
+        helm.sh/chart: argo-workflows-0.40.14
     spec:
       containers:
         - args:
             - --configmap
             - argo-workflows-c8b79b5a-workflow-controller-configmap
             - --executor-image
-            - quay.io/argoproj/argoexec:v3.5.2
+            - quay.io/argoproj/argoexec:v3.5.5
             - --loglevel
             - info
             - --gloglevel
@@ -1642,7 +1640,9 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.name
-          image: quay.io/argoproj/workflow-controller:v3.5.2
+            - name: LEADER_ELECTION_DISABLE
+              value: "true"
+          image: quay.io/argoproj/workflow-controller:v3.5.5
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
@@ -1678,8 +1678,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-server
     app.kubernetes.io/part-of: argo-workflows
-    app.kubernetes.io/version: v3.5.2
-    helm.sh/chart: argo-workflows-0.39.9
+    app.kubernetes.io/version: v3.5.5
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-server
   namespace: argo-workflows
 spec:
@@ -1697,8 +1697,8 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: argo-workflows-server
         app.kubernetes.io/part-of: argo-workflows
-        app.kubernetes.io/version: v3.5.2
-        helm.sh/chart: argo-workflows-0.39.9
+        app.kubernetes.io/version: v3.5.5
+        helm.sh/chart: argo-workflows-0.40.14
     spec:
       containers:
         - args:
@@ -1722,7 +1722,7 @@ spec:
                   fieldPath: metadata.namespace
             - name: BASE_HREF
               value: /
-          image: quay.io/argoproj/argocli:v3.5.2
+          image: quay.io/argoproj/argocli:v3.5.5
           imagePullPolicy: Always
           name: argo-server
           ports:
@@ -1762,7 +1762,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argo-workflows-server
     app.kubernetes.io/part-of: argo-workflows
-    helm.sh/chart: argo-workflows-0.39.9
+    helm.sh/chart: argo-workflows-0.40.14
   name: argo-workflows-c8b79b5a-server
   namespace: argo-workflows
 spec:

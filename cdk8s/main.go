@@ -1,11 +1,23 @@
 package main
 
 import (
+	"os"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"log"
+
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 	"github.com/cdk8s-team/cdk8s-plus-go/cdk8splus26/v2"
 )
+
+type Config struct {
+	IntegerValue  int     `yaml:"integerValue"`
+	FloatingValue float64 `yaml:"floatingValue"`
+	StringValue   string  `yaml:"stringValue"`
+	BooleanValue  bool    `yaml:"booleanValue"`
+}
 
 type MyChartProps struct {
 	cdk8s.ChartProps
@@ -47,7 +59,29 @@ func NewRoleBinding(scope constructs.Construct, id string, props *MyChartProps) 
 }
 
 func main() {
+	env := os.Getenv("ENV")
+	if env == "" {
+		panic("ENV 環境変数が設定されていません")
+	}
+
+	data, err := ioutil.ReadFile(env + ".yaml")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var config Config
+	err = yaml.Unmarshal(data, &config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Printf("IntegerValue: %d\n", config.IntegerValue)
+	log.Printf("FloatingValue: %f\n", config.FloatingValue)
+	log.Printf("StringValue: %s\n", config.StringValue)
+	log.Printf("BooleanValue: %t\n", config.BooleanValue)
+
 	app := cdk8s.NewApp(nil)
+
 	NewNameSpace(app, "ns", nil)
 	NewDeploymentUbuntu(app, "ubuntu", nil)
 	NewDeploymentCdk8sUbuntu(app, "ubuntu-cdk8s", nil)
