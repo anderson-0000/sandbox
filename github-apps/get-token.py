@@ -1,3 +1,5 @@
+# pip install PyJWT requests cryptography
+
 import jwt
 import time
 import requests
