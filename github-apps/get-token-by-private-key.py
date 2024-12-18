@@ -7,8 +7,8 @@ import os
 
 # 環境変数から設定を取得
 app_id = os.getenv('GITHUB_APP_ID')
-installation_id = os.getenv('INSTALLATION_ID')
-private_key_path = os.getenv('GITHUB_PRIVATE_KEY')
+installation_id = os.getenv('GITHUB_APP_INSTALLATION_ID')
+private_key_path = os.getenv('GITHUB_APP_PRIVATE_KEY')
 
 # プライベートキーをファイルから読み込む
 with open(private_key_path, 'r') as key_file:
