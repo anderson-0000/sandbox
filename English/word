@@ -1,0 +1,496 @@
+accept:受け入れる  I accepted his invitation.
+algorithm:アルゴリズム
+allow:許可する
+approve:承認する
+argument:引数
+array:配列
+attribute:属性
+author:作成者
+browser:ブラウザー
+cache:キャッシュ
+capacity:容量
+character	【名詞】	文字
+clear	【動詞】	消去する
+condition	【名詞】	条件
+configuration	【名詞】	構成
+constant	【名詞／形容詞】	定数／一定の
+contain	【動詞】	含む
+content	【名詞】	内容、コンテンツ
+context	【名詞】	コンテキスト、文脈
+continue	【動詞】	続行する
+control	【名詞／動詞】	制御、コントロール／制御する
+cookie	【名詞】	クッキー
+correctly	【副詞】	正しく、正常に
+current	【形容詞】	現在の
+define	【動詞】	定義する
+determine	【動詞】	判別する、決定する
+developer	【名詞】	開発者
+development	【名詞】	開発
+dialog	【名詞】	ダイアログ
+edit	【動詞】	編集する
+element	【名詞】	要素
+empty	【形容詞】	空の
+enter	【動詞】	入力する
+entry	【名詞】	エントリー、入力
+except	【前置詞】	〜を除く
+exception	【名詞】	例外
+exist	【動詞】	存在する
+exit	【動詞】	終了する
+expand	【動詞】	拡大する、展開する
+expected	【形容詞】	期待された
+express	【動詞／形容詞】	表現する／明示された
+expression	【名詞】	表現、式
+fail	【動詞】	失敗する
+feature	【名詞】	機能、特徴
+fix	【動詞】	修正する、解決する
+following	【形容詞／名詞】	次に述べる／次の項目
+force	【動詞】	強制する
+general	【形容詞】	全般の、一般の
+generate	【動詞】	生成する
+height	【名詞】	高さ
+hide	【動詞】	隠す、非表示にする
+ignore	【動詞】	無視する
+including	【前置詞】	〜を含めて
+index	【名詞】	インデックス、索引、添字
+indicate	【動詞】	示す
+input	【名詞／動詞】	入力／入力する
+install	【動詞】	インストールする
+instance	【名詞】	インスタンス、実例
+instruction	【名詞】	指示
+length	【名詞】	長さ
+level	【名詞】	レベル、水準
+library	【名詞】	ライブラリー
+license	【名詞／動詞】	ライセンス／ライセンス供与する
+limit	【動詞／名詞】	制限する・コントロールする／制限
+lock	【動詞／名詞】	ロックする／ロック
+manage	【動詞】	管理する
+method	【名詞】	メソッド、方法
+missing	【形容詞】	見つからない、欠落している
+none	【代名詞】	一つもなし
+note	【名詞／動詞】	注意／〜に注意する
+notice	【名詞】	通知、注意
+occur	【動詞】	発生する
+operation	【名詞】	操作、処理
+optional	【形容詞】	任意の、オプションの
+override	【動詞】	オーバーライドする、優先する
+pane	【名詞】	ペイン、ウィンドウ
+pass	【動詞】	渡す
+perform	【動詞】	実行する
+performance	【名詞】	性能、パフォーマンス
+press	【動詞】	押す
+previous	【形容詞】	前の
+print	【動詞】	印刷する、出力する
+profile	【名詞】	プロファイル、プロフィール
+properly	【副詞】	適切に、正常に
+property	【名詞】	プロパティー
+protect	【動詞】	保護する
+provide	【動詞】	提供する
+public	【形容詞】	公開の
+publish	【動詞】	公開する
+range	【名詞】	範囲
+receive	【動詞】	受信する
+recommend	【動詞】	推奨する
+record	【動詞／名詞】	記録する／記録、レコード
+refactor	【動詞】	リファクタリングする、リファクターする
+refer	【動詞】	参照する
+reference	【名詞／動詞】	参照、リファレンス／参照する
+rename	【動詞】	名前を変更する
+replace	【動詞】	置換する
+require	【動詞】	必要とする
+reset	【動詞】	リセットする
+respond	【動詞】	応答する、返信する
+result	【名詞】	結果
+right-click	【動詞】	右クリックする
+select	【動詞】	選択する
+shape	【名詞】	形状
+specific	【形容詞】	特定の
+specify	【動詞】	指定する
+store	【動詞】	保存する、格納する
+submit	【動詞】	提出する、送信する
+supply	【動詞】	提供する、供給する
+temporary	【形容詞】	一時的な
+throw	【動詞】	スローする、投げる
+unable	【形容詞】	不可能な
+unit	【名詞】	単位、ユニット
+unused	【形容詞】	未使用の
+width	【名詞】	幅
+
+A
+abstract	【形容詞】	抽象的な、抽象の
+accessibility	【名詞】	アクセシビリティー
+accessible	【形容詞】	アクセス可能な、利用可能な
+activate	【動詞】	有効にする、アクティブにする
+active	【形容詞】	有効な、アクティブな
+additional	【形容詞】	追加の
+adjust	【動詞】	調整する
+administrator	【名詞】	管理者
+aggregate	【動詞】	集約する
+alias	【名詞】	エイリアス、別名
+allocation	【名詞】	割り当て
+annotation	【名詞】	アノテーション、注釈
+anonymous	【形容詞】	無名の、匿名の
+append	【動詞】	追加する
+applicable	【形容詞】	該当する、適用可能な
+archive	【名詞／動詞】	アーカイブ／アーカイブする
+assert	【動詞】	アサートする、表明する
+asset	【名詞】	アセット、資産
+assign	【動詞】	割り当てる、（変数に）代入する
+assignment	【名詞】	割り当て、（変数への）代入
+associate	【動詞】	関連づける
+attach	【動詞】	接続する、添付する
+authentication	【名詞】	認証
+authorize	【動詞】	権限を与える
+automatic	【形容詞】	自動の
+automatically	【副詞】	自動で、自動的に
+availability	【名詞】	可用性
+B
+batch	【名詞】	バッチ
+binary	【形容詞】	バイナリーの、二進法の
+bind	【動詞】	バインドする
+boot	【動詞／名詞】	起動する／起動
+brace	【名詞】	波かっこ
+bracket	【名詞】	角かっこ
+breakpoint	【名詞】	ブレークポイント
+browse	【動詞】	閲覧する、参照する
+buffer	【名詞／動詞】	バッファー／バッファー処理する
+bump	【動詞】	バージョンを上げる
+bundle	【名詞／動詞】	バンドル／バンドルする
+C
+calculate	【動詞】	計算する
+callback	【名詞】	コールバック
+capability	【名詞】	機能
+capture	【動詞】	取り込む、キャプチャーする
+caret	【名詞】	文字入力カーソル、カレット
+cast	【動詞】	キャストする
+certificate	【名詞】	証明書
+checkout	【名詞】	チェックアウト
+clarify	【動詞】	明確にする
+cleanup	【名詞】	クリーンアップ、整理
+clone	【動詞】	複製する、クローンする
+collapse	【動詞】	折りたたむ、非表示にする
+compatibility	【名詞】	互換性
+compile	【動詞】	コンパイルする
+completion	【名詞】	補完、完了
+compress	【動詞】	圧縮する
+compute	【動詞】	計算する
+conditional	【形容詞】	条件つきの
+configure	【動詞】	構成する、設定する
+confirm	【動詞】	確定する、確認する
+conflict	【動詞／名詞】	競合する／競合
+constraint	【名詞】	制約
+construct	【動詞】	（コンストラクターで）生成する
+contact	【動詞／名詞】	連絡する／連絡先
+contribute	【動詞】	貢献する
+convert	【動詞】	変換する
+coordinate	【名詞】	座標
+copyright	【名詞】	著作権
+crash	【動詞／名詞】	クラッシュする、突然停止する／クラッシュ
+credential	【名詞】	資格情報、認証情報
+D
+debugger	【名詞】	デバッガー
+decimal	【形容詞】	小数の、十進法の
+declaration	【名詞】	宣言
+declare	【動詞】	宣言する
+decode	【動詞】	デコードする
+dedicated	【形容詞】	専用の
+delay	【名詞】	遅延
+dependency	【名詞】	依存関係
+deploy	【動詞】	配備する、デプロイする
+deployment	【名詞】	配備、デプロイ
+deprecated	【形容詞】	非推奨の
+deprecation	【名詞】	非推奨
+descriptor	【名詞】	記述子
+destination	【名詞】	目的地、〜先（移動先など）
+detect	【動詞】	検出する
+digit	【名詞】	数字、桁
+disable	【動詞】	無効にする
+display	【動詞／名詞】	表示する／表示、画面
+distribute	【動詞】	分散する、配布する
+dump	【動詞】	ダンプする
+duplicate	【形容詞／動詞】	重複する／複製する
+duration	【名詞】	期間
+dynamic	【形容詞】	動的な
+dynamically	【副詞】	動的に
+E
+emit	【動詞】	発する、生成する
+enable	【動詞】	可能にする、有効にする
+encode	【動詞】	エンコードする、符号化する
+encoding	【名詞】	エンコーディング、符号化
+encounter	【動詞】	遭遇する
+encryption	【名詞】	暗号化
+endpoint	【名詞】	エンドポイント、端点
+ensure	【動詞】	確実にする、確かめる
+entity	【名詞】	エンティティー、実体
+enumeration	【名詞】	列挙
+escape	【動詞】	エスケープする
+exclude	【動詞】	除外する
+executable	【形容詞／名詞】	実行可能な／実行可能ファイル
+execute	【動詞】	実行する
+execution	【名詞】	実行
+existing	【形容詞】	既存の
+extend	【動詞】	拡張する
+extension	【名詞】	拡張、拡張子
+external	【形容詞】	外部の
+extract	【動詞】	抽出する
+F
+failure	【名詞】	失敗、故障
+fallback	【名詞／動詞】	フォールバック／フォールバックする
+fetch	【動詞】	取得する、フェッチする
+fire	【動詞】	始動する、発火する
+framework	【名詞】	フレームワーク
+functionality	【名詞】	機能
+G
+generation	【名詞】	生成、世代
+generic	【形容詞】	汎用の、総称の、ジェネリックの
+H
+hack	【名詞／動詞】	ハッキング、一時回避策／ハックする、（その場しのぎで）作る
+handle	【動詞／名詞】	処理する／ハンドル
+handler	【名詞】	ハンドラー
+handling	【名詞】	処理
+hash	【名詞】	ハッシュ、ハッシュ記号
+header	【名詞】	ヘッダー
+hierarchy	【名詞】	階層
+I
+identifier	【名詞】	識別子
+implement	【動詞】	実装する
+implementation	【名詞】	実装
+incompatible	【形容詞】	互換性がない
+increment	【名詞／動詞】	増分、インクリメント／増分させる
+indentation	【名詞】	インデント
+initial	【形容詞】	初期の、最初の
+initialization	【名詞】	初期化
+initialize	【動詞】	初期化する
+inline	【形容詞／動詞】	インラインの／インライン化する
+inner	【形容詞】	内部の、内側の
+insert	【動詞】	挿入する
+inspect	【動詞】	検査する
+inspection	【名詞】	検査
+installation	【名詞】	インストール
+interact	【動詞】	対話する
+internal	【形容詞】	内部の
+interval	【名詞】	間隔
+invalid	【形容詞】	無効な
+invoke	【動詞】	呼び出す
+iterate	【動詞】	（処理を）反復する、繰り返す
+L
+latency	【名詞】	待ち時間
+launch	【動詞】	起動する、開始する
+listener	【名詞】	リスナー
+load	【動詞】	読み込む
+locale	【名詞】	ロケール
+logic	【名詞】	ロジック、論理
+lookup	【名詞】	検索、探索、ルックアップ
+M
+manual	【形容詞／名詞】	手動の／マニュアル
+manually	【副詞】	手動で
+map	【名詞／動詞】	地図／対応づける、マッピングする
+master	【名詞】	マスター
+matching	【形容詞】	一致する、マッチする
+maximum	【形容詞】	最大の
+metadata	【名詞】	メタデータ
+migration	【名詞】	移行
+millisecond	【名詞】	ミリ秒
+minimum	【形容詞】	最小の
+minor	【形容詞】	マイナーな、小さな
+mock	【形容詞】	モックの、模造の
+modification	【名詞】	修正、変更
+modifier	【名詞】	修飾子
+modify	【動詞】	修正する、変更する
+monitor	【動詞】	監視する
+multiple	【形容詞】	複数の
+N
+namespace	【名詞】	名前空間
+native	【形容詞】	ネイティブの
+navigate	【動詞】	移動する
+navigation	【名詞】	ナビゲーション、移動
+nested	【形容詞】	入れ子の、ネストされた
+normalize	【動詞】	標準化する、正規化する
+notification	【名詞】	通知
+notify	【動詞】	通知する
+numeric	【形容詞】	数値の
+O
+obtain	【動詞】	取得する
+occurrence	【名詞】	出現、発生
+offset	【名詞】	オフセット
+optimize	【動詞】	最適化する
+otherwise	【副詞】	そうでなければ、さもないと
+overview	【名詞】	概要
+overwrite	【動詞】	上書きする
+P
+part 一部の
+padding	【名詞】	パディング
+parenthesis	【名詞】	丸かっこ
+parse	【動詞】	パースする、解析する
+payload	【名詞】	ペイロード
+permit	【動詞】	許可する
+persistence	【名詞】	永続化
+placeholder	【名詞】	プレースホルダー
+plugin	【名詞】	プラグイン
+populate	【動詞】	自動入力する
+preference	【名詞】	プリファレンス、ユーザー設定
+preferred	【形容詞】	優先の
+prefix	【名詞】	接頭辞、プレフィックス
+priority	【名詞】	優先順位、優先度
+private	【形容詞】	プライベートな、非公開の
+progress	【名詞】	進行状況
+Q
+redundant	【形容詞】	冗長な
+register	【動詞】	登録する
+registration	【名詞】	登録
+remote	【形容詞】	遠隔の、リモートの
+removal	【名詞】	削除、除去
+render	【動詞】	描画する、レンダリングする
+represent	【動詞】	表す
+representation	【名詞】	表現
+reserve	【動詞】	予約する、確保する
+resolution	【名詞】	解像度、精度、解決
+restriction	【名詞】	制限
+retrieve	【動詞】	取得する
+scale	【動詞】	（大きさを）変える
+scope	【名詞】	スコープ、範囲
+secure	【形容詞】	セキュアな、安全な
+separator	【名詞】	セパレーター、区切り
+sequence	【名詞】	シーケンス
+serialize	【動詞】	シリアル化する
+session	【名詞】	セッション
+setup	【名詞】	設定、構成、セットアップ
+shutdown	【名詞】	シャットダウン
+signature	【名詞】	署名、シグネチャー
+simplify	【動詞】	簡素化する
+snapshot	【名詞】	スナップショット
+socket	【名詞】	ソケット
+specification	【名詞】	仕様
+split	【動詞】	分割する
+stack	【名詞】	スタック
+standalone	【形容詞】	スタンドアロンの
+startup	【名詞】	起動、スタートアップ
+static	【形容詞】	静的な
+storage	【名詞】	ストレージ
+stream	【名詞】	ストリーム
+successfully	【副詞】	正常に
+suffix	【名詞】	接尾辞、サフィックス
+suppress	【動詞】	表示しない
+synchronize	【動詞】	同期する
+syntax	【名詞】	構文、シンタックス
+T
+terminate	【動詞】	終了する
+termination	【名詞】	終了
+terms	【名詞】	利用条件
+third party	【名詞】	サード・パーティー、第三者
+thread	【名詞】	スレッド
+timestamp	【名詞】	タイムスタンプ
+todo	【名詞】	TODO、するべきこと
+toggle	【動詞】	切り替える
+token	【名詞】	トークン
+transaction	【名詞】	トランザクション
+transfer	【動詞】	転送する
+transform	【動詞】	変換する、変形する
+transition	【名詞】	遷移
+trigger	【動詞】	トリガーする
+tweak	【動詞】	微調整する
+typo	【名詞】	入力ミス、タイポ
+U
+unauthorized	【形容詞】	権限のない
+unavailable	【形容詞】	利用できない
+undefined	【形容詞】	未定義の
+unexpected	【形容詞】	予期しない
+unique	【形容詞】	一意の、固有の
+unknown	【形容詞】	不明の
+unnecessary	【形容詞】	不要な
+unresolved	【形容詞】	未解決の
+unsupported	【形容詞】	非対応の、サポートされない
+usage	【名詞】	利用、使用
+username	【名詞】	ユーザー名
+V
+valid	【形容詞】	有効な
+validate	【動詞】	（妥当性を）確認する、検証する
+validation	【名詞】	検証
+verbose	【形容詞】	詳細な
+verify	【動詞】	（正しいことを）確認する、検証する
+virtual	【形容詞】	仮想の
+visibility	【名詞】	可視性、可視範囲
+visible	【形容詞】	可視の、表示できる
+W
+whitespace	【名詞】	空白、スペース
+wrap	【動詞】	ラップする、（テキストを）折り返す
+wrapper	【名詞】	ラッパー
+Z
+zip	【動詞】	（ファイルを）圧縮する
+トップに戻る
+
+前提英単語 100
+A
+action	【名詞】	アクション、操作
+activity	【名詞】	アクティビティー、活動
+add	【動詞】	追加する
+address	【名詞】	アドレス、住所
+agree	【動詞】	同意する
+area	【名詞】	領域、エリア
+B
+below	【副詞】	下記に
+body	【名詞】	本体、本文
+break	【動詞】	中断する
+build	【動詞／名詞】	構築する／ビルド
+button	【名詞】	ボタン
+C
+call	【動詞】	呼び出す
+change	【動詞】	変更する
+check	【動詞】	確認する、チェックする
+child	【名詞】	子
+choose	【動詞】	選択する
+class	【名詞】	クラス
+clean	【形容詞／動詞】	きれいな／きれいにする
+close	【動詞】	閉じる
+compare	【動詞】	比較する
+complete	【動詞／形容詞】	完了する／完全な
+copy	【動詞／名詞】	コピーする／コピー
+correct	【形容詞／動詞】	正確な／訂正する
+create	【動詞】	作成する
+D
+describe	【動詞】	説明する
+description	【名詞】	説明
+detail	【名詞】	詳細
+E
+email	【名詞／動詞】	メール／メールを送る
+event	【名詞】	イベント、出来事
+example	【名詞】	例
+extra	【形容詞】	余分な、追加の
+F
+false	【形容詞】	誤りの、偽の
+final	【形容詞】	最終の
+find	【動詞】	検索する
+finish	【動詞】	終了する、完了する
+follow	【動詞】	従う、フォローする
+form	【名詞】	フォーム
+free	【形容詞】	空きの、無料の
+G
+get	【動詞】	獲得する、取得する
+group	【名詞】	グループ
+H
+health	【名詞】	ヘルス、正常性
+I
+improve	【動詞】	改良する、改善する
+include	【動詞】	含む、インクルードする
+information	【名詞】	情報
+introduce	【動詞】	導入する、紹介する
+J
+join	【動詞】	結合する
+K
+later	【副詞】	後で
+line break 改行
+make	【動詞】	作成する
+match	【動詞】	一致する
+post	【動詞／名詞】	書き込む／投稿
+prepare	【動詞】	準備する
+return	【動詞】	戻す、返す
+rule	【名詞】	ルール、規則
+run	【動詞】	実行する
+section	【名詞】	セクション、部分
+see	【動詞】	見る、参照する
+send	【動詞】	送信する
+set	【動詞】	設定する
+show	【動詞】	表示する
+statement	【名詞】	ステートメント、文
+
+useful	【形容詞】	便利な
+wait	【動詞】	待機する
