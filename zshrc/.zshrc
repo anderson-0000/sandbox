@@ -42,3 +42,11 @@ source <(kubectl completion zsh)
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/sho/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+
+{
+  brew update
+  brew upgrade
+  brew upgrade --cask
+  brew cleanup
+} &>/dev/null & 
