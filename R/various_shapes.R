@@ -1,7 +1,17 @@
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+
+install.packages("showtext")
+install.packages("Cairo")
+install.packages("ragg")
+install.packages("sysfonts")
+install.packages("curl")
+
 library(showtext)
 library(ragg)
 library(sysfonts)
 font_add_google("Noto Sans JP", "notosans-jp")
+
+dev.new()  # グラフィックスウィンドウをクリア
 
 ## Rの対話モードの時だけ
 #showtext_auto()
@@ -34,3 +44,8 @@ rect(2, 2, 4, 4, col = "lightblue", border = "blue")
 symbols(4, 8, circles=0.5, inches = FALSE, add = TRUE)
 symbols(7, 7, circles = 1, inches = FALSE, add = TRUE, bg = "pink")
 
+# 三角形
+lines(c(2, 8, 5, 2), c(2, 2, 8, 2), col="red", lwd=2)
+
+# グリッド線を追加
+grid()
