@@ -1,13 +1,15 @@
+# R --vanilla -f accumulation_simulation.R
+
 # シミュレーション設定
 param_list <- list(
-  annual_return         = 0.06,
-  annual_volatility     = 0.15,
-  starting_balance      = 1e6,
-  deposit_before_change = 5e4,
-  change_after_years    = 10,
-  deposit_after_change  = 8e4,
-  total_years           = 20,
-  n_simulations         = 2000
+  yearly_return_percent     = 9.45, # 年間リターン (%)
+  yearly_volatility_percent = 30.21, # 年間リスク (%)
+  initial_balance           = 100000, # 初期資産額
+  deposit_first_phase       = 50000, # 月次入金額
+  years_until_change        = 10, # 入金額変更までの年数
+  deposit_second_phase      = 30000, # 入金額変更後の月次入金額
+  simulation_years          = 20, # シミュレーション期間
+  num_simulations           = 2000 # シミュレーション回数
 )
 
 # ファイル出力先
@@ -26,39 +28,35 @@ lapply(pkgs, require, character.only = TRUE)
 # シミュレーション
 simulate_portfolio <- function(params) {
   with(params, {
-    # 月次リターン・ボラティリティ
-    mu_m     <- annual_return   / 12
-    sigma_m  <- annual_volatility / sqrt(12)
-    total_m  <- total_years     * 12
-    change_m <- change_after_years * 12
+    avg_monthly_return  <- (yearly_return_percent   / 100) / 12
+    monthly_return_sd   <- (yearly_volatility_percent / 100) / sqrt(12)
+    total_months        <- simulation_years     * 12
+    change_month        <- years_until_change * 12
+    balance_matrix      <- matrix(NA, nrow = total_months + 1, ncol = num_simulations)
+    balance_matrix[1, ] <- initial_balance
 
-    # シミュレーション結果格納行列
-    mat <- matrix(NA, nrow = total_m + 1, ncol = n_simulations)
-    mat[1, ] <- starting_balance
-
-    # モンテカルロループ
-    for (sim in seq_len(n_simulations)) {
-      for (t in 2:(total_m + 1)) {
-        depo <- if ((t - 1) <= change_m) deposit_before_change else deposit_after_change
-        r    <- rnorm(1, mu_m, sigma_m)
-        mat[t, sim] <- mat[t - 1, sim] * (1 + r) + depo
+    for (sim in seq_len(num_simulations)) {
+      for (t in 2:(total_months + 1)) {
+        depo <- if ((t - 1) <= change_month) deposit_first_phase else deposit_second_phase
+        r    <- rnorm(1, avg_monthly_return, monthly_return_sd)
+        balance_matrix[t, sim] <- balance_matrix[t - 1, sim] * (1 + r) + depo
       }
     }
-    mat
+    balance_matrix
   })
 }
 
 # シミュレーション実行
-bal_mat <- simulate_portfolio(param_list)
+bal_balance_matrix <- simulate_portfolio(param_list)
 
 # 年次サマリー作成
-years_seq <- 0:param_list$total_years
-rows      <- years_seq * 12 + 1
-summary_df <- data.frame(
+years_seq <- 0:param_list$simulation_years
+summary_rows      <- years_seq * 12 + 1
+yearly_summary <- data.frame(
   year   = years_seq,
-  pct_5  = apply(bal_mat[rows, ], 1, quantile, probs = 0.05),
-  pct_50 = apply(bal_mat[rows, ], 1, quantile, probs = 0.50),
-  pct_95 = apply(bal_mat[rows, ], 1, quantile, probs = 0.95)
+  pct_5  = apply(bal_balance_matrix[summary_rows, ], 1, quantile, probs = 0.05),
+  pct_50 = apply(bal_balance_matrix[summary_rows, ], 1, quantile, probs = 0.50),
+  pct_95 = apply(bal_balance_matrix[summary_rows, ], 1, quantile, probs = 0.95)
 )
 
 # 画像作成
@@ -70,9 +68,9 @@ ragg::agg_png(
 )
 
 unit   <- 10000000  # 1千万
-y_max  <- ceiling(max(summary_df$pct_95) / unit) * unit
+y_max  <- ceiling(max(yearly_summary$pct_95) / unit) * unit
 
-ggplot(summary_df, aes(x = year)) +
+ggplot(yearly_summary, aes(x = year)) +
   geom_ribbon(
     aes(ymin = pct_5, ymax = pct_95),
     fill      = "#3366CC",
@@ -85,7 +83,7 @@ ggplot(summary_df, aes(x = year)) +
     linewidth = 1.2
   ) +
   scale_x_continuous(
-    breaks = seq(0, param_list$total_years, by = 2),
+    breaks = seq(0, param_list$simulation_years, by = 2),
     labels = ~ paste0(.x)
   ) +
   scale_y_continuous(
@@ -94,7 +92,7 @@ ggplot(summary_df, aes(x = year)) +
     expand = expansion(mult = c(0, 0.02))
   ) +
   labs(
-    title   = paste0("Monte Carlo Simulation: Deposit Change at ", param_list$change_after_years, " Years"),
+    title   = paste0("Monte Carlo Simulation: Deposit Change at ", param_list$years_until_change, " Years"),
     x       = "年",
     y       = "円",
     caption = "バンド：5%–95%パーセンタイル、線：50%パーセンタイル"
