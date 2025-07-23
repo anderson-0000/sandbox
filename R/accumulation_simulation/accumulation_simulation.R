@@ -1,24 +1,37 @@
 # R --vanilla -f accumulation_simulation.R
 
-# シミュレーション設定
+# シミュレーション設定（金融商品1）
 param_list <- list(
   yearly_return_percent     = 9.45,    # 年間リターン (%)
   yearly_volatility_percent = 30.21,   # 年間リスク (%)
-  initial_balance           = 5000000,  # 初期資産額
+  initial_balance           = 5000000, # 初期資産額
   deposit_first_phase       = 50000,   # 月次入金額
   years_until_change        = 10,      # 入金額変更までの年数
   deposit_second_phase      = 30000,   # 入金額変更後の月次入金額
   simulation_years          = 20,      # シミュレーション期間
   num_simulations           = 5000,    # シミュレーション回数
-  start_age                 = 32      # シミュレーション開始年齢
+  start_age                 = 32       # シミュレーション開始年齢
 )
 
-# ファイル出力先
+# 金融商品2のパラメータ
+param_list2 <- list(
+  yearly_return_percent     = 9.45,    # 年間リターン (%)
+  yearly_volatility_percent = 30.21,   # 年間リスク (%)
+  initial_balance           = 5000000, # 初期資産額
+  deposit_first_phase       = 50000,   # 月次入金額
+  years_until_change        = 10,      # 入金額変更までの年数
+  deposit_second_phase      = 30000,   # 入金額変更後の月次入金額
+  simulation_years          = param_list$simulation_years,
+  num_simulations           = param_list$num_simulations,
+  start_age                 = param_list$start_age
+)
+
+# 出力先
 home_dir    <- path.expand("~")
 file_name   <- "accumulation_simulation.png"
 output_path <- file.path(home_dir, file_name)
 
-# パッケージインストール、読み込み
+# パッケージ
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 pkgs <- c("ggplot2", "scales", "ragg")
 for (p in pkgs) {
@@ -26,7 +39,7 @@ for (p in pkgs) {
 }
 lapply(pkgs, require, character.only = TRUE)
 
-# シミュレーション
+# シミュレーション関数
 simulate_portfolio <- function(params) {
   with(params, {
     avg_monthly_return <- (yearly_return_percent / 100) / 12
@@ -47,60 +60,37 @@ simulate_portfolio <- function(params) {
   })
 }
 
-# シミュレーション実行
-bal_balance_matrix <- simulate_portfolio(param_list)
+# 二商品を別々にシミュレーションして合算
+bal1 <- simulate_portfolio(param_list)
+bal2 <- simulate_portfolio(param_list2)
+bal_balance_matrix <- bal1 + bal2
 
-# 年次サマリー作成
-years_seq     <- 0:param_list$simulation_years
-summary_rows  <- years_seq * 12 + 1
+# 年次サマリー
+years_seq    <- 0:param_list$simulation_years
+summary_rows <- years_seq * 12 + 1
 yearly_summary <- data.frame(
   year   = years_seq,
   pct_30 = apply(bal_balance_matrix[summary_rows, ], 1, quantile, probs = 0.30),
   pct_50 = apply(bal_balance_matrix[summary_rows, ], 1, quantile, probs = 0.50),
   pct_70 = apply(bal_balance_matrix[summary_rows, ], 1, quantile, probs = 0.70)
 )
-
-# 年齢列を追加
 yearly_summary$age <- param_list$start_age + yearly_summary$year
 
-# 画像作成
-ragg::agg_png(
-  filename = output_path,
-  width    = 1000,
-  height   = 1000,
-  units    = "px"
-)
+# プロット出力
+ragg::agg_png(filename = output_path, width = 1000, height = 1000, units = "px")
 
-unit  <- 10000000  # 1千万
+unit  <- 10000000
 y_max <- ceiling(max(yearly_summary$pct_70) / unit) * unit
 
 ggplot(yearly_summary, aes(x = age)) +
-  geom_ribbon(
-    aes(ymin = pct_30, ymax = pct_70),
-    fill      = "#3366CC",
-    alpha     = 0.3,
-    linewidth = 0
-  ) +
-  geom_line(
-    aes(y = pct_50),
-    color     = "#3366CC",
-    linewidth = 1.2
-  ) +
+  geom_ribbon(aes(ymin = pct_30, ymax = pct_70),
+              fill = "#3366CC", alpha = 0.3, linewidth = 0) +
+  geom_line(aes(y = pct_50),
+            color = "#3366CC", linewidth = 1.2) +
   scale_x_continuous(
-    # 年齢メジャーブレイク：5歳ごとのみ
-    breaks = seq(
-      from = param_list$start_age,
-      to   = param_list$start_age + param_list$simulation_years,
-      by   = 5
-    ),
-    # 年齢マイナーブレイク：1年ごと（補助線用）
-    minor_breaks = seq(
-      from = param_list$start_age,
-      to   = param_list$start_age + param_list$simulation_years,
-      by   = 1
-    ),
-    # 年齢／西暦を二段で表示
-    labels = function(x) {
+    breaks       = seq(param_list$start_age, param_list$start_age + param_list$simulation_years, by = 5),
+    minor_breaks = seq(param_list$start_age, param_list$start_age + param_list$simulation_years, by = 1),
+    labels       = function(x) {
       yrs      <- x - param_list$start_age
       cal_year <- as.integer(format(Sys.Date(), "%Y")) + yrs
       paste0(x, "\n", cal_year, "年")
@@ -114,16 +104,12 @@ ggplot(yearly_summary, aes(x = age)) +
       c(b1, b2)
     }),
     labels = function(x) {
-      ifelse(
-        x == 0, "0",
-        ifelse(
-          x %% (unit * 10) == 0,
-          paste0(round(x / (unit * 10)), "億"),
-          paste0(round(x / unit, 1), "千万")
-        )
-      )
+      ifelse(x == 0, "0",
+             ifelse(x %% (unit * 10) == 0,
+                    paste0(round(x / (unit * 10)), "億"),
+                    paste0(round(x / unit, 1), "千万")))
     },
-    limits = c(0, y_max),  # 0円からスタート
+    limits = c(0, y_max),
     expand = expansion(mult = c(0, 0.02))
   ) +
   labs(
@@ -131,7 +117,10 @@ ggplot(yearly_summary, aes(x = age)) +
                      param_list$years_until_change, " Years"),
     x       = "年齢／西暦",
     y       = "円",
-    caption = "バンド：30%–70%パーセンタイル、線：50%パーセンタイル"
+    caption = paste0(
+      "バンド：30%–70%パーセンタイル、線：50%パーセンタイル\n",
+      "実行日時: ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    )
   ) +
   theme_minimal(base_size = 16) +
   theme(
@@ -140,8 +129,9 @@ ggplot(yearly_summary, aes(x = age)) +
     axis.text           = element_text(size = 18, color = "grey20"),
     panel.grid.major.y  = element_line(linewidth = 0.6, color = "grey80"),
     panel.grid.major.x  = element_line(linewidth = 0.6, color = "grey90"),
-    panel.grid.minor.x  = element_line(linewidth = 0.3, color = "grey90"),  # 1年ごとの縦線
-    panel.grid.minor.y  = element_blank()
+    panel.grid.minor.x  = element_line(linewidth = 0.3, color = "grey90"),
+    panel.grid.minor.y  = element_blank(),
+    plot.caption        = element_text(hjust = 1, size = 12)
   )
 
 dev.off()
