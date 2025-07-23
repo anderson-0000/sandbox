@@ -2,14 +2,15 @@
 
 # シミュレーション設定
 param_list <- list(
-  yearly_return_percent     = 9.45, # 年間リターン (%)
-  yearly_volatility_percent = 30.21, # 年間リスク (%)
-  initial_balance           = 100000, # 初期資産額
-  deposit_first_phase       = 50000, # 月次入金額
-  years_until_change        = 10, # 入金額変更までの年数
-  deposit_second_phase      = 30000, # 入金額変更後の月次入金額
-  simulation_years          = 20, # シミュレーション期間
-  num_simulations           = 2000 # シミュレーション回数
+  yearly_return_percent     = 9.45,    # 年間リターン (%)
+  yearly_volatility_percent = 30.21,   # 年間リスク (%)
+  initial_balance           = 5000000,  # 初期資産額
+  deposit_first_phase       = 50000,   # 月次入金額
+  years_until_change        = 10,      # 入金額変更までの年数
+  deposit_second_phase      = 30000,   # 入金額変更後の月次入金額
+  simulation_years          = 20,      # シミュレーション期間
+  num_simulations           = 5000,    # シミュレーション回数
+  start_age                 = 32      # シミュレーション開始年齢
 )
 
 # ファイル出力先
@@ -28,11 +29,11 @@ lapply(pkgs, require, character.only = TRUE)
 # シミュレーション
 simulate_portfolio <- function(params) {
   with(params, {
-    avg_monthly_return  <- (yearly_return_percent   / 100) / 12
-    monthly_return_sd   <- (yearly_volatility_percent / 100) / sqrt(12)
-    total_months        <- simulation_years     * 12
-    change_month        <- years_until_change * 12
-    balance_matrix      <- matrix(NA, nrow = total_months + 1, ncol = num_simulations)
+    avg_monthly_return <- (yearly_return_percent / 100) / 12
+    monthly_return_sd  <- (yearly_volatility_percent / 100) / sqrt(12)
+    total_months       <- simulation_years * 12
+    change_month       <- years_until_change * 12
+    balance_matrix     <- matrix(NA, nrow = total_months + 1, ncol = num_simulations)
     balance_matrix[1, ] <- initial_balance
 
     for (sim in seq_len(num_simulations)) {
@@ -50,29 +51,32 @@ simulate_portfolio <- function(params) {
 bal_balance_matrix <- simulate_portfolio(param_list)
 
 # 年次サマリー作成
-years_seq <- 0:param_list$simulation_years
-summary_rows      <- years_seq * 12 + 1
+years_seq     <- 0:param_list$simulation_years
+summary_rows  <- years_seq * 12 + 1
 yearly_summary <- data.frame(
   year   = years_seq,
-  pct_5  = apply(bal_balance_matrix[summary_rows, ], 1, quantile, probs = 0.05),
+  pct_30 = apply(bal_balance_matrix[summary_rows, ], 1, quantile, probs = 0.30),
   pct_50 = apply(bal_balance_matrix[summary_rows, ], 1, quantile, probs = 0.50),
-  pct_95 = apply(bal_balance_matrix[summary_rows, ], 1, quantile, probs = 0.95)
+  pct_70 = apply(bal_balance_matrix[summary_rows, ], 1, quantile, probs = 0.70)
 )
+
+# 年齢列を追加
+yearly_summary$age <- param_list$start_age + yearly_summary$year
 
 # 画像作成
 ragg::agg_png(
   filename = output_path,
-  width    = 1000,  # 横
-  height   = 1000,  # 縦
+  width    = 1000,
+  height   = 1000,
   units    = "px"
 )
 
-unit   <- 10000000  # 1千万
-y_max  <- ceiling(max(yearly_summary$pct_95) / unit) * unit
+unit  <- 10000000  # 1千万
+y_max <- ceiling(max(yearly_summary$pct_70) / unit) * unit
 
-ggplot(yearly_summary, aes(x = year)) +
+ggplot(yearly_summary, aes(x = age)) +
   geom_ribbon(
-    aes(ymin = pct_5, ymax = pct_95),
+    aes(ymin = pct_30, ymax = pct_70),
     fill      = "#3366CC",
     alpha     = 0.3,
     linewidth = 0
@@ -83,26 +87,62 @@ ggplot(yearly_summary, aes(x = year)) +
     linewidth = 1.2
   ) +
   scale_x_continuous(
-    breaks = seq(0, param_list$simulation_years, by = 2),
-    labels = ~ paste0(.x)
+    # 年齢メジャーブレイク：5歳ごとのみ
+    breaks = seq(
+      from = param_list$start_age,
+      to   = param_list$start_age + param_list$simulation_years,
+      by   = 5
+    ),
+    # 年齢マイナーブレイク：1年ごと（補助線用）
+    minor_breaks = seq(
+      from = param_list$start_age,
+      to   = param_list$start_age + param_list$simulation_years,
+      by   = 1
+    ),
+    # 年齢／西暦を二段で表示
+    labels = function(x) {
+      yrs      <- x - param_list$start_age
+      cal_year <- as.integer(format(Sys.Date(), "%Y")) + yrs
+      paste0(x, "\n", cal_year, "年")
+    },
+    expand = expansion(add = c(0, 1))
   ) +
   scale_y_continuous(
-    breaks = seq(0, y_max, by = unit),
-    labels = function(x) paste0(round(x / unit, 1), "千万"),
+    breaks = local({
+      b1 <- seq(0, min(y_max, unit * 10), by = unit)
+      b2 <- if (y_max > unit * 10) seq(unit * 10, y_max, by = unit * 10) else numeric(0)
+      c(b1, b2)
+    }),
+    labels = function(x) {
+      ifelse(
+        x == 0, "0",
+        ifelse(
+          x %% (unit * 10) == 0,
+          paste0(round(x / (unit * 10)), "億"),
+          paste0(round(x / unit, 1), "千万")
+        )
+      )
+    },
+    limits = c(0, y_max),  # 0円からスタート
     expand = expansion(mult = c(0, 0.02))
   ) +
   labs(
-    title   = paste0("Monte Carlo Simulation: Deposit Change at ", param_list$years_until_change, " Years"),
-    x       = "年",
+    title   = paste0("Monte Carlo Simulation: Deposit Change at ",
+                     param_list$years_until_change, " Years"),
+    x       = "年齢／西暦",
     y       = "円",
-    caption = "バンド：5%–95%パーセンタイル、線：50%パーセンタイル"
+    caption = "バンド：30%–70%パーセンタイル、線：50%パーセンタイル"
   ) +
   theme_minimal(base_size = 16) +
   theme(
-    axis.title         = element_text(size = 20),
-    axis.text          = element_text(size = 18, color = "grey20"),
-    panel.grid.major.y = element_line(linewidth = 0.6, color = "grey80"),
-    panel.grid.major.x = element_line(linewidth = 0.6, color = "grey90"),
-    panel.grid.minor   = element_line(linewidth = 0.3, color = "grey95")
+    plot.margin         = margin(t = 10, r = 30, b = 10, l = 10),
+    axis.title          = element_text(size = 20),
+    axis.text           = element_text(size = 18, color = "grey20"),
+    panel.grid.major.y  = element_line(linewidth = 0.6, color = "grey80"),
+    panel.grid.major.x  = element_line(linewidth = 0.6, color = "grey90"),
+    panel.grid.minor.x  = element_line(linewidth = 0.3, color = "grey90"),  # 1年ごとの縦線
+    panel.grid.minor.y  = element_blank()
   )
+
 dev.off()
+
