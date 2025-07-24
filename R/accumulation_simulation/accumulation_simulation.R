@@ -1,30 +1,36 @@
 # R --vanilla -f accumulation_simulation.R
 
-# 金融商品1
-param_list <- list(
-  yearly_return_percent     = 9.45,    # 年間リターン (%)
-  yearly_volatility_percent = 30.21,   # 年間リスク (%)
-  initial_balance           = 5000000, # 初期資産額
-  deposit_first_phase       = 50000,   # 月次入金額
-  years_until_change        = 10,      # 入金額変更までの年数
-  deposit_second_phase      = 30000,   # 入金額変更後の月次入金額
-  simulation_years          = 20,      # シミュレーション期間
-  num_simulations           = 5000,    # シミュレーション回数
-  start_age                 = 32       # シミュレーション開始年齢
-)
+# パラメータファイルをがあれば読み込む
+param_file <- file.path(path.expand("~"), "parameter", "accumulation_simulation_paramater.R")
+if (file.exists(param_file)) {
+  source(param_file)   # param_list, param_list2 を上書き
+} else {
+  # 金融商品1（デフォルト）
+  param_list <- list(
+   yearly_return_percent     = 8.50,    # 年間リターン (%)
+   yearly_volatility_percent = 25.00,   # 年間リスク (%)
+   initial_balance           = 3000000, # 初期資産額
+   deposit_first_phase       = 60000,   # 月次入金額
+   years_until_change        = 12,      # 入金額変更までの年数
+   deposit_second_phase      = 40000,   # 変更後の月次入金額
+   simulation_years          = 25,      # シミュレーション期間（年）
+   num_simulations           = 10000,   # 試行回数
+   start_age                 = 30       # 開始年齢
+  )
 
-# 金融商品2
-param_list2 <- list(
-  yearly_return_percent     = 9.45,    # 年間リターン (%)
-  yearly_volatility_percent = 30.21,   # 年間リスク (%)
-  initial_balance           = 5000000, # 初期資産額
-  deposit_first_phase       = 50000,   # 月次入金額
-  years_until_change        = 10,      # 入金額変更までの年数
-  deposit_second_phase      = 30000,   # 入金額変更後の月次入金額
-  simulation_years          = param_list$simulation_years,
-  num_simulations           = param_list$num_simulations,
-  start_age                 = param_list$start_age
-)
+  # 金融商品2（デフォルト）
+  param_list2 <- list(
+    yearly_return_percent     = 9.45,    # 年間リターン (%)
+    yearly_volatility_percent = 30.21,   # 年間リスク (%)
+    initial_balance           = 5000000, # 初期資産額
+    deposit_first_phase       = 50000,   # 月次入金額
+    years_until_change        = 10,      # 入金額変更までの年数
+    deposit_second_phase      = 30000,   # 変更後の月次入金額
+    simulation_years          = param_list$simulation_years,
+    num_simulations           = param_list$num_simulations,
+    start_age                 = param_list$start_age
+  )
+}
 
 # 出力先
 home_dir    <- path.expand("~")
