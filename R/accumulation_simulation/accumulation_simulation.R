@@ -1,6 +1,6 @@
 # R --vanilla -f accumulation_simulation.R
 
-# シミュレーション設定（金融商品1）
+# 金融商品1
 param_list <- list(
   yearly_return_percent     = 9.45,    # 年間リターン (%)
   yearly_volatility_percent = 30.21,   # 年間リスク (%)
@@ -13,7 +13,7 @@ param_list <- list(
   start_age                 = 32       # シミュレーション開始年齢
 )
 
-# 金融商品2のパラメータ
+# 金融商品2
 param_list2 <- list(
   yearly_return_percent     = 9.45,    # 年間リターン (%)
   yearly_volatility_percent = 30.21,   # 年間リスク (%)
