@@ -4,6 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsTableBody = document.querySelector('#resultsTable tbody');
     const summaryTableBody = document.querySelector('#summaryTable tbody');
     const chartCanvas = document.getElementById('simulationChart');
+    // Define and register custom plugin for chart background
+    const customCanvasBackgroundColor = {
+        id: 'customCanvasBackgroundColor',
+        beforeDraw: (chart, args, options) => {
+            const {ctx} = chart;
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.fillStyle = options.color || '#fff'; // Use option color or default to white
+            ctx.fillRect(0, 0, chart.width, chart.height);
+            ctx.restore();
+        }
+    };
+    Chart.register(customCanvasBackgroundColor); // Register the plugin
+
     let simulationChart; // To hold the Chart.js instance
 
     // Helper to format currency
@@ -51,6 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
+                    customCanvasBackgroundColor: { // Plugin configuration
+                        color: 'white'
+                    },
                     legend: {
                         position: 'top',
                     },
@@ -105,10 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for downloading chart
     downloadChartButton.addEventListener('click', () => {
         if (simulationChart) {
-            const image = simulationChart.toBase64Image();
+            const image = simulationChart.toBase64Image('image/jpeg', 1.0);
             const a = document.createElement('a');
             a.href = image;
-            a.download = 'simulation_chart.png';
+            a.download = 'simulation_chart.jpeg';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
