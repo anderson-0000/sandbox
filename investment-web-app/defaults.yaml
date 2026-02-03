@@ -1,0 +1,12 @@
+inv1:
+  initial: 100000
+  monthly: 10000
+  return: 5.0
+  risk: 10.0
+  period: 20
+inv2:
+  initial: 100000
+  monthly: 10000
+  return: 5.0
+  risk: 10.0
+  period: 20

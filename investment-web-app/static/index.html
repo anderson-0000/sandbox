@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投資信託シミュレーター</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>投資信託シミュレーター</h1>
+
+        <div class="forms-section">
+            <div class="investment-form-container">
+                <h2>投資信託 1</h2>
+                <label for="inv1_initial">初期投資額 (円):</label>
+                <input type="number" id="inv1_initial" min="0">
+
+                <label for="inv1_monthly">毎月の積立額 (円):</label>
+                <input type="number" id="inv1_monthly" min="0">
+
+                <label for="inv1_return">期待リターン率 (%):</label>
+                <input type="number" id="inv1_return" step="0.1" min="0">
+
+                <label for="inv1_risk">リスク (標準偏差 %):</label>
+                <input type="number" id="inv1_risk" step="0.1" min="0">
+
+                <label for="inv1_period">投資期間 (年):</label>
+                <input type="number" id="inv1_period" min="1">
+            </div>
+
+            <div class="investment-form-container">
+                <h2>投資信託 2</h2>
+                <label for="inv2_initial">初期投資額 (円):</label>
+                <input type="number" id="inv2_initial" min="0">
+
+                <label for="inv2_monthly">毎月の積立額 (円):</label>
+                <input type="number" id="inv2_monthly" min="0">
+
+                <label for="inv2_return">期待リターン率 (%):</label>
+                <input type="number" id="inv2_return" step="0.1" min="0">
+
+                <label for="inv2_risk">リスク (標準偏差 %):</label>
+                <input type="number" id="inv2_risk" step="0.1" min="0">
+
+                <label for="inv2_period">投資期間 (年):</label>
+                <input type="number" id="inv2_period" min="1">
+            </div>
+        </div>
+
+        <button id="simulateButton">シミュレーション実行</button>
+
+        <div class="results-section">
+            <h2>シミュレーション結果</h2>
+            <div class="chart-container">
+                <canvas id="simulationChart"></canvas>
+                <button id="downloadChartButton" style="margin-top: 10px; display: none;">グラフをダウンロード</button>
+            </div>
+            <h3>年次推移</h3>
+            <div class="table-container">
+                <table id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>年</th>
+                            <th>最小値</th>
+                            <th>10%</th>
+                            <th>中央値 (50%)</th>
+                            <th>90%</th>
+                            <th>最大値</th>
+                            <th>平均値</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Results will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>最終結果の要約 (最終年)</h3>
+            <div class="table-container">
+                <table id="summaryTable">
+                    <thead>
+                        <tr>
+                            <th>最小値</th>
+                            <th>10%</th>
+                            <th>中央値 (50%)</th>
+                            <th>90%</th>
+                            <th>最大値</th>
+                            <th>平均値</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Summary will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/script.js"></script>
+</body>
+</html>

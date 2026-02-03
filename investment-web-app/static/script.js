@@ -1,0 +1,221 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const simulateButton = document.getElementById('simulateButton');
+    const downloadChartButton = document.getElementById('downloadChartButton');
+    const resultsTableBody = document.querySelector('#resultsTable tbody');
+    const summaryTableBody = document.querySelector('#summaryTable tbody');
+    const chartCanvas = document.getElementById('simulationChart');
+    let simulationChart; // To hold the Chart.js instance
+
+    // Helper to format currency
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(Math.round(value));
+    };
+
+    // Function to populate form fields
+    const populateForm = (prefix, data) => {
+        document.getElementById(`${prefix}_initial`).value = data.initial;
+        document.getElementById(`${prefix}_monthly`).value = data.monthly;
+        document.getElementById(`${prefix}_return`).value = data.return;
+        document.getElementById(`${prefix}_risk`).value = data.risk;
+        document.getElementById(`${prefix}_period`).value = data.period;
+    };
+
+    // Function to load default values
+    const loadDefaultValues = async () => {
+        try {
+            const response = await fetch('/defaults');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const defaults = await response.json();
+            populateForm('inv1', defaults.inv1);
+            populateForm('inv2', defaults.inv2);
+        } catch (error) {
+            console.error('Error loading default values:', error);
+            alert('デフォルト値の読み込み中にエラーが発生しました。');
+        }
+    };
+
+    // Initialize Chart.js
+    const initChart = () => {
+        if (simulationChart) {
+            simulationChart.destroy(); // Destroy previous chart if exists
+        }
+        simulationChart = new Chart(chartCanvas, {
+            type: 'line',
+            data: {
+                labels: [], // Will be filled with years
+                datasets: [] // Will be filled with percentile data
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'ポートフォリオ価値の年次推移',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += formatCurrency(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'ポートフォリオ価値 (円)',
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return formatCurrency(value);
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: '年',
+                        },
+                    },
+                },
+            },
+        });
+    };
+
+    // Call initChart once on load
+    initChart();
+    // Load default values on page load
+    loadDefaultValues();
+
+    // Event listener for downloading chart
+    downloadChartButton.addEventListener('click', () => {
+        if (simulationChart) {
+            const image = simulationChart.toBase64Image();
+            const a = document.createElement('a');
+            a.href = image;
+            a.download = 'simulation_chart.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    });
+
+    simulateButton.addEventListener('click', async () => {
+        simulateButton.disabled = true; // Disable button during simulation
+        downloadChartButton.style.display = 'none'; // Hide download button until new results are ready
+
+        const getInvestmentData = (prefix) => ({
+            initial: parseFloat(document.getElementById(`${prefix}_initial`).value),
+            monthly: parseFloat(document.getElementById(`${prefix}_monthly`).value),
+            return: parseFloat(document.getElementById(`${prefix}_return`).value),
+            risk: parseFloat(document.getElementById(`${prefix}_risk`).value),
+            period: parseInt(document.getElementById(`${prefix}_period`).value, 10),
+        });
+
+        const investment1Data = getInvestmentData('inv1');
+        const investment2Data = getInvestmentData('inv2');
+
+        // Basic validation
+        if (Object.values(investment1Data).some(isNaN) || Object.values(investment2Data).some(isNaN)) {
+            alert('すべての入力フィールドに有効な数値を入力してください。');
+            simulateButton.disabled = false;
+            return;
+        }
+
+        try {
+            const response = await fetch('/simulate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    investment1: investment1Data,
+                    investment2: investment2Data,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const results = await response.json();
+            console.log("Simulation results:", results);
+
+            // Render table results
+            resultsTableBody.innerHTML = ''; // Clear previous results
+            results.forEach(res => {
+                const row = resultsTableBody.insertRow();
+                row.insertCell().textContent = res.year;
+                row.insertCell().textContent = formatCurrency(res.min);
+                row.insertCell().textContent = formatCurrency(res.p10);
+                row.insertCell().textContent = formatCurrency(res.median);
+                row.insertCell().textContent = formatCurrency(res.p90);
+                row.insertCell().textContent = formatCurrency(res.max);
+                row.insertCell().textContent = formatCurrency(res.average);
+            });
+
+            // Render summary table
+            summaryTableBody.innerHTML = '';
+            if (results.length > 0) {
+                const lastResult = results[results.length - 1];
+                const row = summaryTableBody.insertRow();
+                row.insertCell().textContent = formatCurrency(lastResult.min); // Final min
+                row.insertCell().textContent = formatCurrency(lastResult.p10); // Final 10%
+                row.insertCell().textContent = formatCurrency(lastResult.median); // Final median
+                row.insertCell().textContent = formatCurrency(lastResult.p90); // Final 90%
+                row.insertCell().textContent = formatCurrency(lastResult.max); // Final max
+                row.insertCell().textContent = formatCurrency(lastResult.average); // Final average
+            }
+            
+            // Update Chart.js data
+            const chartLabels = results.map(res => res.year);
+            simulationChart.data.labels = chartLabels;
+            simulationChart.data.datasets = [
+                {
+                    label: '中央値 (50%)',
+                    data: results.map(res => res.median),
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    tension: 0.1,
+                },
+                {
+                    label: '90% パーセンタイル',
+                    data: results.map(res => res.p90),
+                    borderColor: 'rgb(53, 162, 235)',
+                    backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                    tension: 0.1,
+                },
+                {
+                    label: '10% パーセンタイル',
+                    data: results.map(res => res.p10),
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    tension: 0.1,
+                },
+            ];
+            simulationChart.update(); // Update chart to re-render with new data
+            downloadChartButton.style.display = 'block'; // Show download button
+
+        } catch (error) {
+            console.error('Error during simulation:', error);
+            alert('シミュレーション中にエラーが発生しました: ' + error.message);
+        } finally {
+            simulateButton.disabled = false; // Re-enable button
+        }
+    });
+});
