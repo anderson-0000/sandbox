@@ -15,20 +15,20 @@ CORS(app) # 開発用にCORSを許可
 def load_defaults():
     default_values = {
         "inv1": {
-            "initial": 100000,
-            "monthly": 10000,
+            "initial": 10, # 10万円
+            "monthly": 1,  # 1万円
             "return": 5.0,
             "risk": 10.0,
             "period": 20,
-            "change_settings": [] # 変更: リストとして定義
+            "change_settings": []
         },
         "inv2": {
-            "initial": 100000,
-            "monthly": 10000,
+            "initial": 10, # 10万円
+            "monthly": 1,  # 1万円
             "return": 5.0,
             "risk": 10.0,
             "period": 20,
-            "change_settings": [] # 変更: リストとして定義
+            "change_settings": []
         },
         "existing_savings": 0,
         "life_events": []
@@ -43,15 +43,27 @@ def load_defaults():
                     if inv_key in loaded_defaults:
                         # 変更: change_settings を直接読み込む
                         if "change_settings" in loaded_defaults[inv_key] and isinstance(loaded_defaults[inv_key]["change_settings"], list):
-                            default_values[inv_key]["change_settings"] = loaded_defaults[inv_key]["change_settings"]
-                        # その他のパラメーターは従来通り
-                        for param_key in ["initial", "monthly", "return", "risk", "period"]:
+                            # change_settings の monthly も万円から円に変換
+                            default_values[inv_key]["change_settings"] = [
+                                {**setting, "monthly": setting["monthly"] * 10000}
+                                for setting in loaded_defaults[inv_key]["change_settings"]
+                            ]
+                        # その他のパラメーターは従来通り、金額は万円から円に変換
+                        for param_key in ["initial", "monthly"]:
                             if param_key in loaded_defaults[inv_key]:
                                 default_values[inv_key][param_key] = loaded_defaults[inv_key][param_key]
+                        for param_key in ["return", "risk", "period"]: # 金額ではないパラメータ
+                            if param_key in loaded_defaults[inv_key]:
+                                default_values[inv_key][param_key] = loaded_defaults[inv_key][param_key]
+                
                 if "existing_savings" in loaded_defaults:
                     default_values["existing_savings"] = loaded_defaults["existing_savings"]
                 if "life_events" in loaded_defaults and isinstance(loaded_defaults["life_events"], list):
-                    default_values["life_events"] = loaded_defaults["life_events"]
+                    # life_events の amount も万円から円に変換
+                    default_values["life_events"] = [
+                        {**event, "amount": event["amount"]}
+                        for event in loaded_defaults["life_events"]
+                    ]
         except yaml.YAMLError:
             app.logger.warning(f"defaults.yaml is malformed, using hardcoded defaults. Path: {defaults_file_path}")
         except Exception as e:
@@ -91,6 +103,21 @@ def simulate():
 
     if not all([investment1, investment2]):
         return jsonify({"error": "Missing investment data"}), 400
+
+    # 金額関連の値を万円から円に変換
+    investment1['initial'] *= 10000
+    investment1['monthly'] *= 10000
+    for setting in investment1.get('change_settings', []):
+        setting['monthly'] *= 10000
+
+    investment2['initial'] *= 10000
+    investment2['monthly'] *= 10000
+    for setting in investment2.get('change_settings', []):
+        setting['monthly'] *= 10000
+    
+    existing_savings *= 10000
+    for event in life_events:
+        event['amount'] *= 10000
 
     try:
         simulation_output = run_monte_carlo_simulation(investment1, investment2, existing_savings, life_events)

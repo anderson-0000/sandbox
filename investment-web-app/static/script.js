@@ -1,5 +1,5 @@
 // static/script.js
-import { formatCurrency } from './utils.js';
+import { formatCurrency, formatNumber } from './utils.js';
 import { populateForm, addLifeEventItem, addChangeSettingItem, getInvestmentData, getLifeEventsData } from './dom_handlers.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -119,11 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'ポートフォリオ価値 (円)',
+                            text: 'ポートフォリオ価値 (万円)',
                         },
                         ticks: {
                             callback: function(value) {
-                                return formatCurrency(value);
+                                return formatNumber(value / 10000);
                             }
                         }
                     },
@@ -317,12 +317,12 @@ document.addEventListener('DOMContentLoaded', () => {
             globalYearlyResults.forEach(res => { // globalYearlyResults を使用
                 const row = resultsTableBody.insertRow();
                 row.insertCell().textContent = res.year;
-                row.insertCell().textContent = formatCurrency(res.min);
-                row.insertCell().textContent = formatCurrency(res.p10);
-                row.insertCell().textContent = formatCurrency(res.median);
-                row.insertCell().textContent = formatCurrency(res.p90);
-                row.insertCell().textContent = formatCurrency(res.max);
-                row.insertCell().textContent = formatCurrency(res.average);
+                row.insertCell().textContent = formatCurrency(res.min * 10000);
+                row.insertCell().textContent = formatCurrency(res.p10 * 10000);
+                row.insertCell().textContent = formatCurrency(res.median * 10000);
+                row.insertCell().textContent = formatCurrency(res.p90 * 10000);
+                row.insertCell().textContent = formatCurrency(res.max * 10000);
+                row.insertCell().textContent = formatCurrency(res.average * 10000);
             });
 
             // Render summary table
@@ -330,12 +330,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (globalYearlyResults.length > 0) { // globalYearlyResults を使用
                 const lastResult = globalYearlyResults[globalYearlyResults.length - 1];
                 const row = summaryTableBody.insertRow();
-                row.insertCell().textContent = formatCurrency(lastResult.min); // Final min
-                row.insertCell().textContent = formatCurrency(lastResult.p10); // Final 10%
-                row.insertCell().textContent = formatCurrency(lastResult.median); // Final median
-                row.insertCell().textContent = formatCurrency(lastResult.p90); // Final 90%
-                row.insertCell().textContent = formatCurrency(lastResult.max); // Final max
-                row.insertCell().textContent = formatCurrency(lastResult.average); // Final average
+                row.insertCell().textContent = formatCurrency(lastResult.min * 10000); // Final min
+                row.insertCell().textContent = formatCurrency(lastResult.p10 * 10000); // Final 10%
+                row.insertCell().textContent = formatCurrency(lastResult.median * 10000); // Final median
+                row.insertCell().textContent = formatCurrency(lastResult.p90 * 10000); // Final 90%
+                row.insertCell().textContent = formatCurrency(lastResult.max * 10000); // Final max
+                row.insertCell().textContent = formatCurrency(lastResult.average * 10000); // Final average
             }
             
             updateChartData(); // グラフ更新関数を呼び出す

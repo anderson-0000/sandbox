@@ -1,16 +1,12 @@
 inv1:
-  initial: 100000
-  monthly: 10000
+  initial: 10 # 10万円
+  monthly: 1  # 1万円
   return: 5.0
   risk: 10.0
   period: 20
   change_settings: [] # 変更
 inv2:
-  initial: 100000
-  monthly: 10000
-  return: 5.0
-  risk: 10.0
-  period: 20
-  change_settings: [] # 変更
+  initial: 10 # 10万円
+  monthly: 1  # 1万円
 existing_savings: 0
 life_events: []
