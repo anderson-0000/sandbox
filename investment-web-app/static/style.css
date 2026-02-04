@@ -194,3 +194,71 @@ table tbody tr:hover {
     font-size: 1em;
     text-align: center;
 }
+
+.life-events-section {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fdfdfd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.life-event-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.life-event-item label {
+    font-weight: bold;
+    color: #555;
+}
+
+.life-event-item input[type="number"] {
+    width: 80px; /* 年の入力フィールドの幅を調整 */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+.life-event-item .life-event-amount {
+    width: 120px; /* 金額の入力フィールドの幅を調整 */
+}
+
+.remove-life-event {
+    padding: 5px 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.3s ease;
+}
+
+.remove-life-event:hover {
+    background-color: #c82333;
+}
+
+#addLifeEventButton {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+#addLifeEventButton:hover {
+    background-color: #0056b3;
+}

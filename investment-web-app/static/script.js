@@ -4,6 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsTableBody = document.querySelector('#resultsTable tbody');
     const summaryTableBody = document.querySelector('#summaryTable tbody');
     const chartCanvas = document.getElementById('simulationChart');
+
+    // Life Event elements
+    const addLifeEventButton = document.getElementById('addLifeEventButton');
+    const lifeEventsContainer = document.getElementById('life_events_container');
+    const lifeEventItemTemplate = `
+        <div class="life-event-item">
+            <label>何年後:</label>
+            <input type="number" class="life-event-year" min="1" value="">
+            <label>金額 (円):</label>
+            <input type="number" class="life-event-amount" min="0" value="">
+            <button type="button" class="remove-life-event">削除</button>
+        </div>
+    `;
+
     // Define and register custom plugin for chart background
     const customCanvasBackgroundColor = {
         id: 'customCanvasBackgroundColor',
@@ -37,6 +51,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById(`${prefix}_changed_monthly`).value = data.changed_monthly || ''; // 0またはnullの場合は空欄
     };
 
+    // Function to add a new life event input item
+    const addLifeEventItem = (year = '', amount = '') => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = lifeEventItemTemplate;
+        const newItem = tempDiv.firstElementChild;
+        newItem.querySelector('.life-event-year').value = year;
+        newItem.querySelector('.life-event-amount').value = amount;
+        lifeEventsContainer.appendChild(newItem);
+    };
+
     // Function to load default values
     const loadDefaultValues = async () => {
         try {
@@ -49,6 +73,17 @@ document.addEventListener('DOMContentLoaded', () => {
             populateForm('inv2', defaults.inv2);
             // Set existing savings default
             document.getElementById('existing_savings').value = defaults.existing_savings || 0;
+
+            // Populate life events
+            lifeEventsContainer.innerHTML = ''; // Clear existing
+            if (defaults.life_events && defaults.life_events.length > 0) {
+                defaults.life_events.forEach(event => {
+                    addLifeEventItem(event.year, event.amount);
+                });
+            } else {
+                addLifeEventItem(); // Add one empty by default
+            }
+
         } catch (error) {
             console.error('Error loading default values:', error);
             alert('デフォルト値の読み込み中にエラーが発生しました。');
@@ -124,6 +159,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load default values on page load
     loadDefaultValues();
 
+    // Event listener for adding life event items
+    addLifeEventButton.addEventListener('click', () => addLifeEventItem());
+
+    // Event listener for removing life event items (delegated)
+    lifeEventsContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('remove-life-event')) {
+            event.target.closest('.life-event-item').remove();
+        }
+    });
+
     // Event listener for downloading chart
     downloadChartButton.addEventListener('click', () => {
         if (simulationChart) {
@@ -157,16 +202,38 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         };
 
+        const getLifeEventsData = () => {
+            const events = [];
+            document.querySelectorAll('.life-event-item').forEach(item => {
+                const year = parseInt(item.querySelector('.life-event-year').value, 10);
+                const amount = parseFloat(item.querySelector('.life-event-amount').value);
+                if (!isNaN(year) && year > 0 && !isNaN(amount)) {
+                    events.push({ year, amount });
+                }
+            });
+            return events;
+        };
+
         const investment1Data = getInvestmentData('inv1');
         const investment2Data = getInvestmentData('inv2');
         const existingSavings = parseFloat(document.getElementById('existing_savings').value);
+        const lifeEventsData = getLifeEventsData(); // Get life events data
 
-        // Basic validation
+        // Basic validation for investment data
         if (Object.values(investment1Data).some(isNaN) || Object.values(investment2Data).some(isNaN) || isNaN(existingSavings)) {
             alert('すべての入力フィールドに有効な数値を入力してください。');
             simulateButton.disabled = false;
             return;
         }
+        // Basic validation for life events
+        for (const event of lifeEventsData) {
+            if (isNaN(event.year) || event.year <= 0 || isNaN(event.amount)) {
+                alert('ライフイベントの「何年後」は1以上の数値を、「金額」は数値を入力してください。');
+                simulateButton.disabled = false;
+                return;
+            }
+        }
+
 
         try {
             const response = await fetch('/simulate', {
@@ -177,7 +244,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     investment1: investment1Data,
                     investment2: investment2Data,
-                    existing_savings: existingSavings, // Add existing savings
+                    existing_savings: existingSavings,
+                    life_events: lifeEventsData, // Add life events
                 }),
             });
 

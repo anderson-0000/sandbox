@@ -66,9 +66,18 @@ def get_normal_random(mean, std_dev):
     """正規分布に従う乱数を生成"""
     return mean + get_gaussian_random() * std_dev
 
-def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, num_simulations=5000):
+def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, life_events, num_simulations=5000):
     all_simulation_paths = []
     total_investment_period = max(investment_data1['period'], investment_data2['period'])
+
+    # ライフイベントを年ごとに辞書にまとめる
+    life_events_by_year = {}
+    for event in life_events:
+        year = event['year']
+        amount = event['amount']
+        if year not in life_events_by_year:
+            life_events_by_year[year] = 0
+        life_events_by_year[year] += amount
 
     for _ in range(num_simulations):
         path1_values = [investment_data1['initial']]
@@ -94,12 +103,19 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
             val2 = val2 * (1 + annual_return) + (monthly2 * 12 * (1 + annual_return / 2))
             path2_values.append(val2)
         
-        # 2つのポートフォリオを合算し、既存貯金を加算
+        # 2つのポートフォリオを合算し、既存貯金を加算、ライフイベント費用を減算
         combined_path = []
         for year_idx in range(total_investment_period):
             year_val1 = path1_values[year_idx+1] if year_idx < investment_data1['period'] else path1_values[investment_data1['period']]
             year_val2 = path2_values[year_idx+1] if year_idx < investment_data2['period'] else path2_values[investment_data2['period']]
-            combined_path.append(year_val1 + year_val2 + existing_savings) # 既存貯金を加算
+            
+            current_year_total = year_val1 + year_val2 + existing_savings
+
+            # ライフイベント費用を差し引く
+            if (year_idx + 1) in life_events_by_year:
+                current_year_total -= life_events_by_year[year_idx + 1]
+
+            combined_path.append(current_year_total)
         all_simulation_paths.append(combined_path)
 
     yearly_results = []
@@ -155,13 +171,14 @@ def simulate():
 
     investment1 = data.get('investment1')
     investment2 = data.get('investment2')
-    existing_savings = data.get('existing_savings', 0) # 既存貯金を取得、デフォルトは0
+    existing_savings = data.get('existing_savings', 0)
+    life_events = data.get('life_events', []) # ライフイベントを取得、デフォルトは空リスト
 
     if not all([investment1, investment2]):
         return jsonify({"error": "Missing investment data"}), 400
 
     try:
-        results = run_monte_carlo_simulation(investment1, investment2, existing_savings)
+        results = run_monte_carlo_simulation(investment1, investment2, existing_savings, life_events)
         return jsonify(results)
     except Exception as e:
         app.logger.error(f"Simulation error: {e}")
