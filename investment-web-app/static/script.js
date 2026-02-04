@@ -1,3 +1,7 @@
+// static/script.js
+import { formatCurrency } from './utils.js';
+import { populateForm, addLifeEventItem, getInvestmentData, getLifeEventsData } from './dom_handlers.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const simulateButton = document.getElementById('simulateButton');
     const downloadChartButton = document.getElementById('downloadChartButton');
@@ -8,15 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Life Event elements
     const addLifeEventButton = document.getElementById('addLifeEventButton');
     const lifeEventsContainer = document.getElementById('life_events_container');
-    const lifeEventItemTemplate = `
-        <div class="life-event-item">
-            <label>何年後:</label>
-            <input type="number" class="life-event-year" min="1" value="">
-            <label>金額 (円):</label>
-            <input type="number" class="life-event-amount" min="0" value="">
-            <button type="button" class="remove-life-event">削除</button>
-        </div>
-    `;
 
     // Define and register custom plugin for chart background
     const customCanvasBackgroundColor = {
@@ -33,33 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     Chart.register(customCanvasBackgroundColor); // Register the plugin
 
     let simulationChart; // To hold the Chart.js instance
-
-    // Helper to format currency
-    const formatCurrency = (value) => {
-        return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(Math.round(value));
-    };
-
-    // Function to populate form fields
-    const populateForm = (prefix, data) => {
-        document.getElementById(`${prefix}_initial`).value = data.initial;
-        document.getElementById(`${prefix}_monthly`).value = data.monthly;
-        document.getElementById(`${prefix}_return`).value = data.return;
-        document.getElementById(`${prefix}_risk`).value = data.risk;
-        document.getElementById(`${prefix}_period`).value = data.period;
-        // New fields
-        document.getElementById(`${prefix}_change_year`).value = data.change_year || ''; // 0またはnullの場合は空欄
-        document.getElementById(`${prefix}_changed_monthly`).value = data.changed_monthly || ''; // 0またはnullの場合は空欄
-    };
-
-    // Function to add a new life event input item
-    const addLifeEventItem = (year = '', amount = '') => {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = lifeEventItemTemplate;
-        const newItem = tempDiv.firstElementChild;
-        newItem.querySelector('.life-event-year').value = year;
-        newItem.querySelector('.life-event-amount').value = amount;
-        lifeEventsContainer.appendChild(newItem);
-    };
 
     // Function to load default values
     const loadDefaultValues = async () => {
@@ -78,10 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
             lifeEventsContainer.innerHTML = ''; // Clear existing
             if (defaults.life_events && defaults.life_events.length > 0) {
                 defaults.life_events.forEach(event => {
-                    addLifeEventItem(event.year, event.amount);
+                    addLifeEventItem(lifeEventsContainer, event.year, event.amount); // lifeEventsContainer を渡す
                 });
             } else {
-                addLifeEventItem(); // Add one empty by default
+                addLifeEventItem(lifeEventsContainer); // Add one empty by default, lifeEventsContainer を渡す
             }
 
         } catch (error) {
@@ -160,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDefaultValues();
 
     // Event listener for adding life event items
-    addLifeEventButton.addEventListener('click', () => addLifeEventItem());
+    addLifeEventButton.addEventListener('click', () => addLifeEventItem(lifeEventsContainer)); // lifeEventsContainer を渡す
 
     // Event listener for removing life event items (delegated)
     lifeEventsContainer.addEventListener('click', (event) => {
@@ -185,34 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
     simulateButton.addEventListener('click', async () => {
         simulateButton.disabled = true; // Disable button during simulation
         downloadChartButton.style.display = 'none'; // Hide download button until new results are ready
-
-        const getInvestmentData = (prefix) => {
-            const changeYearElement = document.getElementById(`${prefix}_change_year`);
-            const changedMonthlyElement = document.getElementById(`${prefix}_changed_monthly`);
-
-            return {
-                initial: parseFloat(document.getElementById(`${prefix}_initial`).value),
-                monthly: parseFloat(document.getElementById(`${prefix}_monthly`).value),
-                return: parseFloat(document.getElementById(`${prefix}_return`).value),
-                risk: parseFloat(document.getElementById(`${prefix}_risk`).value),
-                period: parseInt(document.getElementById(`${prefix}_period`).value, 10),
-                // New fields, parse as float and default to 0 if empty
-                change_year: changeYearElement && changeYearElement.value ? parseInt(changeYearElement.value, 10) : 0,
-                changed_monthly: changedMonthlyElement && changedMonthlyElement.value ? parseFloat(changedMonthlyElement.value) : 0,
-            };
-        };
-
-        const getLifeEventsData = () => {
-            const events = [];
-            document.querySelectorAll('.life-event-item').forEach(item => {
-                const year = parseInt(item.querySelector('.life-event-year').value, 10);
-                const amount = parseFloat(item.querySelector('.life-event-amount').value);
-                if (!isNaN(year) && year > 0 && !isNaN(amount)) {
-                    events.push({ year, amount });
-                }
-            });
-            return events;
-        };
 
         const investment1Data = getInvestmentData('inv1');
         const investment2Data = getInvestmentData('inv2');
