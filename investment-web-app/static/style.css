@@ -108,6 +108,27 @@ h3 {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative; /* 追加 */
+}
+
+#downloadChartButton {
+    position: absolute; /* 追加 */
+    top: 20px; /* 上からの位置 */
+    right: 20px; /* 右からの位置 */
+    /* width は削除、padding で調整 */
+    padding: 8px 15px; /* ボタンのサイズ調整 */
+    background-color: #007bff; /* 青系の色に */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+    z-index: 10; /* グラフより手前に表示 */
+}
+
+#downloadChartButton:hover {
+    background-color: #0056b3;
 }
 
 .table-container {
