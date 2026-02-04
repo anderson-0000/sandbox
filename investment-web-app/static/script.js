@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const summaryTableBody = document.querySelector('#summaryTable tbody');
     const chartCanvas = document.getElementById('simulationChart');
 
+    const toggleSamplePaths = document.getElementById('toggleSamplePaths'); // 追加
+    const samplePathsSlider = document.getElementById('samplePathsSlider'); // 追加
+    const samplePathsCountSpan = document.getElementById('samplePathsCount'); // 追加
+
     // Life Event elements
     const addLifeEventButton = document.getElementById('addLifeEventButton');
     const lifeEventsContainer = document.getElementById('life_events_container');
@@ -37,6 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
     Chart.register(customCanvasBackgroundColor); // Register the plugin
 
     let simulationChart; // To hold the Chart.js instance
+    let globalYearlyResults = []; // 全体の結果を保持
+    let globalSamplePaths = [];   // サンプルパスを保持
 
     // Function to load default values
     const loadDefaultValues = async () => {
@@ -132,6 +138,58 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // Function to update chart datasets based on results and controls
+    const updateChartData = () => {
+        const chartLabels = globalYearlyResults.map(res => res.year);
+        const datasets = [
+            {
+                label: '中央値 (50%)',
+                data: globalYearlyResults.map(res => res.median),
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                tension: 0.1,
+            },
+            {
+                label: '90% パーセンタイル',
+                data: globalYearlyResults.map(res => res.p90),
+                borderColor: 'rgb(53, 162, 235)',
+                backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                tension: 0.1,
+            },
+            {
+                label: '10% パーセンタイル',
+                data: globalYearlyResults.map(res => res.p10),
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                tension: 0.1,
+            },
+        ];
+
+        if (toggleSamplePaths.checked && globalSamplePaths.length > 0) {
+            const numPathsToShow = parseInt(samplePathsSlider.value, 10);
+            for (let i = 0; i < Math.min(numPathsToShow, globalSamplePaths.length); i++) {
+                // サンプルパスの色を動的に生成
+                const r = Math.floor(Math.random() * 200) + 50; // 50-249
+                const g = Math.floor(Math.random() * 200) + 50;
+                const b = Math.floor(Math.random() * 200) + 50;
+
+                datasets.push({
+                    label: `サンプルパス ${i + 1}`,
+                    data: globalSamplePaths[i],
+                    borderColor: `rgba(${r}, ${g}, ${b}, 0.7)`,
+                    backgroundColor: `rgba(${r}, ${g}, ${b}, 0.3)`,
+                    borderDash: [5, 5], // 点線
+                    tension: 0.1,
+                    hidden: false, // デフォルトで表示
+                });
+            }
+        }
+
+        simulationChart.data.labels = chartLabels;
+        simulationChart.data.datasets = datasets;
+        simulationChart.update();
+    };
+
     // Call initChart once on load
     initChart();
     // Load default values on page load
@@ -180,6 +238,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Event listeners for sample paths control
+    toggleSamplePaths.addEventListener('change', updateChartData);
+    samplePathsSlider.addEventListener('input', () => {
+        samplePathsCountSpan.textContent = samplePathsSlider.value;
+        updateChartData();
+    });
+
     simulateButton.addEventListener('click', async () => {
         simulateButton.disabled = true; // Disable button during simulation
         downloadChartButton.style.display = 'none'; // Hide download button until new results are ready
@@ -190,7 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const lifeEventsData = getLifeEventsData(); // Get life events data
 
         // Basic validation for investment data
-        if (Object.values(investment1Data).some(isNaN) || Object.values(investment2Data).some(isNaN) || isNaN(existingSavings)) {
+        if (isNaN(investment1Data.initial) || isNaN(investment1Data.monthly) || isNaN(investment1Data.return) || isNaN(investment1Data.risk) || isNaN(investment1Data.period) ||
+            isNaN(investment2Data.initial) || isNaN(investment2Data.monthly) || isNaN(investment2Data.return) || isNaN(investment2Data.risk) || isNaN(investment2Data.period) ||
+            isNaN(existingSavings)) {
             alert('すべての入力フィールドに有効な数値を入力してください。');
             simulateButton.disabled = false;
             return;
@@ -239,12 +306,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const results = await response.json();
-            console.log("Simulation results:", results);
+            const simulationOutput = await response.json(); // results から simulationOutput に変更
+            console.log("Simulation results:", simulationOutput);
+
+            globalYearlyResults = simulationOutput.yearly_results; // 結果をグローバル変数に保存
+            globalSamplePaths = simulationOutput.sample_paths;   // サンプルパスをグローバル変数に保存
 
             // Render table results
             resultsTableBody.innerHTML = ''; // Clear previous results
-            results.forEach(res => {
+            globalYearlyResults.forEach(res => { // globalYearlyResults を使用
                 const row = resultsTableBody.insertRow();
                 row.insertCell().textContent = res.year;
                 row.insertCell().textContent = formatCurrency(res.min);
@@ -257,8 +327,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Render summary table
             summaryTableBody.innerHTML = '';
-            if (results.length > 0) {
-                const lastResult = results[results.length - 1];
+            if (globalYearlyResults.length > 0) { // globalYearlyResults を使用
+                const lastResult = globalYearlyResults[globalYearlyResults.length - 1];
                 const row = summaryTableBody.insertRow();
                 row.insertCell().textContent = formatCurrency(lastResult.min); // Final min
                 row.insertCell().textContent = formatCurrency(lastResult.p10); // Final 10%
@@ -268,33 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 row.insertCell().textContent = formatCurrency(lastResult.average); // Final average
             }
             
-            // Update Chart.js data
-            const chartLabels = results.map(res => res.year);
-            simulationChart.data.labels = chartLabels;
-            simulationChart.data.datasets = [
-                {
-                    label: '中央値 (50%)',
-                    data: results.map(res => res.median),
-                    borderColor: 'rgb(75, 192, 192)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                    tension: 0.1,
-                },
-                {
-                    label: '90% パーセンタイル',
-                    data: results.map(res => res.p90),
-                    borderColor: 'rgb(53, 162, 235)',
-                    backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                    tension: 0.1,
-                },
-                {
-                    label: '10% パーセンタイル',
-                    data: results.map(res => res.p10),
-                    borderColor: 'rgb(255, 99, 132)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                    tension: 0.1,
-                },
-            ];
-            simulationChart.update(); // Update chart to re-render with new data
+            updateChartData(); // グラフ更新関数を呼び出す
             downloadChartButton.style.display = 'block'; // Show download button
 
         } catch (error) {

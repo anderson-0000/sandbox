@@ -11,11 +11,10 @@ def get_normal_random(mean, std_dev):
     """正規分布に従う乱数を生成"""
     return mean + get_gaussian_random() * std_dev
 
-def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, life_events, num_simulations=5000):
+def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, life_events, num_simulations=5000, num_sample_paths=5):
     all_simulation_paths = []
     total_investment_period = max(investment_data1['period'], investment_data2['period'])
 
-    # ライフイベントを年ごとに辞書にまとめる
     life_events_by_year = {}
     for event in life_events:
         year = event['year']
@@ -24,10 +23,8 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
             life_events_by_year[year] = 0
         life_events_by_year[year] += amount
 
-    # 積立額変更設定を年ごとにソートして辞書にまとめるヘルパー関数
     def get_monthly_changes_by_year(change_settings):
         changes = {}
-        # 変更年が若い順にソートする
         sorted_settings = sorted(change_settings, key=lambda x: x['year'])
         for setting in sorted_settings:
             changes[setting['year']] = setting['monthly']
@@ -62,7 +59,6 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
             val2 = val2 * (1 + annual_return) + (monthly2 * 12 * (1 + annual_return / 2))
             path2_values.append(val2)
         
-        # 2つのポートフォリオを合算し、既存貯金を加算、ライフイベント費用を減算
         combined_path = []
         for year_idx in range(total_investment_period):
             year_val1 = path1_values[year_idx+1] if year_idx < investment_data1['period'] else path1_values[investment_data1['period']]
@@ -70,7 +66,6 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
             
             current_year_total = year_val1 + year_val2 + existing_savings
 
-            # ライフイベント費用を差し引く
             if (year_idx + 1) in life_events_by_year:
                 current_year_total -= life_events_by_year[year_idx + 1]
 
@@ -81,7 +76,6 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
     for year_idx in range(total_investment_period):
         year_values = sorted([path[year_idx] for path in all_simulation_paths])
         
-        # quantilesを計算するヘルパー関数
         def get_percentile(data, percentile):
             if not data:
                 return 0
@@ -105,4 +99,11 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
             "max": year_values[-1],
             "average": statistics.mean(year_values) if year_values else 0
         })
-    return yearly_results
+    
+    # ランダムなサンプルパスを選択
+    sample_paths = random.sample(all_simulation_paths, min(num_sample_paths, len(all_simulation_paths)))
+
+    return {
+        "yearly_results": yearly_results,
+        "sample_paths": sample_paths
+    }

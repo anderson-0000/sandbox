@@ -93,8 +93,8 @@ def simulate():
         return jsonify({"error": "Missing investment data"}), 400
 
     try:
-        results = run_monte_carlo_simulation(investment1, investment2, existing_savings, life_events)
-        return jsonify(results)
+        simulation_output = run_monte_carlo_simulation(investment1, investment2, existing_savings, life_events)
+        return jsonify(simulation_output) # 辞書全体を返す
     except Exception as e:
         app.logger.error(f"Simulation error: {e}")
         return jsonify({"error": str(e)}), 500
