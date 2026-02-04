@@ -27,6 +27,13 @@
 
                 <label for="inv1_period">投資期間 (年):</label>
                 <input type="number" id="inv1_period" min="1">
+
+                <h3>積立額変更設定</h3>
+                <label for="inv1_change_year">積立額変更年 (〇年後):</label>
+                <input type="number" id="inv1_change_year" min="1" placeholder="例: 5">
+
+                <label for="inv1_changed_monthly">変更後の積立額 (円):</label>
+                <input type="number" id="inv1_changed_monthly" min="0" placeholder="例: 20000">
             </div>
 
             <div class="investment-form-container">
@@ -45,7 +52,19 @@
 
                 <label for="inv2_period">投資期間 (年):</label>
                 <input type="number" id="inv2_period" min="1">
+
+                <h3>積立額変更設定</h3>
+                <label for="inv2_change_year">積立額変更年 (〇年後):</label>
+                <input type="number" id="inv2_change_year" min="1" placeholder="例: 5">
+
+                <label for="inv2_changed_monthly">変更後の積立額 (円):</label>
+                <input type="number" id="inv2_changed_monthly" min="0" placeholder="例: 20000">
             </div>
+        </div>
+
+        <div class="general-settings">
+            <label for="existing_savings">既存貯金 (円):</label>
+            <input type="number" id="existing_savings" min="0" value="0">
         </div>
 
         <button id="simulateButton">シミュレーション実行</button>

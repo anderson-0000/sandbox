@@ -32,6 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById(`${prefix}_return`).value = data.return;
         document.getElementById(`${prefix}_risk`).value = data.risk;
         document.getElementById(`${prefix}_period`).value = data.period;
+        // New fields
+        document.getElementById(`${prefix}_change_year`).value = data.change_year || ''; // 0またはnullの場合は空欄
+        document.getElementById(`${prefix}_changed_monthly`).value = data.changed_monthly || ''; // 0またはnullの場合は空欄
     };
 
     // Function to load default values
@@ -44,6 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const defaults = await response.json();
             populateForm('inv1', defaults.inv1);
             populateForm('inv2', defaults.inv2);
+            // Set existing savings default
+            document.getElementById('existing_savings').value = defaults.existing_savings || 0;
         } catch (error) {
             console.error('Error loading default values:', error);
             alert('デフォルト値の読み込み中にエラーが発生しました。');
@@ -136,19 +141,28 @@ document.addEventListener('DOMContentLoaded', () => {
         simulateButton.disabled = true; // Disable button during simulation
         downloadChartButton.style.display = 'none'; // Hide download button until new results are ready
 
-        const getInvestmentData = (prefix) => ({
-            initial: parseFloat(document.getElementById(`${prefix}_initial`).value),
-            monthly: parseFloat(document.getElementById(`${prefix}_monthly`).value),
-            return: parseFloat(document.getElementById(`${prefix}_return`).value),
-            risk: parseFloat(document.getElementById(`${prefix}_risk`).value),
-            period: parseInt(document.getElementById(`${prefix}_period`).value, 10),
-        });
+        const getInvestmentData = (prefix) => {
+            const changeYearElement = document.getElementById(`${prefix}_change_year`);
+            const changedMonthlyElement = document.getElementById(`${prefix}_changed_monthly`);
+
+            return {
+                initial: parseFloat(document.getElementById(`${prefix}_initial`).value),
+                monthly: parseFloat(document.getElementById(`${prefix}_monthly`).value),
+                return: parseFloat(document.getElementById(`${prefix}_return`).value),
+                risk: parseFloat(document.getElementById(`${prefix}_risk`).value),
+                period: parseInt(document.getElementById(`${prefix}_period`).value, 10),
+                // New fields, parse as float and default to 0 if empty
+                change_year: changeYearElement && changeYearElement.value ? parseInt(changeYearElement.value, 10) : 0,
+                changed_monthly: changedMonthlyElement && changedMonthlyElement.value ? parseFloat(changedMonthlyElement.value) : 0,
+            };
+        };
 
         const investment1Data = getInvestmentData('inv1');
         const investment2Data = getInvestmentData('inv2');
+        const existingSavings = parseFloat(document.getElementById('existing_savings').value);
 
         // Basic validation
-        if (Object.values(investment1Data).some(isNaN) || Object.values(investment2Data).some(isNaN)) {
+        if (Object.values(investment1Data).some(isNaN) || Object.values(investment2Data).some(isNaN) || isNaN(existingSavings)) {
             alert('すべての入力フィールドに有効な数値を入力してください。');
             simulateButton.disabled = false;
             return;
@@ -163,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     investment1: investment1Data,
                     investment2: investment2Data,
+                    existing_savings: existingSavings, // Add existing savings
                 }),
             });
 

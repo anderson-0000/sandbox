@@ -6,6 +6,7 @@ import statistics
 import os
 import yaml # yamlモジュールをインポート
 
+
 app = Flask(__name__, static_folder='static', static_url_path='')
 CORS(app) # 開発用にCORSを許可
 
@@ -17,32 +18,38 @@ def load_defaults():
             "monthly": 10000,
             "return": 5.0,
             "risk": 10.0,
-            "period": 20
+            "period": 20,
+            "change_year": 0,
+            "changed_monthly": 0
         },
         "inv2": {
             "initial": 100000,
             "monthly": 10000,
             "return": 5.0,
             "risk": 10.0,
-            "period": 20
-        }
+            "period": 20,
+            "change_year": 0,
+            "changed_monthly": 0
+        },
+        "existing_savings": 0
     }
-    
+
     defaults_file_path = os.path.join(os.path.dirname(__file__), 'defaults.yaml')
     if os.path.exists(defaults_file_path):
         try:
             with open(defaults_file_path, 'r', encoding='utf-8') as f:
                 loaded_defaults = yaml.safe_load(f)
-                # 読み込んだデフォルト値で上書き（キーが存在する場合のみ）
-                for inv_key in default_values:
+                for inv_key in ["inv1", "inv2"]:
                     if inv_key in loaded_defaults:
                         for param_key in default_values[inv_key]:
                             if param_key in loaded_defaults[inv_key]:
                                 default_values[inv_key][param_key] = loaded_defaults[inv_key][param_key]
+                if "existing_savings" in loaded_defaults:
+                    default_values["existing_savings"] = loaded_defaults["existing_savings"]
         except yaml.YAMLError:
             app.logger.warning(f"defaults.yaml is malformed, using hardcoded defaults. Path: {defaults_file_path}")
         except Exception as e:
-            app.logger.error(f"Error loading defaults.json: {e}, using hardcoded defaults.")
+            app.logger.error(f"Error loading defaults.yaml: {e}, using hardcoded defaults.")
     else:
         app.logger.info(f"defaults.yaml not found at {defaults_file_path}, using hardcoded defaults.")
             
@@ -59,33 +66,40 @@ def get_normal_random(mean, std_dev):
     """正規分布に従う乱数を生成"""
     return mean + get_gaussian_random() * std_dev
 
-def run_monte_carlo_simulation(investment_data1, investment_data2, num_simulations=5000):
+def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, num_simulations=5000):
     all_simulation_paths = []
     total_investment_period = max(investment_data1['period'], investment_data2['period'])
 
     for _ in range(num_simulations):
-        path1_values = [investment_data1['initial']] # 各年の途中経過を保持するためのリスト
+        path1_values = [investment_data1['initial']]
         path2_values = [investment_data2['initial']]
 
         val1 = investment_data1['initial']
+        monthly1 = investment_data1['monthly']
         for year_idx in range(investment_data1['period']):
+            if investment_data1['change_year'] > 0 and year_idx + 1 >= investment_data1['change_year']:
+                monthly1 = investment_data1['changed_monthly']
+
             annual_return = get_normal_random(investment_data1['return'] / 100, investment_data1['risk'] / 100)
-            val1 = val1 * (1 + annual_return) + (investment_data1['monthly'] * 12 * (1 + annual_return / 2))
+            val1 = val1 * (1 + annual_return) + (monthly1 * 12 * (1 + annual_return / 2))
             path1_values.append(val1)
 
         val2 = investment_data2['initial']
+        monthly2 = investment_data2['monthly']
         for year_idx in range(investment_data2['period']):
+            if investment_data2['change_year'] > 0 and year_idx + 1 >= investment_data2['change_year']:
+                monthly2 = investment_data2['changed_monthly']
+            
             annual_return = get_normal_random(investment_data2['return'] / 100, investment_data2['risk'] / 100)
-            val2 = val2 * (1 + annual_return) + (investment_data2['monthly'] * 12 * (1 + annual_return / 2))
+            val2 = val2 * (1 + annual_return) + (monthly2 * 12 * (1 + annual_return / 2))
             path2_values.append(val2)
         
-        # 2つのポートフォリオを合算
+        # 2つのポートフォリオを合算し、既存貯金を加算
         combined_path = []
         for year_idx in range(total_investment_period):
-            # 投資期間が短い方の最終値を使用する
             year_val1 = path1_values[year_idx+1] if year_idx < investment_data1['period'] else path1_values[investment_data1['period']]
             year_val2 = path2_values[year_idx+1] if year_idx < investment_data2['period'] else path2_values[investment_data2['period']]
-            combined_path.append(year_val1 + year_val2)
+            combined_path.append(year_val1 + year_val2 + existing_savings) # 既存貯金を加算
         all_simulation_paths.append(combined_path)
 
     yearly_results = []
@@ -110,11 +124,11 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, num_simulatio
             "min": year_values[0],
             "p10": get_percentile(year_values, 10),
             "p25": get_percentile(year_values, 25),
-            "median": statistics.median(year_values) if year_values else 0, # 空のリストの場合を考慮
+            "median": statistics.median(year_values) if year_values else 0,
             "p75": get_percentile(year_values, 75),
             "p90": get_percentile(year_values, 90),
             "max": year_values[-1],
-            "average": statistics.mean(year_values) if year_values else 0 # 空のリストの場合を考慮
+            "average": statistics.mean(year_values) if year_values else 0
         })
     return yearly_results
 
@@ -141,19 +155,17 @@ def simulate():
 
     investment1 = data.get('investment1')
     investment2 = data.get('investment2')
+    existing_savings = data.get('existing_savings', 0) # 既存貯金を取得、デフォルトは0
 
     if not all([investment1, investment2]):
         return jsonify({"error": "Missing investment data"}), 400
 
     try:
-        results = run_monte_carlo_simulation(investment1, investment2)
+        results = run_monte_carlo_simulation(investment1, investment2, existing_savings)
         return jsonify(results)
     except Exception as e:
         app.logger.error(f"Simulation error: {e}")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    # Flask-CORSをインストールしていない場合、pip install Flask-Cors を実行してください
-    # Flask自体をインストールしていない場合、pip install Flask を実行してください
-    # app.run(debug=True, host='0.0.0.0', port=5000)
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5001)

@@ -4,9 +4,14 @@ inv1:
   return: 5.0
   risk: 10.0
   period: 20
+  change_year: 0
+  changed_monthly: 0
 inv2:
   initial: 100000
   monthly: 10000
   return: 5.0
   risk: 10.0
   period: 20
+  change_year: 0
+  changed_monthly: 0
+existing_savings: 0
