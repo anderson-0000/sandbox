@@ -11,7 +11,7 @@ def get_normal_random(mean, std_dev):
     """正規分布に従う乱数を生成"""
     return mean + get_gaussian_random() * std_dev
 
-def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, life_events, num_simulations=5000, num_sample_paths=5):
+def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, life_events, num_simulations=5000, num_sample_paths=100):
     all_simulation_paths = []
     total_investment_period = max(investment_data1['period'], investment_data2['period'])
 
