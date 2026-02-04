@@ -20,8 +20,7 @@ def load_defaults():
             "return": 5.0,
             "risk": 10.0,
             "period": 20,
-            "change_year": 0,
-            "changed_monthly": 0
+            "change_settings": [] # 変更: リストとして定義
         },
         "inv2": {
             "initial": 100000,
@@ -29,10 +28,10 @@ def load_defaults():
             "return": 5.0,
             "risk": 10.0,
             "period": 20,
-            "change_year": 0,
-            "changed_monthly": 0
+            "change_settings": [] # 変更: リストとして定義
         },
-        "existing_savings": 0
+        "existing_savings": 0,
+        "life_events": []
     }
 
     defaults_file_path = os.path.join(os.path.dirname(__file__), 'defaults.yaml')
@@ -42,11 +41,17 @@ def load_defaults():
                 loaded_defaults = yaml.safe_load(f)
                 for inv_key in ["inv1", "inv2"]:
                     if inv_key in loaded_defaults:
-                        for param_key in default_values[inv_key]:
+                        # 変更: change_settings を直接読み込む
+                        if "change_settings" in loaded_defaults[inv_key] and isinstance(loaded_defaults[inv_key]["change_settings"], list):
+                            default_values[inv_key]["change_settings"] = loaded_defaults[inv_key]["change_settings"]
+                        # その他のパラメーターは従来通り
+                        for param_key in ["initial", "monthly", "return", "risk", "period"]:
                             if param_key in loaded_defaults[inv_key]:
                                 default_values[inv_key][param_key] = loaded_defaults[inv_key][param_key]
                 if "existing_savings" in loaded_defaults:
                     default_values["existing_savings"] = loaded_defaults["existing_savings"]
+                if "life_events" in loaded_defaults and isinstance(loaded_defaults["life_events"], list):
+                    default_values["life_events"] = loaded_defaults["life_events"]
         except yaml.YAMLError:
             app.logger.warning(f"defaults.yaml is malformed, using hardcoded defaults. Path: {defaults_file_path}")
         except Exception as e:

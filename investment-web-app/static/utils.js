@@ -14,3 +14,15 @@ export const createLifeEventItemHtml = (year = '', amount = '') => {
         </div>
     `;
 };
+
+export const createChangeSettingItemHtml = (year = '', monthly = '') => {
+    return `
+        <div class="change-setting-item">
+            <label>何年後:</label>
+            <input type="number" class="change-setting-year" min="1" value="${year}">
+            <label>変更後の積立額 (円):</label>
+            <input type="number" class="change-setting-monthly" min="0" value="${monthly}">
+            <button type="button" class="remove-change-setting">削除</button>
+        </div>
+    `;
+};

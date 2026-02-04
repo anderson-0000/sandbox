@@ -24,6 +24,18 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
             life_events_by_year[year] = 0
         life_events_by_year[year] += amount
 
+    # 積立額変更設定を年ごとにソートして辞書にまとめるヘルパー関数
+    def get_monthly_changes_by_year(change_settings):
+        changes = {}
+        # 変更年が若い順にソートする
+        sorted_settings = sorted(change_settings, key=lambda x: x['year'])
+        for setting in sorted_settings:
+            changes[setting['year']] = setting['monthly']
+        return changes
+
+    inv1_monthly_changes = get_monthly_changes_by_year(investment_data1.get('change_settings', []))
+    inv2_monthly_changes = get_monthly_changes_by_year(investment_data2.get('change_settings', []))
+
     for _ in range(num_simulations):
         path1_values = [investment_data1['initial']]
         path2_values = [investment_data2['initial']]
@@ -31,8 +43,9 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
         val1 = investment_data1['initial']
         monthly1 = investment_data1['monthly']
         for year_idx in range(investment_data1['period']):
-            if investment_data1['change_year'] > 0 and year_idx + 1 >= investment_data1['change_year']:
-                monthly1 = investment_data1['changed_monthly']
+            current_year = year_idx + 1
+            if current_year in inv1_monthly_changes:
+                monthly1 = inv1_monthly_changes[current_year]
 
             annual_return = get_normal_random(investment_data1['return'] / 100, investment_data1['risk'] / 100)
             val1 = val1 * (1 + annual_return) + (monthly1 * 12 * (1 + annual_return / 2))
@@ -41,8 +54,9 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
         val2 = investment_data2['initial']
         monthly2 = investment_data2['monthly']
         for year_idx in range(investment_data2['period']):
-            if investment_data2['change_year'] > 0 and year_idx + 1 >= investment_data2['change_year']:
-                monthly2 = investment_data2['changed_monthly']
+            current_year = year_idx + 1
+            if current_year in inv2_monthly_changes:
+                monthly2 = inv2_monthly_changes[current_year]
             
             annual_return = get_normal_random(investment_data2['return'] / 100, investment_data2['risk'] / 100)
             val2 = val2 * (1 + annual_return) + (monthly2 * 12 * (1 + annual_return / 2))

@@ -262,3 +262,61 @@ table tbody tr:hover {
 #addLifeEventButton:hover {
     background-color: #0056b3;
 }
+
+.investment-form-container button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.investment-form-container button:hover {
+    background-color: #0056b3;
+}
+
+.change-setting-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.change-setting-item label {
+    font-weight: bold;
+    color: #555;
+}
+
+.change-setting-item input[type="number"] {
+    width: 80px; /* 年の入力フィールドの幅を調整 */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-align: center;
+    margin-bottom: 0; /* フォームコンテナのデフォルトのmargin-bottomを上書き */
+}
+
+.change-setting-item .change-setting-monthly {
+    width: 120px; /* 金額の入力フィールドの幅を調整 */
+}
+
+.remove-change-setting {
+    padding: 5px 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.3s ease;
+}
+
+.remove-change-setting:hover {
+    background-color: #c82333;
+}

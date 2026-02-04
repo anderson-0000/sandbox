@@ -1,6 +1,6 @@
 // static/script.js
 import { formatCurrency } from './utils.js';
-import { populateForm, addLifeEventItem, getInvestmentData, getLifeEventsData } from './dom_handlers.js';
+import { populateForm, addLifeEventItem, addChangeSettingItem, getInvestmentData, getLifeEventsData } from './dom_handlers.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const simulateButton = document.getElementById('simulateButton');
@@ -12,6 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Life Event elements
     const addLifeEventButton = document.getElementById('addLifeEventButton');
     const lifeEventsContainer = document.getElementById('life_events_container');
+
+    // Investment 1 Change Setting elements
+    const addInv1ChangeSettingButton = document.getElementById('addInv1ChangeSettingButton');
+    const inv1ChangeSettingsContainer = document.getElementById('inv1_change_settings_container');
+
+    // Investment 2 Change Setting elements
+    const addInv2ChangeSettingButton = document.getElementById('addInv2ChangeSettingButton');
+    const inv2ChangeSettingsContainer = document.getElementById('inv2_change_settings_container');
+
 
     // Define and register custom plugin for chart background
     const customCanvasBackgroundColor = {
@@ -46,12 +55,13 @@ document.addEventListener('DOMContentLoaded', () => {
             lifeEventsContainer.innerHTML = ''; // Clear existing
             if (defaults.life_events && defaults.life_events.length > 0) {
                 defaults.life_events.forEach(event => {
-                    addLifeEventItem(lifeEventsContainer, event.year, event.amount); // lifeEventsContainer を渡す
+                    addLifeEventItem(lifeEventsContainer, event.year, event.amount);
                 });
             } else {
-                addLifeEventItem(lifeEventsContainer); // Add one empty by default, lifeEventsContainer を渡す
+                addLifeEventItem(lifeEventsContainer); // Add one empty by default
             }
 
+            // populateForm で積立額変更設定も初期表示されるようになったため、ここでの処理は不要
         } catch (error) {
             console.error('Error loading default values:', error);
             alert('デフォルト値の読み込み中にエラーが発生しました。');
@@ -137,6 +147,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Event listener for adding investment 1 change setting items
+    addInv1ChangeSettingButton.addEventListener('click', () => addChangeSettingItem(inv1ChangeSettingsContainer));
+
+    // Event listener for removing investment 1 change setting items (delegated)
+    inv1ChangeSettingsContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('remove-change-setting')) {
+            event.target.closest('.change-setting-item').remove();
+        }
+    });
+
+    // Event listener for adding investment 2 change setting items
+    addInv2ChangeSettingButton.addEventListener('click', () => addChangeSettingItem(inv2ChangeSettingsContainer));
+
+    // Event listener for removing investment 2 change setting items (delegated)
+    inv2ChangeSettingsContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('remove-change-setting')) {
+            event.target.closest('.change-setting-item').remove();
+        }
+    });
+
     // Event listener for downloading chart
     downloadChartButton.addEventListener('click', () => {
         if (simulationChart) {
@@ -173,7 +203,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
         }
+        
+        // Basic validation for change settings
+        const validateChangeSettings = (settings, investmentPrefix) => {
+            for (const setting of settings) {
+                if (isNaN(setting.year) || setting.year <= 0 || isNaN(setting.monthly)) {
+                    alert(`${investmentPrefix}の積立額変更設定で、「何年後」は1以上の数値を、「変更後の積立額」は数値を入力してください。`);
+                    return false;
+                }
+            }
+            return true;
+        };
 
+        if (!validateChangeSettings(investment1Data.change_settings, '投資信託1') ||
+            !validateChangeSettings(investment2Data.change_settings, '投資信託2')) {
+            simulateButton.disabled = false;
+            return;
+        }
 
         try {
             const response = await fetch('/simulate', {
