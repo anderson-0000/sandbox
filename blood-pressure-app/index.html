@@ -16,6 +16,9 @@
                 <label for="date">日付:</label>
                 <input type="date" id="date" required>
 
+                <label for="time">時刻:</label>
+                <input type="time" id="time" required>
+
                 <label for="systolic">最高血圧 (mmHg):</label>
                 <input type="number" id="systolic" placeholder="例: 120" required>
 
@@ -33,7 +36,10 @@
         </div>
 
         <div class="chart-area">
-            <h2>血圧・心拍数グラフ</h2>
+            <div class="chart-header">
+                <h2>血圧・心拍数グラフ</h2>
+                <button id="download-chart-btn">JPEGで保存</button>
+            </div>
             <div class="chart-wrapper">
                 <canvas id="bp-chart"></canvas>
             </div>
@@ -42,5 +48,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="app.js"></script>
+
+    <div class="data-display-area">
+        <h2>記録データ一覧</h2>
+        <div id="data-table-container">
+            <!-- ここにデータが表示されます -->
+        </div>
+    </div>
 </body>
 </html>
