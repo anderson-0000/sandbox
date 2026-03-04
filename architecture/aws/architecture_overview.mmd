@@ -1,0 +1,382 @@
+graph TD
+    %% ==========================================
+    %% 0. EXTERNAL ACTORS
+    %% ==========================================
+    subgraph Actors["Users & Connectivity"]
+        User_Ext("User (Internet/App)")
+        Admin_Ext("Admin / Internal Ops")
+        OnPrem_DC("Corporate Data Center")
+    end
+
+    %% ==========================================
+    %% 1. AWS CLOUD SCOPE
+    %% ==========================================
+    subgraph AWS["AWS Cloud (Serverless Enterprise Active-Active Environment)"]
+        direction TB
+
+        %% --- 1.1 GLOBAL EDGE & NETWORK ---
+        subgraph Global_Layer["Global Edge & Network Backbone"]
+            direction TB
+            
+            subgraph Edge_Sec["Edge Security (Zero Trust Entry)"]
+                R53("Route 53 (DNS)")
+                WAF("WAF / Shield Advanced<br/>(Auto-Block)")
+                CF("CloudFront (CDN)")
+                AVA("AWS Verified Access (Zero Trust)")
+                IAM_IC("IAM Identity Center")
+                ARC("Route 53 ARC<br/>(Routing Control)")
+            end
+            
+            subgraph Inspection_VPC["Inspection VPC (Centralized Security)"]
+                GWLB("Gateway Load Balancer")
+                ANFW("AWS Network Firewall (IPS/IDS)")
+            end
+
+            subgraph Backbone["Transit Gateway Backbone"]
+                TGW_T[("TGW (Tokyo)")] <== "Encrypted Peering" ==> TGW_O[("TGW (Osaka)")]
+                DXGW("Direct Connect Gateway")
+            end
+        end
+
+        %% --- 1.2 TOKYO REGION (PRIMARY) ---
+        subgraph Region_Tokyo["Region: Tokyo (ap-northeast-1)"]
+            direction TB
+
+            %% GEN AI MANAGED SERVICES (TOKYO)
+            subgraph GenAI_Layer_T["Generative AI (Bedrock)"]
+                style GenAI_Layer_T fill:#f9f2ff,stroke:#6600cc,stroke-width:2px,stroke-dasharray: 5 5
+                Bedrock_Model_T("Amazon Bedrock<br/>(FMs: Claude/Titan)")
+                Bedrock_KB_T("Knowledge Base<br/>(RAG Agent)")
+                Bedrock_Guard_T("Guardrails<br/>(Safety Filter)")
+            end
+
+            %% AIOps & AUTOMATION LAYER (TOKYO)
+            subgraph AIOps_Center_T["AIOps & Automation Center"]
+                style AIOps_Center_T fill:#f0f8ff,stroke:#0052cc,stroke-width:2px
+                DevOps_Guru_T("Amazon DevOps Guru<br/>(ML Anomaly Detect)")
+                EventBridge_T("EventBridge<br/>(Event Bus)")
+                
+                subgraph Remediation_T["Auto-Remediation"]
+                    Lambda_Fix_T("Lambda<br/>(Auto-Fix)")
+                    SSM_Auto_T("SSM Automation<br/>(Runbooks)")
+                end
+            end
+
+            %% GOVERNANCE & SECURITY (TOKYO)
+            subgraph Gov_T["Governance & Security (T)"]
+                KMS_T("KMS (Multi-Region Key)")
+                ACM_T("ACM (SSL Certs)")
+                Secrets_T("Secrets Manager")
+                Config_T("AWS Config")
+                Backup_T("AWS Backup (Vault Lock)")
+                CT_T("CloudTrail")
+                GD_T("GuardDuty")
+                Inspector_T("Amazon Inspector<br/>(Continuous Vuln Scan)")
+                Macie_T("Amazon Macie<br/>(Data Discovery)")
+                
+                subgraph FinOps_T["FinOps & Cost"]
+                    Budgets_T("AWS Budgets<br/>(Cost Alert)")
+                    CostAnomaly_T("Cost Anomaly Detection")
+                end
+
+                subgraph Ops_Monitor_T["Ops Monitoring"]
+                    CW_Alarm_T("CloudWatch Alarms")
+                    SNS_T("SNS Topic")
+                    Chatbot_T("AWS Chatbot (Slack/Teams)")
+                end
+            end
+
+            %% VPC TOKYO
+            subgraph VPC_Tokyo["VPC (Tokyo)"]
+                direction TB
+
+                subgraph Public_T["Public Subnet (DMZ)"]
+                    IGW_T("Internet Gateway (IGW)")
+                    NAT_T("NAT Gateway")
+                    ALB_T("ALB (Legacy/Web)")
+                    APIGW_T("API Gateway (REST/HTTP API)")
+                end
+
+                subgraph App_Layer_T["Private Subnet (App Layer)"]
+                    direction TB
+                    
+                    %% SERVICE MESH
+                    Lattice_T("VPC Lattice<br/>(Service Network/AuthZ)")
+
+                    %% FARGATE DETAILED VIEW
+                    subgraph ECS_Cluster_T["ECS Cluster (Serverless)"]
+                        subgraph ECS_Service_T["ECS Service (Auto Scaling)"]
+                            direction TB
+                            AutoScaling_T("AWS Auto Scaling<br/>(Predictive ML)")
+
+                            subgraph Fargate_Task_T["Fargate Task (Sidecar Pattern)"]
+                                direction LR
+                                style Fargate_Task_T fill:#fff,stroke:#d45d00,stroke-dasharray: 5 5
+                                
+                                App_Container_T("App Container<br/>(Biz Logic)")
+                                
+                                subgraph Sidecars_T["Sidecars"]
+                                    Envoy_T("Envoy Proxy<br/>(Mesh/mTLS)")
+                                    FireLens_T("FireLens<br/>(Log Router)")
+                                    XRay_T("X-Ray/ADOT<br/>(Trace)")
+                                    CodeGuru_Prof_T("CodeGuru Profiler")
+                                end
+                            end
+                        end
+                    end
+
+                    %% Serverless Components
+                    Lambda_Auth_T("Lambda Authorizer")
+                    Lambda_Biz_T("Lambda (Microservices)")
+                    SFN_T("Step Functions<br/>(Workflow)")
+                    AWS_Batch_T("AWS Batch<br/>(Fargate Compute)")
+                    
+                    %% Async & Resiliency
+                    SQS_T("SQS (Job Queue)")
+                    DLQ_T("SQS DLQ<br/>(Error Handling)")
+                    
+                    Cognito_T("Cognito User Pool")
+                end
+
+                subgraph Data_Layer_T["Private Subnet (Data Layer)"]
+                    Aurora_T("Aurora Global (Writer)")
+                    Redis_T("ElastiCache<br/>(Semantic Cache)")
+                    AOSS_T("OpenSearch Serverless<br/>(Vector Store)")
+                end
+
+                subgraph EP_T["PrivateLink Endpoints"]
+                    EP_S3_T("S3 Gateway EP")
+                    EP_If_T("Interface EPs (SSM, ECR, Logs, KMS)")
+                    EP_Bedrock_T("Interface EP<br/>(Bedrock Runtime)")
+                end
+            end
+
+            subgraph Storage_T["Regional Storage & Logs"]
+                S3_T("S3 Bucket (Data)")
+                ECR_T("ECR Registry<br/>(Scan on Push)")
+                CW_Logs_T("CloudWatch Logs")
+            end
+        end
+
+        %% --- 1.3 OSAKA REGION (SECONDARY - FULL MIRROR) ---
+        subgraph Region_Osaka["Region: Osaka (ap-northeast-3)"]
+            direction TB
+
+            subgraph Gov_O["Governance & Security (O)"]
+                KMS_O("KMS (Replica Key)")
+                ACM_O("ACM (SSL Certs)")
+                Secrets_O("Secrets Manager")
+                Config_O("AWS Config")
+                Backup_O("AWS Backup (Vault Lock)")
+                CT_O("CloudTrail")
+                GD_O("GuardDuty")
+                Inspector_O("Amazon Inspector")
+                Macie_O("Amazon Macie")
+            end
+
+            subgraph VPC_Osaka["VPC (Osaka)"]
+                direction TB
+
+                subgraph Public_O["Public Subnet (DMZ)"]
+                    IGW_O("Internet Gateway (IGW)")
+                    NAT_O("NAT Gateway")
+                    ALB_O("ALB")
+                    APIGW_O("API Gateway")
+                end
+
+                subgraph App_Layer_O["Private Subnet (App Layer)"]
+                    direction TB
+                    
+                    Lattice_O("VPC Lattice")
+
+                    subgraph ECS_Cluster_O["ECS Cluster"]
+                        subgraph ECS_Service_O["ECS Service"]
+                             subgraph Fargate_Task_O["Fargate Task"]
+                                direction LR
+                                App_Container_O("App Container")
+                                Envoy_O("Envoy Proxy")
+                                FireLens_O("FireLens")
+                            end
+                        end
+                    end
+
+                    Lambda_Auth_O("Lambda Authorizer")
+                    Lambda_Biz_O("Lambda")
+                    SFN_O("Step Functions")
+                    AWS_Batch_O("AWS Batch (Fargate)")
+                    SQS_O("SQS (Job Queue)")
+                    Cognito_O("Cognito User Pool")
+                end
+
+                subgraph Data_Layer_O["Private Subnet (Data Layer)"]
+                    Aurora_O("Aurora (Write Fwd)")
+                    Redis_O("ElastiCache (Replica)")
+                    %% AOSS is typically regional, but for DR data sync strategy
+                    AOSS_O("OpenSearch Serverless")
+                end
+
+                subgraph EP_O["PrivateLink Endpoints"]
+                    EP_S3_O("S3 Gateway EP")
+                    EP_If_O("Interface EPs")
+                end
+            end
+             subgraph Storage_O["Regional Storage & Logs"]
+                S3_O("S3 Bucket")
+                ECR_O("ECR Registry")
+                CW_Logs_O("CloudWatch Logs")
+            end
+        end
+
+        %% --- 1.4 CI/CD PIPELINE (FULL DEVSECOPS) ---
+        subgraph CICD["DevSecOps Pipeline (Code Series)"]
+            direction TB
+            CodeCommit("AWS CodeCommit")
+            CodePipeline("CodePipeline")
+            
+            subgraph Build_Scan["Build & Security Check"]
+                CodeBuild("CodeBuild<br/>(Build Artifact)")
+                CodeGuru_Rev("CodeGuru Reviewer<br/>(AI Code Audit)")
+                Vuln_Scan("Vuln Scan<br/>(Trivy / Inspector)")
+            end
+            
+            FIS("AWS FIS<br/>(Chaos Testing)")
+
+            Signer("AWS Signer<br/>(Image Signing)")
+            CodeDeploy("CodeDeploy (Blue/Green)")
+        end
+    end
+
+    %% ==========================================
+    %% CONNECTIONS & FLOWS
+    %% ==========================================
+
+    %% 1. Internet Access (Web & API)
+    User_Ext --> R53
+    R53 --> CF
+    R53 -- "Static" --> Amplify
+    CF -- "HTTPS (ACM)" --> WAF
+    WAF --> APIGW_T
+    WAF --> APIGW_O
+    WAF -- "Web/Admin UI" --> ALB_T
+    WAF -- "Web/Admin UI" --> ALB_O
+
+    %% 2. Admin Access (Zero Trust)
+    Admin_Ext -- "Web Apps" --> AVA
+    AVA --> ALB_T
+    AVA --> ALB_O
+    Admin_Ext -- "Ops (Session Manager)" --> EP_If_T
+
+    %% 3. Network Backbone & INSPECTION
+    OnPrem_DC <== "Direct Connect" ==> DXGW
+    DXGW ==> TGW_T
+    DXGW ==> TGW_O
+    TGW_T <== "Traffic Inspection" ==> GWLB
+    GWLB <== "GENEVE" ==> ANFW
+    TGW_T <== "Attach" ==> VPC_Tokyo
+    TGW_O <== "Attach" ==> VPC_Osaka
+
+    %% 4. Tokyo Application Flow (Serverless Orchestration)
+    IGW_T <--> APIGW_T
+    IGW_T <--> NAT_T
+    NAT_T --> EP_If_T
+    
+    %% API Gateway Flow & Auth
+    APIGW_T -- "Auth Token" --> Lambda_Auth_T
+    Lambda_Auth_T -- "Verify JWT" --> Cognito_T
+    APIGW_T -- "Route" --> SFN_T
+    APIGW_T -- "Route" --> Lambda_Biz_T
+    APIGW_T -- "VPC Link" --> ALB_T
+    
+    %% Application Logic
+    SFN_T -- "Orchestrate" --> Lambda_Biz_T
+    SFN_T -- "Orchestrate" --> ECS_Service_T
+    SFN_T -- "Submit Job" --> AWS_Batch_T
+    
+    %% Lattice Service Mesh
+    Lattice_T -. "Zero Trust Connect" .-> ECS_Service_T
+    Lattice_T -. "Zero Trust Connect" .-> Lambda_Biz_T
+    
+    ALB_T --> Envoy_T
+    Envoy_T -- "Proxy" --> App_Container_T
+    
+    App_Container_T --> SQS_T
+    SQS_T --> Lambda_Biz_T
+    SQS_T -. "Failure" .-> DLQ_T
+    DLQ_T -. "Alert" .-> CW_Alarm_T
+
+    %% 5. Data & Bedrock Flow (Including Semantic Cache)
+    App_Container_T -- "1. Check Cache" --> Redis_T
+    App_Container_T -- "2. DB Write" --> Aurora_T
+    
+    %% GenAI / Bedrock RAG Flow
+    App_Container_T -- "3. Cache Miss (Invoke)" --> EP_Bedrock_T
+    Lambda_Biz_T -- "Invoke" --> EP_Bedrock_T
+    EP_Bedrock_T -. "PrivateLink" .-> Bedrock_Model_T
+    
+    Bedrock_Model_T --> Bedrock_Guard_T
+    Bedrock_Guard_T -- "Safe Query" --> Bedrock_KB_T
+    Bedrock_KB_T -- "4. Vector Search" --> AOSS_T
+    Bedrock_KB_T -- "5. Retrieve Data" --> S3_T
+
+    %% 6. Telemetry, AIOps & Alerting
+    App_Container_T -. "Logs" .-> FireLens_T
+    FireLens_T --> CW_Logs_T
+    FireLens_T --> S3_T
+    XRay_T -.-> EP_If_T
+    Secrets_T -. "Inject" .-> Fargate_Task_T
+    CodeGuru_Prof_T -. "Profile Data" .-> DevOps_Guru_T
+
+    %% AIOps Loop
+    CW_Logs_T -.-> DevOps_Guru_T
+    Aurora_T -.-> DevOps_Guru_T
+    GD_T -. "Threat Event" .-> EventBridge_T
+    DevOps_Guru_T -- "Anomaly Event" ==> EventBridge_T
+    EventBridge_T --> Lambda_Fix_T
+    EventBridge_T --> SSM_Auto_T
+    EventBridge_T --> SNS_T --> Chatbot_T
+    
+    %% FinOps Alert
+    CostAnomaly_T -. "Cost Spike" .-> SNS_T
+
+    %% Automated Actions
+    Lambda_Fix_T -. "Block IP" .-> WAF
+    SSM_Auto_T -. "Restart/Scale" .-> ECS_Service_T
+    AutoScaling_T -. "Predictive Scale" .-> ECS_Service_T
+
+    %% 7. Osaka Application Flow (Mirrored)
+    IGW_O <--> APIGW_O
+    APIGW_O -- "Auth" --> Lambda_Auth_O
+    Lambda_Auth_O -.-> Cognito_O
+    APIGW_O --> SFN_O
+    SFN_O --> AWS_Batch_O
+    AWS_Batch_O -- "Fargate" --> EP_If_O
+
+    %% 8. Data Replication
+    Aurora_T <== "Global Rep" ==> Aurora_O
+    App_Container_O -- "Write Fwd" --> Aurora_O
+    Redis_T <== "Global Rep" ==> Redis_O
+    S3_T -. "CRR" .-> S3_O
+
+    %% 9. CI/CD Pipeline (Full DevSecOps with Chaos)
+    CodeCommit --> CodePipeline
+    CodePipeline --> CodeBuild
+    CodeBuild -- "1. Build & Review" --> CodeGuru_Rev
+    CodeGuru_Rev --> Vuln_Scan
+    Vuln_Scan -- "2. Scan & Push" --> ECR_T
+    
+    %% Chaos Testing Step
+    Vuln_Scan --> FIS
+    FIS -. "3. Fault Injection Test" .-> ECS_Service_T
+
+    FIS -- "4. Pass" --> Signer
+    Signer -- "5. Sign Image" --> CodeDeploy
+    CodeDeploy -- "6. Pull Signed Image" --> ECR_T
+    CodeDeploy -- "7. Deploy" --> ECS_Service_T
+    CodeDeploy -- "7. Deploy" --> ECS_Service_O
+    CodeDeploy --> Lambda_Biz_T
+    CodeDeploy --> SFN_T
+    
+    %% Inspector Continuous
+    Inspector_T -. "Daily Scan" .-> ECR_T
+    Inspector_T -. "Scan" .-> Lambda_Biz_T
+    Macie_T -. "Scan" .-> S3_T
