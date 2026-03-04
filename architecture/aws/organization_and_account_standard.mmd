@@ -1,0 +1,85 @@
+graph TD
+    %% ==========================================
+    %% スタイル定義 (文字色を黒[#000]に変更)
+    %% ==========================================
+    %% 元のcolor:#fffを#000に変更し、他も明示的に#000を指定
+    classDef root fill:#f9f9f9,stroke:#333,stroke-width:2px,color:#000;
+    classDef mgmt fill:#FFD2D2,stroke:#B30000,stroke-width:2px,color:#000;
+    classDef sec fill:#D2FFD2,stroke:#006600,stroke-width:2px,color:#000;
+    classDef infra fill:#D2D2FF,stroke:#0000B3,stroke-width:2px,color:#000;
+    classDef work fill:#FFFFD2,stroke:#B3B300,stroke-width:2px,color:#000;
+    classDef sand fill:#F0F0F0,stroke:#666,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% ==========================================
+    %% 組織ルート (Root)
+    %% ==========================================
+    subgraph OrgRoot ["AWS Organization Root"]
+        direction TB
+
+        %% 1. Management Account (管理)
+        MgmtAcc["🏢 Management Account (管理アカウント)<br/>====================================<br/>【組織の司令塔・請求・SSO】<br/>・AWS Organizations (OU/SCP管理)<br/>・IAM Identity Center (SSOユーザー管理)<br/>・AWS Billing (請求統合・コスト分析)<br/>・Service Control Policies (SCP) の適用<br/>⚠️ ここにサーバー(EC2等)は立てない"]:::mgmt
+
+        %% 2. Security OU (セキュリティ・監査)
+        subgraph SecOU ["🔒 Security OU"]
+            direction TB
+            LogAcc["📜 Log Archive Account<br/>====================================<br/>【ログ集約・保管】<br/>・CloudTrail (操作ログ) の一元管理<br/>・AWS Config (設定変更履歴) の集約<br/>・S3バケット (WORM/削除保護設定)<br/>・監査時の調査起点"]:::sec
+
+            AuditAcc["🛡️ Security Audit Account<br/>====================================<br/>【セキュリティ監視・通知】<br/>・GuardDuty (脅威検知) の委任管理者<br/>・Security Hub (スコア可視化) の集約<br/>・セキュリティアラートの通知設定"]:::sec
+        end
+
+        %% 3. Infrastructure OU (共通基盤)
+        subgraph InfraOU ["🏗️ Infrastructure OU"]
+            direction TB
+            SharedAcc["🛠️ Shared Services Account<br/>====================================<br/>【開発支援・共通ツール】<br/>・CI/CDパイプライン (CodePipeline)<br/>・Amazon ECR (コンテナイメージ置き場)<br/>・踏み台サーバー / VPNエンドポイント<br/>・ゴールデンイメージ (AMI) 作成"]:::infra
+
+            NetAcc["🌐 Network Account<br/>====================================<br/>【ネットワークハブ】<br/>・Transit Gateway (TGW) - 全VPCの接続点<br/>・Direct Connect / Site-to-Site VPN<br/>・Route 53 Resolver (名前解決)<br/>・IPアドレス重複管理"]:::infra
+        end
+
+        %% 4. Workloads OU (システム環境)
+        subgraph WorkloadsOU ["🚀 Workloads OU"]
+            direction TB
+            
+            ProdAcc["🟢 Production Account<br/>====================================<br/>【本番環境】<br/>・本番アプリケーション / DB<br/>・商用データ<br/>・SCPによる強力な保護(削除禁止等)<br/>・アクセスは必要最小限に制限"]:::work
+            
+            StgAcc["🟡 Staging Account<br/>====================================<br/>【検証環境】<br/>・本番と同等の構成・スペック<br/>・負荷テスト / 運用リハーサル<br/>・本番デプロイ前の最終確認"]:::work
+            
+            DevAcc["🔵 Development Account<br/>====================================<br/>【開発環境】<br/>・開発者による試行錯誤の場<br/>・新しい構成のテスト<br/>・予算アラート(Budget)の設定"]:::work
+        end
+
+        %% 5. Sandbox OU (実験場)
+        subgraph SandOU ["🏖️ Sandbox OU"]
+            SandboxAcc["🧸 Sandbox Account<br/>====================================<br/>【個人の学習・PoC】<br/>・組織ネットワークからは隔離(孤立)<br/>・一定期間または一定額でリセット<br/>・自由な権限付与"]:::sand
+        end
+    end
+
+    %% ==========================================
+    %% 接続・データの流れ
+    %% ==========================================
+
+    %% 構造上の接続
+    OrgRoot --- MgmtAcc
+    OrgRoot --- SecOU
+    OrgRoot --- InfraOU
+    OrgRoot --- WorkloadsOU
+    OrgRoot --- SandOU
+
+    %% 1. ログの流れ (全アカウントから集約)
+    MgmtAcc -.->|Logs| LogAcc
+    SharedAcc -.->|Logs| LogAcc
+    NetAcc -.->|Logs| LogAcc
+    ProdAcc -.->|Logs| LogAcc
+
+    %% 2. デプロイの流れ (Sharedから各環境へ)
+    SharedAcc == "CI/CD Pipeline" ==> DevAcc
+    SharedAcc == "CI/CD Pipeline" ==> StgAcc
+    SharedAcc == "CI/CD Pipeline" ==> ProdAcc
+
+    %% 3. ネットワークの流れ (Hub & Spoke)
+    NetAcc -- "TGW Peering" --o SharedAcc
+    NetAcc -- "TGW Peering" --o DevAcc
+    NetAcc -- "TGW Peering" --o StgAcc
+    NetAcc -- "TGW Peering" --o ProdAcc
+
+    %% 4. セキュリティ監視 (Auditから全環境へ)
+    AuditAcc -.->|GuardDuty/Config監視| ProdAcc
+    AuditAcc -.->|GuardDuty/Config監視| DevAcc
