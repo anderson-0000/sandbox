@@ -1,5 +1,14 @@
 graph TD
     %% ==========================================
+    %% スタイル定義 (文字色を黒[#000]に統一)
+    %% ==========================================
+    classDef mgmt fill:#FFD2D2,stroke:#B30000,stroke-width:2px,color:#000;
+    classDef sec fill:#D2FFD2,stroke:#006600,stroke-width:2px,color:#000;
+    classDef infra fill:#D2D2FF,stroke:#0000B3,stroke-width:2px,color:#000;
+    classDef work fill:#FFFFD2,stroke:#B3B300,stroke-width:2px,color:#000;
+    classDef data fill:#E6CCFF,stroke:#4B0082,stroke-width:2px,color:#000;
+
+    %% ==========================================
     %% 0. EXTERNAL ACTORS
     %% ==========================================
     subgraph Actors["Users & Connectivity"]
@@ -9,13 +18,27 @@ graph TD
     end
 
     %% ==========================================
-    %% 1. AWS CLOUD SCOPE
+    %% 1. AWS ORGANIZATION SCOPE
     %% ==========================================
-    subgraph AWS["AWS Cloud (Serverless Enterprise Active-Active Environment)"]
+    subgraph AWS_Org["AWS Organization (Serverless Enterprise Active-Active Environment)"]
         direction TB
 
-        %% --- 1.1 GLOBAL EDGE & NETWORK ---
-        subgraph Global_Layer["Global Edge & Network Backbone"]
+        %% --- 1.1 MANAGEMENT ACCOUNT ---
+        subgraph MgmtAcc["🏢 Management Account"]
+            direction TB
+            IAM_IC("IAM Identity Center")
+            Org_SCP("Organizations / SCP")
+            Billing("Billing & Cost Mgmt")
+        end
+
+        %% --- 1.2 INFRASTRUCTURE OU ---
+        subgraph InfraOU ["🏗️ Infrastructure OU"]
+            direction TB
+
+            subgraph NetAcc ["🌐 Network Account"]
+                direction TB
+                %% GLOBAL EDGE & NETWORK ---
+                subgraph Global_Layer["Global Edge & Network Backbone"]
             direction TB
             
             subgraph Edge_Sec["Edge Security (Zero Trust Entry)"]
@@ -38,8 +61,11 @@ graph TD
             end
         end
 
-        %% --- 1.2 TOKYO REGION (PRIMARY) ---
-        subgraph Region_Tokyo["Region: Tokyo (ap-northeast-1)"]
+    %% --- 1.4 WORKLOADS OU (PRODUCTION) ---
+    subgraph ProdOU ["🚀 Workloads (Prod) OU"]
+        subgraph ProdAcc ["🟢 Production Account"]
+            direction TB
+            subgraph Region_Tokyo["Region: Tokyo (ap-northeast-1)"]
             direction TB
 
             %% GEN AI MANAGED SERVICES (TOKYO)
@@ -228,7 +254,9 @@ graph TD
         end
 
         %% --- 1.4 CI/CD PIPELINE (FULL DEVSECOPS) ---
-        subgraph CICD["DevSecOps Pipeline (Code Series)"]
+            subgraph SharedAcc ["🛠️ Shared Services Account"]
+                direction TB
+                subgraph CICD["DevSecOps Pipeline (Code Series)"]
             direction TB
             CodeCommit("AWS CodeCommit")
             CodePipeline("CodePipeline")
@@ -380,3 +408,15 @@ graph TD
     Inspector_T -. "Daily Scan" .-> ECR_T
     Inspector_T -. "Scan" .-> Lambda_Biz_T
     Macie_T -. "Scan" .-> S3_T
+
+    end
+    end
+    end
+    end
+    end
+
+    %% Apply Styles
+    class MgmtAcc mgmt;
+    class SecOU,LogAcc,AuditAcc sec;
+    class InfraOU,NetAcc,SharedAcc infra;
+    class ProdOU,ProdAcc work;
