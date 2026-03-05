@@ -1,4 +1,4 @@
-flowchart TD
+graph TD
     %% ==========================================
     %% 1. スタイル定義
     %% ==========================================
@@ -7,106 +7,490 @@ flowchart TD
     classDef sec fill:#D2FFD2,stroke:#006600,stroke-width:2px,color:#000;
     classDef infra fill:#D2D2FF,stroke:#0000B3,stroke-width:2px,color:#000;
     classDef work fill:#FFFFD2,stroke:#B3B300,stroke-width:2px,color:#000;
-    classDef sand fill:#F0F0F0,stroke:#666,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
-    
-    %% ★重要: タイトル代わりのノード用スタイル（枠線を消して文字だけにする）
+    classDef data fill:#E6CCFF,stroke:#4B0082,stroke-width:2px,color:#000;
+    classDef k8s fill:#E8F0FE,stroke:#0078d4,stroke-width:2px,color:#000;
+
     classDef groupTitle fill:none,stroke:none,color:#000,font-weight:bold,font-size:16px,align:center;
     classDef subTitle fill:none,stroke:none,color:#000,font-weight:bold,font-size:14px,align:center;
 
     %% ==========================================
-    %% 2. 階層構造
+    %% 0. EXTERNAL ACTORS
     %% ==========================================
-    
-    %% ▼ ルート管理グループ
-    %% Subgraphのタイトルは空文字 [" "] にし、直下にタイトルノードを置く
+    subgraph Actors["Users & Connectivity"]
+        User_Ext("User (Internet/App)")
+        Admin_Ext("Admin / Internal Ops")
+        OnPrem_DC("Corporate Data Center")
+        GitHub_Ext("GitHub Enterprise/Cloud<br/>(GitOps Source)")
+        LetsEncrypt("Let's Encrypt / ZeroSSL<br/>(ACME Provider)")
+    end
+
+    %% ==========================================
+    %% 2. AZURE TENANT SCOPE
+    %% ==========================================
     subgraph TenantRoot [" "]
         direction TB
-        %% ★タイトルノード（これで場所が確保されます）
-        RootTitle["🏢 Azure Tenant Root Group<br/>(ルート管理グループ)"]:::groupTitle
+        RootTitle["🏢 Azure Tenant Root Group"]:::groupTitle
 
         %% ▼ 第1階層: Platform MG
         subgraph PlatformMG [" "]
             direction TB
-            PlatformTitle["📂 Platform MG (管理グループ)"]:::subTitle
+            PlatformTitle["📂 Platform MG"]:::subTitle
             
             subgraph PlatformUpper [ ]
                 direction LR
                 style PlatformUpper fill:none,stroke:none
 
-                IdSub["🔑 Identity Subscription<br/>------------------------------------<br/>【ID管理基盤】<br/>・Microsoft Entra ID<br/>・PIM / AD DS"]:::mgmt
+                subgraph IdSub["🔑 Identity Subscription"]
+                    direction TB
+                    EntraID("Microsoft Entra ID<br/>(IAM / Workload Identity)"):::mgmt
+                    Entra_GSA("Global Secure Access<br/>(Zero Trust / VPN-less)"):::mgmt
+                end
                 
-                ConnSub["🔑 Connectivity Subscription<br/>------------------------------------<br/>【ネットワークハブ】<br/>・Azure Firewall / VPN<br/>・vWAN / Private DNS"]:::infra
+                subgraph ConnSub["🔑 Connectivity Subscription"]
+                    direction TB
+                    style ConnSub fill:#D2D2FF,stroke:#0000B3,stroke-width:2px
+                    
+                    subgraph Global_Layer["Global Edge & Network"]
+                        AFD("Azure Front Door Premium<br/>(Global LB / WAF / CDN)"):::infra
+                        DNS("Azure DNS"):::infra
+                    end
+
+                    subgraph Hub_VNet["Hub VNet (Japan East)"]
+                        AzFW("Azure Firewall Premium<br/>(IDPS / TLS Inspection)"):::sec
+                        VPN_GW("VPN / ExpressRoute GW"):::infra
+                        Bastion("Azure Bastion"):::infra
+                        PrivateDNS("Private DNS Zones"):::infra
+                    end
+                end
             end
 
-            %% 中段：管理サブスクリプション
+            %% Management Subscription
             subgraph MgmtSubScope [" "]
                 direction TB
-                style MgmtSubScope fill:#D2FFD2,stroke:#006600,stroke-width:2px,color:#000
-                
-                %% ★タイトルノード
-                MgmtTitle["🔑 Management Subscription (管理サブスクリプション)<br/>------------------------------------<br/>【ログ・監視・セキュリティ】"]:::subTitle
+                style MgmtSubScope fill:#D2FFD2,stroke:#006600,stroke-width:2px
+                MgmtTitle["🔑 Management Subscription"]:::subTitle
 
-                LAW("🗄️ Log Analytics Workspace<br/>(ログ検索・分析基盤)"):::sec
-                Sentinel("👮 Microsoft Sentinel<br/>(SIEM・脅威検知)"):::sec
-                Storage("📦 Storage Account<br/>(ログ長期保管・Archive)"):::sec
+                LAW("🗄️ Log Analytics Workspace<br/>(Centralized Logs)"):::sec
+                Sentinel("👮 Microsoft Sentinel<br/>(SIEM / SOAR)"):::sec
                 
-                %% 配置順序の強制（タイトル -> LAW -> 他）
-                MgmtTitle ~~~ LAW
-                LAW -.- Sentinel
-                LAW ==>|エクスポート| Storage
+                subgraph Defender_Suite["Defender for Cloud"]
+                    CSPM("CSPM (Misconfig)")
+                    CWP("CWP (Threat Protect)")
+                    Vuln("Vulnerability Scanning")
+                end
+                
+                AMG("📊 Azure Managed Grafana<br/>(Dashboarding)"):::sec
+                Purview("Microsoft Purview<br/>(Data Catalog)"):::sec
+                Storage_Audit("📦 Storage Account<br/>(Long-term Archive)"):::sec
             end
         end
 
         %% ▼ 第1階層: Landing Zones MG
         subgraph LandingZonesMG [" "]
-            direction LR
-            LandingTitle["📂 Landing Zones MG (管理グループ)"]:::subTitle
-            
-            SharedSub["🔑 Shared Services Subscription<br/>------------------------------------<br/>【DevOps・共通コンテナ】<br/>・Runners / ACR / Bastion"]:::infra
-            
-            ProdSub["🔑 Production Subscription<br/>------------------------------------<br/>【本番環境】<br/>・Critical Workloads<br/>・Azure Policy / リソースロック"]:::work
-            
-            NonProdSub["🔑 Non-Prod Subscription<br/>------------------------------------<br/>【検証・開発環境】<br/>・Staging / QA / Dev<br/>・Cost Management"]:::work
-
-            %% タイトルとの位置関係
-            LandingTitle ~~~ SharedSub
-        end
-
-        %% ▼ 第1階層: Sandbox MG
-        subgraph SandMG [" "]
             direction TB
-            SandTitle["📂 Sandbox MG (管理グループ)"]:::subTitle
-            SandboxSub["🔑 Sandbox Subscription<br/>------------------------------------<br/>【個人の学習・PoC】<br/>・No Peering / Spending Limit"]:::sand
+            LandingTitle["📂 Landing Zones MG"]:::subTitle
             
-            SandTitle ~~~ SandboxSub
+            %% --- SHARED SERVICES ---
+            subgraph SharedSub["🔑 Shared Services Subscription"]
+                direction TB
+                style SharedSub fill:#D2D2FF,stroke:#0000B3,stroke-width:2px
+                
+                ACR("Azure Container Registry<br/>(Geo-Rep / Vuln Scan)"):::infra
+
+                subgraph CICD_Compute["DevSecOps Resources"]
+                    GHA_Runner("Self-Hosted Runners<br/>(VM / ACA)"):::infra
+                    ChaosStudio("Azure Chaos Studio<br/>(Fault Injection)"):::infra
+                    LoadTest("Azure Load Testing"):::infra
+                end
+                
+                KeyVault_Shared("Key Vault<br/>(Signing Keys)"):::sec
+            end
+            
+            %% --- PRODUCTION WORKLOADS ---
+            subgraph ProdSub["🔑 Production Subscription (Active-Active)"]
+                direction TB
+                style ProdSub fill:#FFFFD2,stroke:#B3B300,stroke-width:2px
+
+                %% ==========================================
+                %% JAPAN EAST (TOKYO) - PRIMARY
+                %% ==========================================
+                subgraph Region_East["Region: Japan East (Tokyo)"]
+                    direction TB
+
+                    %% Observability (East)
+                    subgraph Obs_Layer_E["Observability"]
+                        AMW_E("Azure Monitor Workspace<br/>(Managed Prometheus)")
+                        AppInsights_E("App Insights")
+                    end
+
+                    %% GEN AI (East)
+                    subgraph AI_Layer_E["Generative AI"]
+                        style AI_Layer_E fill:#f9f2ff,stroke:#6600cc,stroke-width:2px,stroke-dasharray: 5 5
+                        OpenAI_E("Azure OpenAI Service")
+                        ContentSafety_E("AI Content Safety")
+                        AISearch_E("Azure AI Search<br/>(Vector Store)")
+                    end
+
+                    %% AIOps & Automation (East)
+                    subgraph AIOps_Center_E["AIOps & Automation"]
+                        style AIOps_Center_E fill:#f0f8ff,stroke:#0052cc,stroke-width:2px
+                        EventGrid_E("Event Grid")
+                        AppConfig_E("App Configuration<br/>(Feature Flags)")
+                        subgraph Remediation_E["Auto-Remediation"]
+                            Func_Fix_E("Azure Functions")
+                            Auto_Account_E("Automation Account")
+                        end
+                    end
+
+                    %% Governance (East)
+                    subgraph Gov_E["Governance & Security"]
+                        KV_E("Key Vault")
+                        Policy_E("Azure Policy")
+                        Backup_E("Azure Backup")
+                        subgraph Ops_Monitor_E["Ops Monitoring"]
+                            Monitor_Alert_E("Monitor Alarms")
+                            Synthetics_E("Synthetics / Canary")
+                            ActionGroup_E("Action Group")
+                            LogicApp_Chat_E("Logic App (ChatOps)")
+                        end
+                        subgraph FinOps_E["FinOps"]
+                            CostMgmt_E("Cost Management")
+                        end
+                    end
+
+                    %% VNET EAST
+                    subgraph VNet_East["Spoke VNet (East)"]
+                        direction TB
+                        
+                        subgraph Ingress_Sub_E["Ingress Subnet"]
+                            AGfC_E("App Gateway for Containers<br/>(AGfC - ALB Mode)")
+                            APIM_E("API Management<br/>(Gateway / Auth)")
+                        end
+
+                        subgraph App_Sub_E["App Subnet"]
+                            
+                            %% ===============================================
+                            %% AKS CLUSTER DETAIL (EAST)
+                            %% ===============================================
+                            subgraph AKS_E["AKS Cluster (Japan East)"]
+                                style AKS_E fill:#E8F0FE,stroke:#0078d4,stroke-width:3px
+
+                                %% System Node Pool (Management Components)
+                                subgraph NodePool_Sys_E["System Node Pool (Add-ons & Controllers)"]
+                                    style NodePool_Sys_E fill:#ffffff,stroke:#0078d4,stroke-width:1px,stroke-dasharray: 2 2
+                                    
+                                    ALB_Ctrl_E("ALB Controller (AGfC)")
+                                    ExtDNS_E("External DNS<br/>(Workload Identity)")
+                                    CertMgr_E("cert-manager<br/>(Workload Identity)")
+                                    CSI_Secret_E("Secrets Store CSI")
+                                    
+                                    Managed_Istio_E("AKS Managed Istio")
+                                    
+                                    ArgoCD_E("Argo CD / Flux")
+                                    Gatekeeper_E("Azure Policy / Gatekeeper")
+                                    Defender_Ag_E("Defender Agent")
+
+                                    Prom_Ag_E("Prometheus Agent")
+                                    AMA_E("Azure Monitor Agent")
+                                    Cilium_E("Cilium CNI")
+                                end
+
+                                %% User Node Pool (Workloads)
+                                subgraph NodePool_User_E["User Node Pool (Autoscale)"]
+                                    style NodePool_User_E fill:#ffffff,stroke:#0078d4,stroke-width:1px
+                                    
+                                    KEDA_E("KEDA Operator")
+
+                                    subgraph Pod_App_E["App Pod"]
+                                        direction LR
+                                        Container_App_E("App Container")
+                                        
+                                        subgraph Sidecars_E["Sidecars"]
+                                            Envoy_E("Managed Envoy Proxy")
+                                            Dapr_E("Dapr (Optional)")
+                                        end
+                                    end
+                                end
+                            end
+                            %% ===============================================
+
+                            %% Streaming
+                            subgraph Streaming_E["Streaming"]
+                                style Streaming_E fill:#fff5e6,stroke:#ff9900,stroke-width:2px
+                                EH_Ingest_E("Event Hubs<br/>(Ingest)")
+                                ASA_E("Stream Analytics<br/>(Process)")
+                            end
+
+                            %% Serverless
+                            Func_Biz_E("Azure Functions<br/>(Biz Logic)")
+                            LogicApp_Workflow_E("Logic Apps<br/>(Orchestrator)")
+                            Batch_E("Azure Batch")
+                            SB_E("Service Bus<br/>(Queue)")
+                            SB_DLQ_E("Service Bus DLQ")
+                        end
+
+                        subgraph Data_Sub_E["Data Subnet"]
+                            SQL_E("Azure SQL Database<br/>(Primary)"):::data
+                            Redis_E("Azure Cache for Redis"):::data
+                            Synapse_SQL_E("Synapse Serverless"):::data
+                            Purview_Map_E("Purview Map"):::data
+                            PE_E("Private Endpoints")
+                        end
+                    end
+                    
+                    subgraph Storage_East["Storage"]
+                        Blob_E("Storage Account<br/>(Data Lake)"):::data
+                    end
+                end
+
+                %% ==========================================
+                %% JAPAN WEST (OSAKA) - SECONDARY
+                %% ==========================================
+                subgraph Region_West["Region: Japan West (Osaka)"]
+                    direction TB
+
+                    %% Observability (West)
+                    subgraph Obs_Layer_W["Observability"]
+                        AMW_W("Azure Monitor Workspace")
+                        AppInsights_W("App Insights")
+                    end
+
+                    %% GEN AI (West)
+                    subgraph AI_Layer_W["Generative AI"]
+                        style AI_Layer_W fill:#f9f2ff,stroke:#6600cc,stroke-width:2px,stroke-dasharray: 5 5
+                        OpenAI_W("Azure OpenAI Service")
+                        ContentSafety_W("AI Content Safety")
+                        AISearch_W("Azure AI Search<br/>(Replica)")
+                    end
+
+                    %% AIOps & Automation (West)
+                    subgraph AIOps_Center_W["AIOps & Automation"]
+                        style AIOps_Center_W fill:#f0f8ff,stroke:#0052cc,stroke-width:2px
+                        EventGrid_W("Event Grid")
+                        AppConfig_W("App Configuration")
+                        subgraph Remediation_W["Auto-Remediation"]
+                            Func_Fix_W("Azure Functions")
+                            Auto_Account_W("Automation Account")
+                        end
+                    end
+
+                    %% Governance (West)
+                    subgraph Gov_W["Governance & Security"]
+                        KV_W("Key Vault")
+                        Policy_W("Azure Policy")
+                        Backup_W("Azure Backup")
+                        subgraph Ops_Monitor_W["Ops Monitoring"]
+                            Monitor_Alert_W("Monitor Alarms")
+                            Synthetics_W("Synthetics / Canary")
+                            ActionGroup_W("Action Group")
+                            LogicApp_Chat_W("Logic App")
+                        end
+                        subgraph FinOps_W["FinOps"]
+                            CostMgmt_W("Cost Management")
+                        end
+                    end
+
+                    %% VNET WEST
+                    subgraph VNet_West["Spoke VNet (West)"]
+                        direction TB
+                        
+                        subgraph Ingress_Sub_W["Ingress Subnet"]
+                            AGfC_W("App Gateway for Containers")
+                            APIM_W("API Management")
+                        end
+
+                        subgraph App_Sub_W["App Subnet"]
+                            
+                            %% ===============================================
+                            %% AKS CLUSTER DETAIL (WEST) - FULLY MIRRORED
+                            %% ===============================================
+                            subgraph AKS_W["AKS Cluster (Japan West)"]
+                                style AKS_W fill:#E8F0FE,stroke:#0078d4,stroke-width:3px
+
+                                %% System Node Pool (West)
+                                subgraph NodePool_Sys_W["System Node Pool"]
+                                    style NodePool_Sys_W fill:#ffffff,stroke:#0078d4,stroke-width:1px,stroke-dasharray: 2 2
+                                    
+                                    ALB_Ctrl_W("ALB Controller (AGfC)")
+                                    ExtDNS_W("External DNS")
+                                    CertMgr_W("cert-manager")
+                                    CSI_Secret_W("Secrets Store CSI")
+                                    
+                                    Managed_Istio_W("AKS Managed Istio")
+                                    
+                                    ArgoCD_W("Argo CD / Flux")
+                                    Gatekeeper_W("Azure Policy")
+                                    Defender_Ag_W("Defender Agent")
+
+                                    Prom_Ag_W("Prometheus Agent")
+                                    AMA_W("Azure Monitor Agent")
+                                    Cilium_W("Cilium CNI")
+                                end
+
+                                %% User Node Pool (West)
+                                subgraph NodePool_User_W["User Node Pool"]
+                                    style NodePool_User_W fill:#ffffff,stroke:#0078d4,stroke-width:1px
+                                    
+                                    KEDA_W("KEDA Operator")
+
+                                    subgraph Pod_App_W["App Pod"]
+                                        direction LR
+                                        Container_App_W("App Container")
+                                        
+                                        subgraph Sidecars_W["Sidecars"]
+                                            Envoy_W("Managed Envoy Proxy")
+                                            Dapr_W("Dapr (Optional)")
+                                        end
+                                    end
+                                end
+                            end
+                            %% ===============================================
+
+                            %% Streaming (West)
+                            subgraph Streaming_W["Streaming"]
+                                style Streaming_W fill:#fff5e6,stroke:#ff9900,stroke-width:2px
+                                EH_Ingest_W("Event Hubs")
+                                ASA_W("Stream Analytics")
+                            end
+
+                            %% Serverless (West)
+                            Func_Biz_W("Azure Functions")
+                            LogicApp_Workflow_W("Logic Apps")
+                            Batch_W("Azure Batch")
+                            SB_W("Service Bus")
+                            SB_DLQ_W("Service Bus DLQ")
+                        end
+
+                        subgraph Data_Sub_W["Data Subnet"]
+                            SQL_W("Azure SQL Database<br/>(Secondary)"):::data
+                            Redis_W("Azure Cache for Redis"):::data
+                            Synapse_SQL_W("Synapse Serverless"):::data
+                            Purview_Map_W("Purview Map"):::data
+                            PE_W("Private Endpoints")
+                        end
+                    end
+                    
+                    subgraph Storage_West["Storage"]
+                        Blob_W("Storage Account"):::data
+                    end
+                end
+            end
         end
     end
 
     %% ==========================================
-    %% 3. 接続・データの流れ
+    %% 3. CONNECTIONS & FLOWS
     %% ==========================================
 
-    %% レイアウト調整用（タイトルノードとコンテンツをつなぐ）
-    RootTitle ~~~ PlatformMG
-    PlatformTitle ~~~ PlatformUpper
-    PlatformUpper ~~~ MgmtSubScope
+    %% User & External
+    User_Ext --> AFD
+    AFD -- "Anycast" --> AGfC_E
+    AFD -- "Failover" --> AGfC_W
+    Admin_Ext -- "Global Secure Access" --> Entra_GSA
+    Entra_GSA --> AGfC_E
 
-    %% ログ
-    IdSub -.->|Diag Logs| LAW
-    ConnSub -.->|Diag Logs| LAW
-    ProdSub -.->|Diag Logs| LAW
-    NonProdSub -.->|Diag Logs| LAW
+    %% Ingress & Traffic (AGfC Flow)
+    AGfC_E --> APIM_E
+    AGfC_W --> APIM_W
+    APIM_E --> Managed_Istio_E
+    APIM_W --> Managed_Istio_W
+    
+    %% AGfC Data Plane Flow
+    ALB_Ctrl_E -. "Sync" .-> AGfC_E
+    ALB_Ctrl_W -. "Sync" .-> AGfC_W
 
-    %% NW
-    ConnSub -->|VNet Peering| SharedSub
-    ConnSub -->|VNet Peering| ProdSub
-    ConnSub -->|VNet Peering| NonProdSub
-    ConnSub -.-x|No Peering| SandboxSub
+    %% External DNS & Cert Manager
+    ExtDNS_E -. "Update Records" .-> PrivateDNS
+    ExtDNS_W -. "Update Records" .-> PrivateDNS
+    ExtDNS_E -. "Update Records" .-> DNS
+    CertMgr_E -. "ACME Challenge" .-> LetsEncrypt
+    CertMgr_W -. "ACME Challenge" .-> LetsEncrypt
+    CertMgr_E -- "Save Cert" --> KV_E
+    CertMgr_W -- "Save Cert" --> KV_W
 
-    %% イメージ
-    SharedSub -.->|Pull Images| ProdSub
-    SharedSub -.->|Pull Images| NonProdSub
+    %% Secrets Management
+    CSI_Secret_E -- "Mount Secrets" --> KV_E
+    CSI_Secret_W -- "Mount Secrets" --> KV_W
 
-    %% ポリシー（枠線ではなくタイトルノードに対して線を引くときれいに見えます）
-    PlatformTitle ~~~ IdSub
-    LandingTitle ~~~ ProdSub
+    %% GitOps Flow (Mirrored)
+    ArgoCD_E <== "Pull Config" ==> GitHub_Ext
+    ArgoCD_W <== "Pull Config" ==> GitHub_Ext
+    ArgoCD_E -- "Apply" --> NodePool_User_E
+    ArgoCD_W -- "Apply" --> NodePool_User_W
+
+    %% Observability Flow (Mirrored)
+    Prom_Ag_E -- "Metrics" --> AMW_E
+    Prom_Ag_W -- "Metrics" --> AMW_W
+    AMW_E -- "Visualize" --> AMG
+    AMW_W -- "Visualize" --> AMG
+    AMA_E -- "Logs" --> LAW
+    AMA_W -- "Logs" --> LAW
+
+    %% Scaling (KEDA)
+    KEDA_E -. "Check Scale" .-> SB_E
+    KEDA_W -. "Check Scale" .-> SB_W
+    KEDA_E -- "Scale Replicas" --> Pod_App_E
+    KEDA_W -- "Scale Replicas" --> Pod_App_W
+
+    %% Managed Service Mesh (Traffic)
+    APIM_E -- "Traffic" --> Envoy_E
+    APIM_W -- "Traffic" --> Envoy_W
+    Envoy_E -- "mTLS" --> Container_App_E
+    Envoy_W -- "mTLS" --> Container_App_W
+    Container_App_E --> Envoy_E
+    Container_App_W --> Envoy_W
+    Envoy_E -- "Egress" --> OpenAI_E
+    Envoy_W -- "Egress" --> OpenAI_W
+
+    %% App Logic (Connects)
+    Container_App_E --> SB_E
+    Container_App_W --> SB_W
+    SB_E --> Func_Biz_E
+    SB_W --> Func_Biz_W
+    Pod_App_E -- "PE" --> SQL_E
+    Pod_App_W -- "PE" --> SQL_W
+    Pod_App_E -- "PE" --> Redis_E
+    Pod_App_W -- "PE" --> Redis_W
+
+    %% Streaming
+    APIM_E --> EH_Ingest_E
+    APIM_W --> EH_Ingest_W
+    EH_Ingest_E --> ASA_E --> Blob_E
+    EH_Ingest_W --> ASA_W --> Blob_W
+
+    %% AIOps & Security
+    Defender_Suite -. "Unified Findings" .-> Sentinel
+    Sentinel --> LogicApp_Chat_E
+    AzFW --> LAW
+    AppInsights_E --> EventGrid_E --> Func_Fix_E
+    AppInsights_W --> EventGrid_W --> Func_Fix_W
+
+    %% Replication (Active-Active Sync)
+    SQL_E <== "Failover Group" ==> SQL_W
+    Redis_E <== "Geo-Rep" ==> Redis_W
+    ACR <== "Geo-Rep" ==> Region_West
+    Blob_E -. "GRS/Sync" .-> Blob_W
+    AISearch_E <== "Sync" ==> AISearch_W
+
+    %% CI/CD
+    GHA_Runner -- "Push" --> ACR
+    GHA_Runner -- "Deploy" --> AKS_E
+    GHA_Runner -- "Deploy" --> AKS_W
+    GHA_Runner --> ChaosStudio
+    GHA_Runner --> LoadTest
+
+    %% Connectivity
+    OnPrem_DC <== "ExpressRoute" ==> VPN_GW
+    VPN_GW ==> AzFW
+    AzFW <== "Peering" ==> VNet_East
+    AzFW <== "Peering" ==> VNet_West
+
+    %% Synthetics
+    Synthetics_E -. "Canary" .-> AFD
+    Synthetics_W -. "Canary" .-> AFD
+
+    %% Apply Styles
+    class MgmtSubScope mgmt;
+    class SharedSub,ConnSub infra;
+    class ProdSub work;
+    class AKS_E,AKS_W k8s;
