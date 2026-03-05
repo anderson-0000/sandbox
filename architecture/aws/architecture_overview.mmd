@@ -15,6 +15,7 @@ graph TD
         User_Ext("User (Internet/App)")
         Admin_Ext("Admin / Internal Ops")
         OnPrem_DC("Corporate Data Center")
+        GitHub_Ext("GitHub Enterprise/Cloud<br/>(Source Code)")
     end
 
     %% ==========================================
@@ -29,6 +30,8 @@ graph TD
             IAM_IC("IAM Identity Center")
             Org_SCP("Organizations / SCP")
             Billing("Billing & Cost Mgmt")
+            %% [NEW] Security Hub
+            SecHub("AWS Security Hub<br/>(Centralized Findings)")
         end
 
         %% --- 1.2 INFRASTRUCTURE OU ---
@@ -43,10 +46,12 @@ graph TD
             
             subgraph Edge_Sec["Edge Security (Zero Trust Entry)"]
                 R53("Route 53 (DNS)")
+                %% [NEW] Global Accelerator
+                GA("AWS Global Accelerator<br/>(Anycast IP / Failover)")
                 WAF("WAF / Shield Advanced<br/>(Auto-Block)")
                 CF("CloudFront (CDN)")
                 AVA("AWS Verified Access (Zero Trust)")
-                IAM_IC("IAM Identity Center")
+                IAM_IC_Edge("IAM Identity Center")
                 ARC("Route 53 ARC<br/>(Routing Control)")
             end
             
@@ -65,6 +70,10 @@ graph TD
     subgraph ProdOU ["🚀 Workloads (Prod) OU"]
         subgraph ProdAcc ["🟢 Production Account"]
             direction TB
+            
+            %% ==========================================
+            %% TOKYO REGION
+            %% ==========================================
             subgraph Region_Tokyo["Region: Tokyo (ap-northeast-1)"]
             direction TB
 
@@ -81,6 +90,8 @@ graph TD
                 style AIOps_Center_T fill:#f0f8ff,stroke:#0052cc,stroke-width:2px
                 DevOps_Guru_T("Amazon DevOps Guru<br/>(ML Anomaly Detect)")
                 EventBridge_T("EventBridge<br/>(Event Bus)")
+                %% [NEW] AppConfig
+                AppConfig_T("AWS AppConfig<br/>(Feature Flags)")
                 
                 subgraph Remediation_T["Auto-Remediation"]
                     Lambda_Fix_T("Lambda<br/>(Auto-Fix)")
@@ -107,6 +118,8 @@ graph TD
 
                 subgraph Ops_Monitor_T["Ops Monitoring"]
                     CW_Alarm_T("CloudWatch Alarms")
+                    %% [NEW] Synthetics (Canary)
+                    Synthetics_T("CloudWatch Synthetics<br/>(Canary/Heartbeat)")
                     SNS_T("SNS Topic")
                     Chatbot_T("AWS Chatbot (Slack/Teams)")
                 end
@@ -128,6 +141,13 @@ graph TD
                     
                     %% SERVICE MESH
                     Lattice_T("VPC Lattice<br/>(Service Network/AuthZ)")
+
+                    %% KINESIS STREAMING LAYER (TOKYO)
+                    subgraph Streaming_Layer_T["Streaming & Ingestion"]
+                        style Streaming_Layer_T fill:#fff5e6,stroke:#ff9900,stroke-width:2px,stroke-dasharray: 5 5
+                        KDS_T("Kinesis Data Streams<br/>(Real-time Ingest)")
+                        KDF_T("Kinesis Firehose<br/>(Delivery Stream)")
+                    end
 
                     %% FARGATE DETAILED VIEW
                     subgraph ECS_Cluster_T["ECS Cluster (Serverless)"]
@@ -168,12 +188,16 @@ graph TD
                     Aurora_T("Aurora Global (Writer)")
                     Redis_T("ElastiCache<br/>(Semantic Cache)")
                     AOSS_T("OpenSearch Serverless<br/>(Vector Store)")
+                    %% [NEW] Athena & Glue
+                    Glue_T("AWS Glue<br/>(Catalog & ETL)")
+                    Athena_T("Amazon Athena<br/>(Serverless Query)")
                 end
 
                 subgraph EP_T["PrivateLink Endpoints"]
                     EP_S3_T("S3 Gateway EP")
                     EP_If_T("Interface EPs (SSM, ECR, Logs, KMS)")
                     EP_Bedrock_T("Interface EP<br/>(Bedrock Runtime)")
+                    EP_Kinesis_T("Interface EP<br/>(Kinesis)")
                 end
             end
 
@@ -184,9 +208,33 @@ graph TD
             end
         end
 
-        %% --- 1.3 OSAKA REGION (SECONDARY - FULL MIRROR) ---
+        %% ==========================================
+        %% OSAKA REGION (SECONDARY - FULL MIRROR)
+        %% ==========================================
         subgraph Region_Osaka["Region: Osaka (ap-northeast-3)"]
             direction TB
+
+            %% GEN AI MANAGED SERVICES (OSAKA) - Mirrored
+            subgraph GenAI_Layer_O["Generative AI (Bedrock)"]
+                style GenAI_Layer_O fill:#f9f2ff,stroke:#6600cc,stroke-width:2px,stroke-dasharray: 5 5
+                Bedrock_Model_O("Amazon Bedrock<br/>(FMs: Claude/Titan)")
+                Bedrock_KB_O("Knowledge Base<br/>(RAG Agent)")
+                Bedrock_Guard_O("Guardrails<br/>(Safety Filter)")
+            end
+
+            %% AIOps & AUTOMATION LAYER (OSAKA) - Mirrored
+            subgraph AIOps_Center_O["AIOps & Automation Center"]
+                style AIOps_Center_O fill:#f0f8ff,stroke:#0052cc,stroke-width:2px
+                DevOps_Guru_O("Amazon DevOps Guru<br/>(ML Anomaly Detect)")
+                EventBridge_O("EventBridge<br/>(Event Bus)")
+                %% [NEW] AppConfig Osaka
+                AppConfig_O("AWS AppConfig<br/>(Feature Flags)")
+                
+                subgraph Remediation_O["Auto-Remediation"]
+                    Lambda_Fix_O("Lambda<br/>(Auto-Fix)")
+                    SSM_Auto_O("SSM Automation<br/>(Runbooks)")
+                end
+            end
 
             subgraph Gov_O["Governance & Security (O)"]
                 KMS_O("KMS (Replica Key)")
@@ -198,6 +246,20 @@ graph TD
                 GD_O("GuardDuty")
                 Inspector_O("Amazon Inspector")
                 Macie_O("Amazon Macie")
+
+                %% Ops Monitor Osaka
+                subgraph Ops_Monitor_O["Ops Monitoring"]
+                    CW_Alarm_O("CloudWatch Alarms")
+                    %% [NEW] Synthetics Osaka
+                    Synthetics_O("CloudWatch Synthetics<br/>(Canary)")
+                    SNS_O("SNS Topic")
+                    Chatbot_O("AWS Chatbot (Slack/Teams)")
+                end
+                %% FinOps Osaka
+                subgraph FinOps_O["FinOps & Cost"]
+                    Budgets_O("AWS Budgets")
+                    CostAnomaly_O("Cost Anomaly Detection")
+                end
             end
 
             subgraph VPC_Osaka["VPC (Osaka)"]
@@ -215,13 +277,27 @@ graph TD
                     
                     Lattice_O("VPC Lattice")
 
+                    %% KINESIS STREAMING LAYER (OSAKA)
+                    subgraph Streaming_Layer_O["Streaming & Ingestion"]
+                        style Streaming_Layer_O fill:#fff5e6,stroke:#ff9900,stroke-width:2px,stroke-dasharray: 5 5
+                        KDS_O("Kinesis Data Streams<br/>(Real-time Ingest)")
+                        KDF_O("Kinesis Firehose<br/>(Delivery Stream)")
+                    end
+
                     subgraph ECS_Cluster_O["ECS Cluster"]
                         subgraph ECS_Service_O["ECS Service"]
+                            %% AutoScaling Osaka
+                            AutoScaling_O("AWS Auto Scaling")
                              subgraph Fargate_Task_O["Fargate Task"]
                                 direction LR
                                 App_Container_O("App Container")
-                                Envoy_O("Envoy Proxy")
-                                FireLens_O("FireLens")
+                                %% Sidecars Osaka
+                                subgraph Sidecars_O["Sidecars"]
+                                    Envoy_O("Envoy Proxy")
+                                    FireLens_O("FireLens")
+                                    XRay_O("X-Ray/ADOT")
+                                    CodeGuru_Prof_O("CodeGuru Profiler")
+                                end
                             end
                         end
                     end
@@ -231,6 +307,8 @@ graph TD
                     SFN_O("Step Functions")
                     AWS_Batch_O("AWS Batch (Fargate)")
                     SQS_O("SQS (Job Queue)")
+                    %% DLQ Osaka
+                    DLQ_O("SQS DLQ")
                     Cognito_O("Cognito User Pool")
                 end
 
@@ -239,11 +317,17 @@ graph TD
                     Redis_O("ElastiCache (Replica)")
                     %% AOSS is typically regional, but for DR data sync strategy
                     AOSS_O("OpenSearch Serverless")
+                    %% [NEW] Athena & Glue Osaka
+                    Glue_O("AWS Glue")
+                    Athena_O("Amazon Athena")
                 end
 
                 subgraph EP_O["PrivateLink Endpoints"]
                     EP_S3_O("S3 Gateway EP")
                     EP_If_O("Interface EPs")
+                    %% Bedrock & Kinesis EP Osaka
+                    EP_Bedrock_O("Interface EP<br/>(Bedrock)")
+                    EP_Kinesis_O("Interface EP<br/>(Kinesis)")
                 end
             end
              subgraph Storage_O["Regional Storage & Logs"]
@@ -263,6 +347,8 @@ graph TD
             
             subgraph Build_Scan["Build & Security Check"]
                 CodeBuild("CodeBuild<br/>(Build Artifact)")
+                %% Self-Hosted Runner
+                CB_Runner("CodeBuild<br/>(GitHub Actions Runner)")
                 CodeGuru_Rev("CodeGuru Reviewer<br/>(AI Code Audit)")
                 Vuln_Scan("Vuln Scan<br/>(Trivy / Inspector)")
             end
@@ -282,6 +368,12 @@ graph TD
     User_Ext --> R53
     R53 --> CF
     R53 -- "Static" --> Amplify
+    
+    %% [NEW] Global Accelerator Flow
+    User_Ext -- "High Speed" --> GA
+    GA -- "Anycast" --> ALB_T
+    GA -- "Failover" --> ALB_O
+
     CF -- "HTTPS (ACM)" --> WAF
     WAF --> APIGW_T
     WAF --> APIGW_O
@@ -332,10 +424,27 @@ graph TD
     SQS_T -. "Failure" .-> DLQ_T
     DLQ_T -. "Alert" .-> CW_Alarm_T
 
+    %% [NEW] AppConfig Flow
+    AppConfig_T -. "Feature Flag" .-> ECS_Service_T
+    AppConfig_T -. "Config" .-> Lambda_Biz_T
+
+    %% Kinesis Flows (Tokyo)
+    APIGW_T -- "PutRecord" --> KDS_T
+    App_Container_T -- "PutRecord" --> KDS_T
+    KDS_T -- "Process" --> Lambda_Biz_T
+    KDS_T -- "Buffer" --> KDF_T
+    KDF_T -- "Archive" --> S3_T
+    KDF_T -- "Index" --> AOSS_T
+    KDS_T -. "Interface EP" .-> EP_Kinesis_T
+
     %% 5. Data & Bedrock Flow (Including Semantic Cache)
     App_Container_T -- "1. Check Cache" --> Redis_T
     App_Container_T -- "2. DB Write" --> Aurora_T
     
+    %% [NEW] Athena & Glue Flow
+    Glue_T -. "Crawl/Catalog" .-> S3_T
+    Athena_T -. "SQL Query" .-> S3_T
+
     %% GenAI / Bedrock RAG Flow
     App_Container_T -- "3. Cache Miss (Invoke)" --> EP_Bedrock_T
     Lambda_Biz_T -- "Invoke" --> EP_Bedrock_T
@@ -363,6 +472,15 @@ graph TD
     EventBridge_T --> SSM_Auto_T
     EventBridge_T --> SNS_T --> Chatbot_T
     
+    %% [NEW] Security Hub Aggregation
+    GD_T -. "Findings" .-> SecHub
+    Inspector_T -. "Findings" .-> SecHub
+    Macie_T -. "Findings" .-> SecHub
+    Config_T -. "Non-compliant" .-> SecHub
+
+    %% [NEW] Synthetics Flow
+    Synthetics_T -. "Canary Check" .-> WAF
+
     %% FinOps Alert
     CostAnomaly_T -. "Cost Spike" .-> SNS_T
 
@@ -371,13 +489,69 @@ graph TD
     SSM_Auto_T -. "Restart/Scale" .-> ECS_Service_T
     AutoScaling_T -. "Predictive Scale" .-> ECS_Service_T
 
-    %% 7. Osaka Application Flow (Mirrored)
+    %% 7. Osaka Application Flow (Mirrored & Expanded)
     IGW_O <--> APIGW_O
+    NAT_O --> EP_If_O
     APIGW_O -- "Auth" --> Lambda_Auth_O
     Lambda_Auth_O -.-> Cognito_O
     APIGW_O --> SFN_O
+    APIGW_O --> Lambda_Biz_O
+    SFN_O --> Lambda_Biz_O
     SFN_O --> AWS_Batch_O
+    SFN_O --> ECS_Service_O
     AWS_Batch_O -- "Fargate" --> EP_If_O
+
+    %% Osaka Expanded Connections (Matching Tokyo)
+    Lattice_O -. "Zero Trust" .-> ECS_Service_O
+    ALB_O --> Envoy_O
+    Envoy_O -- "Proxy" --> App_Container_O
+    App_Container_O --> SQS_O
+    SQS_O --> Lambda_Biz_O
+    SQS_O -. "Failure" .-> DLQ_O
+    DLQ_O -. "Alert" .-> CW_Alarm_O
+
+    %% [NEW] AppConfig Flow Osaka
+    AppConfig_O -. "Feature Flag" .-> ECS_Service_O
+
+    %% Osaka Data & GenAI Flow
+    App_Container_O -- "Cache" --> Redis_O
+    App_Container_O -- "Invoke" --> EP_Bedrock_O
+    Lambda_Biz_O -- "Invoke" --> EP_Bedrock_O
+    EP_Bedrock_O -.-> Bedrock_Model_O
+    Bedrock_Model_O --> Bedrock_Guard_O --> Bedrock_KB_O
+    Bedrock_KB_O --> AOSS_O
+    Bedrock_KB_O --> S3_O
+
+    %% Osaka Kinesis Flows
+    APIGW_O -- "PutRecord" --> KDS_O
+    App_Container_O -- "PutRecord" --> KDS_O
+    KDS_O --> Lambda_Biz_O
+    KDS_O --> KDF_O
+    KDF_O --> S3_O
+    KDF_O --> AOSS_O
+    KDS_O -.-> EP_Kinesis_O
+
+    %% [NEW] Athena/Glue Osaka
+    Glue_O -. "Catalog" .-> S3_O
+    Athena_O -. "Query" .-> S3_O
+
+    %% Osaka Telemetry
+    App_Container_O -. "Logs" .-> FireLens_O
+    FireLens_O --> CW_Logs_O
+    XRay_O -.-> EP_If_O
+    CodeGuru_Prof_O -.-> DevOps_Guru_O
+    CW_Logs_O -.-> DevOps_Guru_O
+    DevOps_Guru_O ==> EventBridge_O
+    EventBridge_O --> Lambda_Fix_O & SSM_Auto_O
+    EventBridge_O --> SNS_O --> Chatbot_O
+    CostAnomaly_O -.-> SNS_O
+
+    %% [NEW] Synthetics Osaka
+    Synthetics_O -. "Canary" .-> WAF
+    
+    %% [NEW] SecHub Osaka
+    GD_O -.-> SecHub
+    Inspector_O -.-> SecHub
 
     %% 8. Data Replication
     Aurora_T <== "Global Rep" ==> Aurora_O
@@ -389,6 +563,11 @@ graph TD
     CodeCommit --> CodePipeline
     CodePipeline --> CodeBuild
     CodeBuild -- "1. Build & Review" --> CodeGuru_Rev
+    
+    %% GitHub Actions Flow
+    GitHub_Ext -- "Webhook" --> CB_Runner
+    CB_Runner -- "Build & Push" --> ECR_T
+
     CodeGuru_Rev --> Vuln_Scan
     Vuln_Scan -- "2. Scan & Push" --> ECR_T
     
