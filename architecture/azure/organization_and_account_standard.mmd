@@ -1,0 +1,112 @@
+flowchart TD
+    %% ==========================================
+    %% 1. スタイル定義
+    %% ==========================================
+    classDef root fill:#f9f9f9,stroke:#333,stroke-width:2px,color:#000;
+    classDef mgmt fill:#FFD2D2,stroke:#B30000,stroke-width:2px,color:#000;
+    classDef sec fill:#D2FFD2,stroke:#006600,stroke-width:2px,color:#000;
+    classDef infra fill:#D2D2FF,stroke:#0000B3,stroke-width:2px,color:#000;
+    classDef work fill:#FFFFD2,stroke:#B3B300,stroke-width:2px,color:#000;
+    classDef sand fill:#F0F0F0,stroke:#666,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    
+    %% ★重要: タイトル代わりのノード用スタイル（枠線を消して文字だけにする）
+    classDef groupTitle fill:none,stroke:none,color:#000,font-weight:bold,font-size:16px,align:center;
+    classDef subTitle fill:none,stroke:none,color:#000,font-weight:bold,font-size:14px,align:center;
+
+    %% ==========================================
+    %% 2. 階層構造
+    %% ==========================================
+    
+    %% ▼ ルート管理グループ
+    %% Subgraphのタイトルは空文字 [" "] にし、直下にタイトルノードを置く
+    subgraph TenantRoot [" "]
+        direction TB
+        %% ★タイトルノード（これで場所が確保されます）
+        RootTitle["🏢 Azure Tenant Root Group<br/>(ルート管理グループ)"]:::groupTitle
+
+        %% ▼ 第1階層: Platform MG
+        subgraph PlatformMG [" "]
+            direction TB
+            PlatformTitle["📂 Platform MG (管理グループ)"]:::subTitle
+            
+            subgraph PlatformUpper [ ]
+                direction LR
+                style PlatformUpper fill:none,stroke:none
+
+                IdSub["🔑 Identity Subscription<br/>------------------------------------<br/>【ID管理基盤】<br/>・Microsoft Entra ID<br/>・PIM / AD DS"]:::mgmt
+                
+                ConnSub["🔑 Connectivity Subscription<br/>------------------------------------<br/>【ネットワークハブ】<br/>・Azure Firewall / VPN<br/>・vWAN / Private DNS"]:::infra
+            end
+
+            %% 中段：管理サブスクリプション
+            subgraph MgmtSubScope [" "]
+                direction TB
+                style MgmtSubScope fill:#D2FFD2,stroke:#006600,stroke-width:2px,color:#000
+                
+                %% ★タイトルノード
+                MgmtTitle["🔑 Management Subscription (管理サブスクリプション)<br/>------------------------------------<br/>【ログ・監視・セキュリティ】"]:::subTitle
+
+                LAW("🗄️ Log Analytics Workspace<br/>(ログ検索・分析基盤)"):::sec
+                Sentinel("👮 Microsoft Sentinel<br/>(SIEM・脅威検知)"):::sec
+                Storage("📦 Storage Account<br/>(ログ長期保管・Archive)"):::sec
+                
+                %% 配置順序の強制（タイトル -> LAW -> 他）
+                MgmtTitle ~~~ LAW
+                LAW -.- Sentinel
+                LAW ==>|エクスポート| Storage
+            end
+        end
+
+        %% ▼ 第1階層: Landing Zones MG
+        subgraph LandingZonesMG [" "]
+            direction LR
+            LandingTitle["📂 Landing Zones MG (管理グループ)"]:::subTitle
+            
+            SharedSub["🔑 Shared Services Subscription<br/>------------------------------------<br/>【DevOps・共通コンテナ】<br/>・Runners / ACR / Bastion"]:::infra
+            
+            ProdSub["🔑 Production Subscription<br/>------------------------------------<br/>【本番環境】<br/>・Critical Workloads<br/>・Azure Policy / リソースロック"]:::work
+            
+            NonProdSub["🔑 Non-Prod Subscription<br/>------------------------------------<br/>【検証・開発環境】<br/>・Staging / QA / Dev<br/>・Cost Management"]:::work
+
+            %% タイトルとの位置関係
+            LandingTitle ~~~ SharedSub
+        end
+
+        %% ▼ 第1階層: Sandbox MG
+        subgraph SandMG [" "]
+            direction TB
+            SandTitle["📂 Sandbox MG (管理グループ)"]:::subTitle
+            SandboxSub["🔑 Sandbox Subscription<br/>------------------------------------<br/>【個人の学習・PoC】<br/>・No Peering / Spending Limit"]:::sand
+            
+            SandTitle ~~~ SandboxSub
+        end
+    end
+
+    %% ==========================================
+    %% 3. 接続・データの流れ
+    %% ==========================================
+
+    %% レイアウト調整用（タイトルノードとコンテンツをつなぐ）
+    RootTitle ~~~ PlatformMG
+    PlatformTitle ~~~ PlatformUpper
+    PlatformUpper ~~~ MgmtSubScope
+
+    %% ログ
+    IdSub -.->|Diag Logs| LAW
+    ConnSub -.->|Diag Logs| LAW
+    ProdSub -.->|Diag Logs| LAW
+    NonProdSub -.->|Diag Logs| LAW
+
+    %% NW
+    ConnSub -->|VNet Peering| SharedSub
+    ConnSub -->|VNet Peering| ProdSub
+    ConnSub -->|VNet Peering| NonProdSub
+    ConnSub -.-x|No Peering| SandboxSub
+
+    %% イメージ
+    SharedSub -.->|Pull Images| ProdSub
+    SharedSub -.->|Pull Images| NonProdSub
+
+    %% ポリシー（枠線ではなくタイトルノードに対して線を引くときれいに見えます）
+    PlatformTitle ~~~ IdSub
+    LandingTitle ~~~ ProdSub
