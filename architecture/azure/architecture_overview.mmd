@@ -16,7 +16,7 @@ graph TD
     classDef subTitle fill:none,stroke:none,color:#000,font-weight:bold,font-size:14px,align:center;
 
     %% ==========================================
-    %% 0. EXTERNAL ACTORS (Source of Truth)
+    %% 0. EXTERNAL ACTORS
     %% ==========================================
     subgraph Actors [" "]
         ActorsTitle["🌐 Source of Truth & Actors"]:::subTitle
@@ -25,6 +25,8 @@ graph TD
         GitHub_Code("GitHub (CI: Build Image)")
         GitHub_GitOps("GitHub (CD: K8s Manifests)")
         OnPrem_DC("Corporate Data Center<br/>(Hybrid DNS/Connectivity)")
+        LetsEncrypt("Let's Encrypt / ZeroSSL<br/>(ACME Provider)")
+        SWA("Azure Static Web Apps<br/>(Global Static Content)")
     end
 
     %% ==========================================
@@ -65,7 +67,8 @@ graph TD
                     subgraph HubVNet [" "]
                         HubVNetTitle["🏢 Hub VNet (Japan East)"]:::subTitle
                         AzFW("Azure Firewall Premium<br/>(IDPS / TLS Insp)"):::sec
-                        DNS_Resolver("Azure DNS Private Resolver<br/>(Hybrid DNS Sync)"):::infra
+                        DNS_Resolver("Azure DNS Private Resolver"):::infra
+                        PrivateDNS("Private DNS Zones"):::infra
                         VPN_GW("VPN / ExpressRoute GW"):::infra
                         Bastion("Azure Bastion"):::infra
                     end
@@ -80,17 +83,17 @@ graph TD
                     SIEMTitle["📊 SIEM & Observability Hub"]:::subTitle
                     Sentinel("Microsoft Sentinel (SIEM/SOAR)"):::sec
                     LAW("Log Analytics Workspace (Hot)"):::sec
-                    Archive_Storage("📦 Storage Account (Archive/Immutable)<br/>(Long-term Retention)"):::sec
+                    Archive_Storage("📦 Storage Account (Archive/Immutable)"):::sec
                     Prometheus("Managed Prometheus"):::obs
                     Grafana("Managed Grafana"):::obs
                 end
                 subgraph Sec_Suite [" "]
                     SecTitle["🛡️ Security Posture"]:::subTitle
-                    Defender_Cloud("Defender for Cloud (CSPM)")
-                    Defender_Cont("Defender for Containers")
-                    Defender_Storage("Defender for Storage")
+                    Defender_Cloud("Defender for Cloud (CSPM)"):::sec
+                    Defender_Cont("Defender for Containers"):::sec
+                    Defender_Storage("Defender for Storage"):::sec
                 end
-                Purview_Central("Microsoft Purview"):::sec
+                Purview_Central("Microsoft Purview (Data Catalog)"):::sec
             end
         end
 
@@ -124,10 +127,22 @@ graph TD
                 subgraph Region_East [" "]
                     direction TB
                     EastTitle["🌏 Region: Japan East (Tokyo)"]:::subTitle
+                    subgraph Obs_Layer_E [" "]
+                        style Obs_Layer_E fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+                        ObsETitle["📊 Regional Observability"]:::obs
+                        AMW_E("Azure Monitor Workspace"):::obs
+                        AppInsights_E("App Insights"):::obs
+                    end
+                    subgraph AI_Layer_E [" "]
+                        style AI_Layer_E fill:#f9f2ff,stroke:#6600cc,stroke-width:2px,stroke-dasharray: 5 5
+                        AIETitle["🤖 Generative AI"]:::data
+                        OpenAI_E("Azure OpenAI"):::data
+                        ContentSafety_E("AI Content Safety"):::data
+                        AISearch_E("Azure AI Search"):::data
+                    end
                     subgraph AIOps_E [" "]
                         style AIOps_E fill:#f0f8ff,stroke:#0052cc,stroke-width:2px
                         AIOpsETitle["🤖 AIOps & Automation"]:::subTitle
-                        AppInsights_E("App Insights")
                         EventGrid_E("Event Grid")
                         AppConfig_E("App Configuration")
                         RemE_Func("Auto-Remediation (Func)")
@@ -138,6 +153,14 @@ graph TD
                         KV_E("Key Vault (Secrets)")
                         Policy_E("Azure Policy")
                         Backup_E("AKS Backup (Velero)")
+                        subgraph Ops_Monitor_E [" "]
+                            MonE_Title["Ops Monitoring"]:::subTitle
+                            Monitor_Alert_E("Monitor Alarms"):::obs
+                            Synthetics_E("Synthetics / Canary"):::obs
+                            ActionGroup_E("Action Group"):::obs
+                            LogicApp_Chat_E("Logic App (ChatOps)"):::obs
+                        end
+                        CostMgmt_E("Cost Management (FinOps)")
                     end
                     subgraph VNet_East [" "]
                         direction TB
@@ -153,45 +176,44 @@ graph TD
                                 style AKS_E fill:#fff,stroke:#0078d4,stroke-width:2px
                                 AKSE_Title["☸️ AKS Cluster (East)"]:::subTitle
                                 
-                                subgraph GitOps_E [" "]
-                                    GitOpsETitle["♾️ GitOps Engine"]:::gitops
+                                subgraph NodePool_Sys_E [" "]
+                                    NodePool_Sys_E_Title["⚙️ System Node Pool"]:::subTitle
+                                    ALB_Ctrl_Pod_E("ALB Controller (Pod)"):::addon
+                                    ExtDNS_E("External DNS"):::addon
+                                    CertMgr_E("cert-manager"):::addon
                                     ArgoCD_E("Argo CD (GitOps Sync)"):::gitops
-                                end
-
-                                subgraph AddE [" "]
-                                    AddETitle["🔧 Managed Addons"]:::sec
-                                    ASM_E("Azure Service Mesh (Istio)"):::sec
                                     Gatekeeper_E("Azure Policy (Gatekeeper)"):::sec
+                                    ASM_E("Azure Service Mesh (Istio)"):::sec
                                     AMA_E("Azure Monitor Agent"):::obs
                                     Retina_E("Retina (Net Observability)"):::obs
-                                    ALB_Ctrl_Pod_E("ALB Controller (Pod)"):::addon
+                                    Cilium_E("Cilium CNI"):::infra
                                     NAP_E("Node Auto-Provisioning"):::infra
                                 end
 
-                                subgraph OpsE [" "]
-                                    OpsETitle["🔩 Platform Operators"]:::addon
+                                subgraph NodePool_User_E [" "]
+                                    NodePool_User_E_Title["👤 User Node Pool"]:::subTitle
                                     ESO_E("External Secrets Operator"):::addon
                                     KEDA_E("KEDA (Event-Scaling)"):::addon
                                     VPA_E("VPA (Vertical Autoscale)"):::addon
-                                    CertMgr_E("cert-manager"):::addon
-                                    ExtDNS_E("External DNS"):::addon
                                     WorkloadID_E("Workload ID"):::sec
-                                end
-
-                                subgraph UsrE [" "]
-                                    UsrETitle["👤 User Node Pool"]:::subTitle
                                     subgraph PodE [" "]
                                         PodETitle["📦 App Pod (Zero Trust)"]:::subTitle
                                         ContE("App Container")
                                         SideE_Istio("Istio Proxy")
                                         SideE_FB("Fluent Bit")
-                                        SideE_AMA("AMA Sidecar")
+                                        SideE_AMA("AMA Sidecar"):::obs
+                                        Dapr_E("Dapr (Sidecar)"):::addon
                                     end
                                 end
                             end
-                            EH_E("Event Hubs")
-                            SB_E("Service Bus")
-                            SB_DLQ_E("Service Bus DLQ")
+                            subgraph Streaming_E [" "]
+                                style Streaming_E fill:#fff5e6,stroke:#ff9900,stroke-width:2px
+                                StreamETitle["🌊 Streaming"]:::subTitle
+                                EH_E("Event Hubs (Ingest)")
+                                ASA_E("Stream Analytics (Process)")
+                                SB_E("Service Bus (Queue)")
+                                SB_DLQ_E("Service Bus DLQ")
+                            end
                             Func_Biz_E("Functions (Biz)")
                             Logic_E("Logic App")
                             Batch_E("Azure Batch")
@@ -201,11 +223,14 @@ graph TD
                             SQL_E("SQL DB (Primary/Write)"):::data
                             Cosmos_E("Cosmos DB (Multi-Write)"):::data
                             Redis_E("Azure Cache for Redis"):::data
-                            OpenAI_E("Azure OpenAI"):::data
-                            AISearch_E("Azure AI Search"):::data
                             Synapse_E("Synapse SQL"):::data
                             Purview_Map_E("Purview Map"):::data
-                            PE_E("Private Endpoints")
+                            subgraph PEs_E ["🛡️ Private Endpoints"]
+                                PE_E("PE: SQL / Cosmos / Redis")
+                                PE_AI_E("PE: OpenAI / AI Search")
+                                PE_KV_E("PE: Key Vault")
+                                PE_ACR_E("PE: ACR / Storage")
+                            end
                         end
                     end
                     Blob_E("Storage (Blob GRS/Immutable)"):::data
@@ -217,10 +242,22 @@ graph TD
                 subgraph Region_West [" "]
                     direction TB
                     WestTitle["🌏 Region: Japan West (Osaka)"]:::subTitle
+                    subgraph Obs_Layer_W [" "]
+                        style Obs_Layer_W fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+                        ObsWTitle["📊 Regional Observability"]:::obs
+                        AMW_W("Azure Monitor Workspace"):::obs
+                        AppInsights_W("App Insights"):::obs
+                    end
+                    subgraph AI_Layer_W [" "]
+                        style AI_Layer_W fill:#f9f2ff,stroke:#6600cc,stroke-width:2px,stroke-dasharray: 5 5
+                        AIWTitle["🤖 Generative AI"]:::data
+                        OpenAI_W("Azure OpenAI"):::data
+                        ContentSafety_W("AI Content Safety"):::data
+                        AISearch_W("Azure AI Search"):::data
+                    end
                     subgraph AIOps_W [" "]
                         style AIOps_W fill:#f0f8ff,stroke:#0052cc,stroke-width:2px
                         AIOpsWTitle["🤖 AIOps & Automation"]:::subTitle
-                        AppInsights_W("App Insights")
                         EventGrid_W("Event Grid")
                         AppConfig_W("App Configuration")
                         RemW_Func("Auto-Remediation (Func)")
@@ -231,6 +268,14 @@ graph TD
                         KV_W("Key Vault (Secrets)")
                         Policy_W("Azure Policy")
                         Backup_W("AKS Backup (Velero)")
+                        subgraph Ops_Monitor_W [" "]
+                            MonW_Title["Ops Monitoring"]:::subTitle
+                            Monitor_Alert_W("Monitor Alarms"):::obs
+                            Synthetics_W("Synthetics / Canary"):::obs
+                            ActionGroup_W("Action Group"):::obs
+                            LogicApp_Chat_W("Logic App"):::obs
+                        end
+                        CostMgmt_W("Cost Management")
                     end
                     subgraph VNet_West [" "]
                         direction TB
@@ -246,45 +291,44 @@ graph TD
                                 style AKS_W fill:#fff,stroke:#0078d4,stroke-width:2px
                                 AKSW_Title["☸️ AKS Cluster (West)"]:::subTitle
                                 
-                                subgraph GitOps_W [" "]
-                                    GitOpsWTitle["♾️ GitOps Engine"]:::gitops
+                                subgraph NodePool_Sys_W [" "]
+                                    NodePool_Sys_W_Title["⚙️ System Node Pool"]:::subTitle
+                                    ALB_Ctrl_Pod_W("ALB Controller (Pod)"):::addon
+                                    ExtDNS_W("External DNS"):::addon
+                                    CertMgr_W("cert-manager"):::addon
                                     ArgoCD_W("Argo CD (GitOps Sync)"):::gitops
-                                end
-
-                                subgraph AddW [" "]
-                                    AddWTitle["🔧 Managed Addons"]:::sec
-                                    ASM_W("Azure Service Mesh (Istio)"):::sec
                                     Gatekeeper_W("Azure Policy (Gatekeeper)"):::sec
+                                    ASM_W("Azure Service Mesh (Istio)"):::sec
                                     AMA_W("Azure Monitor Agent"):::obs
                                     Retina_W("Retina (Net Observability)"):::obs
-                                    ALB_Ctrl_Pod_W("ALB Controller (Pod)"):::addon
+                                    Cilium_W("Cilium CNI"):::infra
                                     NAP_W("Node Auto-Provisioning"):::infra
                                 end
 
-                                subgraph OpsW [" "]
-                                    OpsWTitle["🔩 Platform Operators"]:::addon
+                                subgraph NodePool_User_W [" "]
+                                    NodePool_User_W_Title["👤 User Node Pool"]:::subTitle
                                     ESO_W("External Secrets Operator"):::addon
                                     KEDA_W("KEDA (Event-Scaling)"):::addon
                                     VPA_W("VPA (Vertical Autoscale)"):::addon
-                                    CertMgr_W("cert-manager"):::addon
-                                    ExtDNS_W("External DNS"):::addon
                                     WorkloadID_W("Workload ID"):::sec
-                                end
-
-                                subgraph UsrW [" "]
-                                    UsrWTitle["👤 User Node Pool"]:::subTitle
                                     subgraph PodW [" "]
                                         PodWTitle["📦 App Pod (Zero Trust)"]:::subTitle
                                         ContW("App Container")
                                         SideW_Istio("Istio Proxy")
                                         SideW_FB("Fluent Bit")
-                                        SideW_AMA("AMA Sidecar")
+                                        SideW_AMA("AMA Sidecar"):::obs
+                                        Dapr_W("Dapr (Sidecar)"):::addon
                                     end
                                 end
                             end
-                            EH_W("Event Hubs")
-                            SB_W("Service Bus")
-                            SB_DLQ_W("Service Bus DLQ")
+                            subgraph Streaming_W [" "]
+                                style Streaming_W fill:#fff5e6,stroke:#ff9900,stroke-width:2px
+                                StreamWTitle["🌊 Streaming"]:::subTitle
+                                EH_W("Event Hubs")
+                                ASA_W("Stream Analytics")
+                                SB_W("Service Bus")
+                                SB_DLQ_W("Service Bus DLQ")
+                            end
                             Func_Biz_W("Functions (Biz)")
                             Logic_W("Logic App")
                             Batch_W("Azure Batch")
@@ -294,11 +338,14 @@ graph TD
                             SQL_W("SQL DB (Secondary/ReadOnly)"):::data
                             Cosmos_W("Cosmos DB (Multi-Write)"):::data
                             Redis_W("Azure Cache for Redis"):::data
-                            OpenAI_W("Azure OpenAI"):::data
-                            AISearch_W("Azure AI Search"):::data
                             Synapse_W("Synapse SQL"):::data
                             Purview_Map_W("Purview Map"):::data
-                            PE_W("Private Endpoints")
+                            subgraph PEs_W ["🛡️ Private Endpoints"]
+                                PE_W("PE: SQL / Cosmos / Redis")
+                                PE_AI_W("PE: OpenAI / AI Search")
+                                PE_KV_W("PE: Key Vault")
+                                PE_ACR_W("PE: ACR / Storage")
+                            end
                         end
                     end
                     Blob_W("Storage (Blob GRS/Immutable)"):::data
@@ -308,38 +355,96 @@ graph TD
     end
 
     %% ==========================================
-    %% 3. REFINED FLOWS: GITOPS, SECRETS, & LOGS
+    %% 3. REFINED FLOWS (DETAILED)
     %% ==========================================
 
-    %% CI/CD (GitOps)
+    %% CI/CD (GitOps) & Image Management
     GitHub_Code -- "1. Build & Push Image" --> GHA_Runner_ACA --> ACR
+    GHA_Runner_ACA -- "Deploy / Test" --> SWA
+    GHA_Runner_ACA -- "Chaos Experiment" --> ChaosStudio
+    ChaosStudio -. "Fault Injection" .-> AKS_E & AKS_W
     GitHub_GitOps -- "2. Sync Manifests" --> ArgoCD_E & ArgoCD_W
     ArgoCD_E & ArgoCD_W -- "3. Pull & Deploy Pods" --> PodE & PodW
 
     %% AGfC Flow (Symmetric Control)
-    ALB_Ctrl_Pod_E -. "Watches Gateway API / Configures" .-> AGfC_GW_E
-    ALB_Ctrl_Pod_W -. "Watches Gateway API / Configures" .-> AGfC_GW_W
+    ALB_Ctrl_Pod_E -. "Watches Gateway API" .-> AGfC_GW_E
+    ALB_Ctrl_Pod_W -. "Watches Gateway API" .-> AGfC_GW_W
 
-    %% Secrets Flow (Zero Trust)
+    %% External DNS & Cert Manager
+    CertMgr_E & CertMgr_W -. "ACME Challenge" .-> LetsEncrypt
+    ExtDNS_E & ExtDNS_W -. "Update Records" .-> DNS & PrivateDNS
+    CertMgr_E & CertMgr_W -- "Save SSL Certs" --> KV_E & KV_W
+
+    %% Secrets Flow (Zero Trust with Workload ID)
     KV_E -- "4. Sync Secrets" --> ESO_E --> PodE
     KV_W -- "4. Sync Secrets" --> ESO_W --> PodW
-
-    %% Scaling Flow (Event-driven)
-    SB_E -- "5. Trigger Scale" --> KEDA_E -- "Scale Pods" --> PodE
-    SB_W -- "5. Trigger Scale" --> KEDA_W -- "Scale Pods" --> PodW
+    WorkloadID_E & WorkloadID_W -. "OIDC Federated Identity" .-> EntraID
 
     %% Logs & SIEM (Retention Strategy)
     SideE_FB & SideW_FB -. "Log Forward" .-> LAW
     AMA_E & AMA_W -. "Container Insights" .-> LAW
+    AzFW -- "Traffic Logs" --> LAW
     LAW -- "Real-time SIEM Analysis" --> Sentinel
-    LAW -- "Data Export (Retention Policy)" --> Archive_Storage
+    LAW -- "Data Export" --> Archive_Storage
+
+    %% Observability Hub Flows
+    AMA_E & AMA_W -- "Metrics" --> AMW_E & AMW_W
+    AMW_E & AMW_W -- "Visualize" --> Grafana
+    Grafana -- "PromQL" --> Prometheus
+
+    %% Scaling Flow (Event-driven with KEDA)
+    SB_E & SB_W -. "5. Trigger Scale (Metric)" .-> KEDA_E & KEDA_W
+    KEDA_E & KEDA_W -- "Scale Pods" --> PodE & PodW
+
+    %% Security & Governance Findings
+    Sec_Suite -. "Unified Security Findings" .-> Sentinel
+    Sentinel -- "6. Automation / Alert" --> ActionGroup_E & ActionGroup_W
+    ActionGroup_E & ActionGroup_W --> LogicApp_Chat_E & LogicApp_Chat_W
+
+    %% AIOps Loop (Auto-Remediation)
+    AppInsights_E & AppInsights_W -- "Metric Threshold" --> EventGrid_E & EventGrid_W
+    EventGrid_E & EventGrid_W --> RemE_Func & RemW_Func
+    RemE_Func & RemW_Func -. "Auto-Fix" .-> AKS_E & AKS_W
+
+    %% Streaming Flow
+    APIM_E & APIM_W -- "Ingest Data" --> EH_E & EH_W
+    EH_E & EH_W --> ASA_E & ASA_W --> Blob_E & Blob_W
+
+    %% AI Safety Flow
+    PodE & PodW -- "Safety Check" --> ContentSafety_E & ContentSafety_W
 
     %% Connectivity & DR
     User_Ext --> AFD --> AGfC_GW_E & AGfC_GW_W
-    VNet_East <== "Global VNet Peering" ==> VNet_West
-    OnPrem_DC <== "ExpressRoute/VPN" ==> DNS_Resolver
-    WorkloadID_E & WorkloadID_W -. "OIDC Federated Identity" .-> EntraID
+    Admin_Ext -- "Zero Trust Access" --> Entra_GSA --> AGfC_GW_E & AGfC_GW_W
+    Synthetics_E & Synthetics_W -. "Canary Check" .-> AFD
+    OnPrem_DC <== "ExpressRoute/VPN" ==> VPN_GW ==> AzFW
+    AzFW <== "Global VNet Peering" ==> VNet_East & VNet_West
+    
+    %% Replication & Data Sync
+    SQL_E <== "Failover Group" ==> SQL_W
+    Redis_E <== "Geo-Rep" ==> Redis_W
+    ACR <== "Geo-Rep" ==> Region_West
     Backup_E & Backup_W -- "Snapshot / Config Backup" --> Blob_E & Blob_W
+    Purview_Central -. "Data Scan / Mapping" .-> DataE & DataW
+
+    %% 9. Governance & Enterprise Control
+    EntraID -. "RBAC / PIM / IAM" .-> PlatformTitle & LandingTitle
+    EntraID -. "Identity Provider" .-> PodE & PodW
+    HSM -. "Root Key (BYOK)" .-> KV_E & KV_W
+    Policy_E & Policy_W -. "Guardrails" .-> AKSE_Title & AKSW_Title
+    AFD -- "WAF Ingress" --> APIM_E & APIM_W
+    CostMgmt_E & CostMgmt_W -. "Cost Alert" .-> ActionGroup_E & ActionGroup_W
+
+    %% 10. AI & Data Analytics Flow (RAG)
+    ContE -- "1. Vector Search" --> AISearch_E
+    AISearch_E -- "2. Retrieve Metadata" --> SQL_E
+    ContE -- "3. Prompt & Safety" --> ContentSafety_E -- "4. Generate" --> OpenAI_E
+    OpenAI_E -- "5. Store Results" --> Blob_E
+    Synapse_E -- "Data Lake Query" --> Blob_E
+
+    %% 11. Orchestration & Task Flow
+    Logic_E & Logic_W -- "Orchestrate" --> Func_Biz_E & Batch_E & Func_Biz_W & Batch_W
+    Monitor_Alert_E & Monitor_Alert_W -- "Trigger" --> ActionGroup_E & ActionGroup_W
 
     %% Layout Hints
     RootTitle ~~~ PlatformMG
@@ -350,7 +455,5 @@ graph TD
     class MgmtSubScope mgmt;
     class SharedSub,ConnSub infra;
     class ProdSub work;
-    class SIEM_Central,AMA_E,AMA_W,SideE_FB,SideW_FB,SideE_AMA,SideW_AMA,Retina_E,Retina_W obs;
-    class GitOps_E,GitOps_W,ArgoCD_E,ArgoCD_W gitops;
-    class OpsE,OpsW,ESO_E,ESO_W,KEDA_E,KEDA_W,VPA_E,VPA_W,CertMgr_E,CertMgr_W,ExtDNS_E,ExtDNS_W addon;
-    class Sec_Suite,Gatekeeper_E,Gatekeeper_W,ASM_E,ASM_W,DDoS_Plan sec;
+    class SIEM_Central,AMA_E,AMA_W,SideE_FB,SideW_FB,Ops_Monitor_E,Ops_Monitor_W,Obs_Layer_E,Obs_Layer_W obs;
+    class NodePool_Sys_E,NodePool_Sys_W,NodePool_User_E,NodePool_User_W,Dapr_E,Dapr_W addon;
