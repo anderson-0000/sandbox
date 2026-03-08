@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="org_strict_dark_v2" name="Organization Strict (Dark Mode) - Complete">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="1654" math="0" shadow="0" background="#000000">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Root Box -->
+        <mxCell id="root_box" value="AWS Organization Root (Strict Governance Architecture)" style="swimlane;whiteSpace=wrap;html=1;startSize=40;rounded=1;fontSize=20;fontStyle=1;fillColor=none;strokeColor=#FFFFFF;fontColor=#FFFFFF;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="2240" height="1500" as="geometry" />
+        </mxCell>
+
+        <!-- 1. Management Account -->
+        <mxCell id="mgmt_acc" value="&lt;b style='font-size:16px'&gt;Management Account&lt;/b&gt;&lt;br&gt;------------------------------------&lt;br&gt;【組織の司令塔】&lt;br&gt;・AWS Organizations (Root)&lt;br&gt;・Cost &amp; Usage Report (CUR)&lt;br&gt;⚠️ ワークロード実行禁止&lt;br&gt;⚠️ Break Glassのみ許可" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FF5555;strokeWidth=3;align=left;verticalAlign=top;spacing=15;fontColor=#FFFFFF;" vertex="1" parent="root_box">
+          <mxGeometry x="40" y="60" width="320" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="mgmt_icon" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizations;fillColor=#FF5555;strokeColor=none;" vertex="1" parent="mgmt_acc">
+          <mxGeometry x="250" y="10" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- 2. Security OU -->
+        <mxCell id="sec_ou" value="Security OU (Audit &amp; Compliance)" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=none;strokeColor=#55FF55;rounded=1;fontStyle=1;fontColor=#FFFFFF;collapsible=0;" vertex="1" parent="root_box">
+          <mxGeometry x="400" y="60" width="1120" height="240" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="log_acc" value="&lt;b&gt;Log Archive Account&lt;/b&gt;&lt;br&gt;【監査証跡の聖域】&lt;br&gt;・S3 Object Lock&lt;br&gt;・CloudTrail / Config / Flow&lt;br&gt;・Athena (監査ログ分析)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#55FF55;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="sec_ou">
+          <mxGeometry x="20" y="45" width="340" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="log_icon" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;fillColor=#55FF55;strokeColor=none;" vertex="1" parent="log_acc">
+          <mxGeometry x="280" y="5" width="45" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="audit_acc" value="&lt;b&gt;Security Audit Account&lt;/b&gt;&lt;br&gt;【監視センター (SOC)】&lt;br&gt;・GuardDuty / Security Hub&lt;br&gt;・Detective / Inspector&lt;br&gt;・Incident Manager" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#55FF55;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="sec_ou">
+          <mxGeometry x="390" y="45" width="340" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_icon" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.security_hub;fillColor=#55FF55;strokeColor=none;" vertex="1" parent="audit_acc">
+          <mxGeometry x="280" y="5" width="45" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="foren_acc" value="&lt;b&gt;Forensics Account&lt;/b&gt;&lt;br&gt;【証拠保全・解析】&lt;br&gt;・侵害リソースの隔離&lt;br&gt;・マルウェア解析 (遮断)&lt;br&gt;・法執行機関提出用データ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#55FF55;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="sec_ou">
+          <mxGeometry x="760" y="45" width="340" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="foren_icon" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.detective;fillColor=#55FF55;strokeColor=none;" vertex="1" parent="foren_acc">
+          <mxGeometry x="280" y="5" width="45" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- 3. Infrastructure OU -->
+        <mxCell id="infra_ou" value="Infrastructure OU (Shared Backbone)" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=none;strokeColor=#5555FF;rounded=1;fontStyle=1;fontColor=#FFFFFF;collapsible=0;" vertex="1" parent="root_box">
+          <mxGeometry x="40" y="340" width="320" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="net_acc" value="&lt;b&gt;Network Account&lt;/b&gt;&lt;br&gt;【通信制御の要】&lt;br&gt;・Transit Gateway (TGW)&lt;br&gt;・Ingress / Egress VPC&lt;br&gt;・Network Firewall" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#5555FF;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="infra_ou">
+          <mxGeometry x="20" y="45" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="net_icon" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.transit_gateway;fillColor=#5555FF;strokeColor=none;" vertex="1" parent="net_acc">
+          <mxGeometry x="220" y="5" width="45" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="id_acc" value="&lt;b&gt;Identity Account&lt;/b&gt;&lt;br&gt;【認証基盤】&lt;br&gt;・IAM Identity Center&lt;br&gt;・外部IdP連携 (Okta/AzureAD)&lt;br&gt;・SAML/OIDC連携" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#5555FF;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="infra_ou">
+          <mxGeometry x="20" y="230" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="id_icon" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.iam_identity_center;fillColor=#5555FF;strokeColor=none;" vertex="1" parent="id_acc">
+          <mxGeometry x="220" y="5" width="45" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- 4. Deployments OU -->
+        <mxCell id="deploy_ou" value="Deployments OU (Supply Chain)" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=none;strokeColor=#BB55FF;rounded=1;fontStyle=1;fontColor=#FFFFFF;collapsible=0;" vertex="1" parent="root_box">
+          <mxGeometry x="400" y="340" width="340" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="cicd_acc" value="&lt;b&gt;CI/CD Pipeline Account&lt;/b&gt;&lt;br&gt;【唯一のデプロイ経路】&lt;br&gt;・CodePipeline / Runners&lt;br&gt;・Artifacts (ECR / CodeArtifact)&lt;br&gt;・ProdへのAssumeRole権限" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#BB55FF;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="deploy_ou">
+          <mxGeometry x="20" y="45" width="300" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="cicd_icon" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.codepipeline;fillColor=#BB55FF;strokeColor=none;" vertex="1" parent="cicd_acc">
+          <mxGeometry x="240" y="5" width="45" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- 5. Data Protection OU -->
+        <mxCell id="data_ou" value="Data Protection OU (BCP / Air Gap)" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=none;strokeColor=#FFD700;rounded=1;fontStyle=1;fontColor=#FFFFFF;collapsible=0;" vertex="1" parent="root_box">
+          <mxGeometry x="780" y="340" width="340" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="backup_acc" value="&lt;b&gt;Backup Vault Account&lt;/b&gt;&lt;br&gt;【最後の砦・Air Gap】&lt;br&gt;・AWS Backup Vault (隔離)&lt;br&gt;・Source側からの削除不可設定&lt;br&gt;・KMS暗号化キーの隔離" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FFD700;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="data_ou">
+          <mxGeometry x="20" y="45" width="300" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="backup_icon" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.backup;fillColor=#FFD700;strokeColor=none;" vertex="1" parent="backup_acc">
+          <mxGeometry x="240" y="5" width="45" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- 6. Workloads (Prod) OU -->
+        <mxCell id="prod_ou" value="Workloads (Prod) OU" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=none;strokeColor=#FFCC55;rounded=1;fontStyle=1;fontColor=#FFFFFF;collapsible=0;" vertex="1" parent="root_box">
+          <mxGeometry x="400" y="580" width="720" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="prod_pub" value="&lt;b&gt;Prod Public Account&lt;/b&gt;&lt;br&gt;Frontend / DMZ Layer&lt;br&gt;・ALB / API GW / CDN&lt;br&gt;・WAF適用&lt;br&gt;・インターネット接続: あり(Network経由)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FFCC55;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="prod_ou">
+          <mxGeometry x="30" y="60" width="300" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="pub_icon" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_load_balancer;fillColor=#FFCC55;strokeColor=none;" vertex="1" parent="prod_pub">
+          <mxGeometry x="240" y="5" width="45" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="prod_priv" value="&lt;b&gt;Prod Core/DB Account&lt;/b&gt;&lt;br&gt;Backend / Core Layer&lt;br&gt;・App / RDS / DynamoDB&lt;br&gt;・インターネット接続: 完全遮断&lt;br&gt;・FrontendからのAPIのみ許可" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#8B4513;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="prod_ou">
+          <mxGeometry x="390" y="60" width="300" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="priv_icon" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.aurora;fillColor=#8B4513;strokeColor=none;" vertex="1" parent="prod_priv">
+          <mxGeometry x="240" y="5" width="45" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- 7. Workloads (SDLC) OU -->
+        <mxCell id="sdlc_ou" value="Workloads (SDLC) OU" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=none;strokeColor=#FFCC55;rounded=1;fontStyle=1;fontColor=#FFFFFF;collapsible=0;" vertex="1" parent="root_box">
+          <mxGeometry x="1150" y="580" width="350" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_acc" value="&lt;b&gt;Staging Account&lt;/b&gt;&lt;br&gt;本番同一構成検証環境" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FFCC55;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="sdlc_ou">
+          <mxGeometry x="25" y="60" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_acc" value="&lt;b&gt;Development Account&lt;/b&gt;&lt;br&gt;開発・サンドボックス" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FFCC55;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="sdlc_ou">
+          <mxGeometry x="25" y="180" width="300" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- 8. Operations OU -->
+        <mxCell id="ops_ou" value="Operations OU (Ops &amp; Maintenance)" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=none;strokeColor=#F0F0F0;rounded=1;fontStyle=1;fontColor=#FFFFFF;collapsible=0;dashed=1;" vertex="1" parent="root_box">
+          <mxGeometry x="1560" y="60" width="350" height="480" as="geometry" />
+        </mxCell>
+        <mxCell id="shared_ops" value="&lt;b&gt;Shared Services Account&lt;/b&gt;&lt;br&gt;・Active Directory (AD)&lt;br&gt;・Bastion / Jump Server&lt;br&gt;・Scanner / Patch Mgmt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FFFFFF;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="ops_ou">
+          <mxGeometry x="25" y="45" width="300" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="policy_stg" value="&lt;b&gt;Policy Staging Account&lt;/b&gt;&lt;br&gt;【SCP動作検証】&lt;br&gt;・新規SCP/権限セットのテスト&lt;br&gt;・ロックアウト回避用ドライラン" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FFFFFF;align=left;verticalAlign=top;spacing=10;fontColor=#FFFFFF;" vertex="1" parent="ops_ou">
+          <mxGeometry x="25" y="220" width="300" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- 9. Sandbox / Suspended -->
+        <mxCell id="sand_ou" value="Sandbox OU" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=none;strokeColor=#808080;rounded=1;fontStyle=1;fontColor=#FFFFFF;collapsible=0;" vertex="1" parent="root_box">
+          <mxGeometry x="40" y="780" width="320" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="sand_acc" value="&lt;b&gt;Sandbox Account&lt;/b&gt;&lt;br&gt;隔離された個人実験環境" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#808080;align=center;verticalAlign=middle;fontColor=#FFFFFF;" vertex="1" parent="sand_ou">
+          <mxGeometry x="20" y="50" width="280" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="susp_ou" value="Suspended OU" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=none;strokeColor=#808080;rounded=1;fontStyle=1;fontColor=#FFFFFF;collapsible=0;" vertex="1" parent="root_box">
+          <mxGeometry x="40" y="980" width="320" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="trash_acc" value="&lt;b&gt;Suspended Account&lt;/b&gt;&lt;br&gt;削除待ち / Deny-All SCP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#808080;align=center;verticalAlign=middle;fontColor=#FFFFFF;" vertex="1" parent="susp_ou">
+          <mxGeometry x="20" y="50" width="280" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Connections (Strict Flow) -->
+        <mxCell id="e_log" value="Audit Log Consolidation" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#FFFFFF;fontColor=#FFFFFF;labelBackgroundColor=none;" edge="1" parent="root_box" source="mgmt_acc" target="log_acc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="150" />
+              <mxPoint x="400" y="150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_sso" value="SSO / Identity Provider" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#FFFFFF;fontColor=#FFFFFF;labelBackgroundColor=none;" edge="1" parent="root_box" source="id_acc" target="cicd_acc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="650" />
+              <mxPoint x="380" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_deploy" value="1. AssumeRole (CD)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#FFFFFF;fontColor=#FFFFFF;strokeWidth=2;labelBackgroundColor=none;" edge="1" parent="root_box" source="cicd_acc" target="prod_ou">
+          <mxGeometry relative="1" as="geometry">
+             <Array as="points">
+              <mxPoint x="570" y="530" />
+              <mxPoint x="570" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_inspect" value="2. Network Hub / Inspection" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#FFFFFF;fontColor=#FFFFFF;labelBackgroundColor=none;" edge="1" parent="root_box" source="net_acc" target="prod_pub">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="480" />
+              <mxPoint x="360" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_api" value="3. Secure Internal API" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#FFFFFF;fontColor=#FFFFFF;labelBackgroundColor=none;" edge="1" parent="root_box" source="prod_pub" target="prod_priv">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_backup" value="4. Cross-Account Backup" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#FFFFFF;fontColor=#FFFFFF;labelBackgroundColor=none;" edge="1" parent="root_box" source="prod_ou" target="backup_acc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="580" />
+              <mxPoint x="950" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_audit" value="SOC Monitoring" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#FFFFFF;fontColor=#FFFFFF;labelBackgroundColor=none;" edge="1" parent="root_box" source="prod_ou" target="audit_acc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1150" y="700" />
+              <mxPoint x="1550" y="700" />
+              <mxPoint x="1550" y="240" />
+              <mxPoint x="730" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
