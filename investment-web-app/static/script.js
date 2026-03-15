@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     x: {
                         title: {
                             display: true,
-                            text: '年月',
+                            text: '年/月',
                         },
                         grid: {
                             display: true,
