@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>投資信託シミュレーター</title>
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/spinner.css">
     <style>
         .help-icon {
             display: inline-flex;
@@ -150,6 +151,7 @@
         </details>
 
         <button id="simulateButton">シミュレーション実行</button>
+        <span id="loadingIndicator" style="display: none; margin-left: 15px;">計算中... <span id="loadingSpinner" class="spinner"></span></span>
 
         <div class="results-section">
             <h2>シミュレーション結果</h2>
