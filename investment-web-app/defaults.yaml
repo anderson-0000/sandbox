@@ -13,6 +13,9 @@ inv2:
   period: 20
   change_settings: []
 current_age: 30
-crash_year: 5 
-crash_rate: 30existing_savings: 0
+crash_enabled: false
+crash_year: 5
+crash_interval: 10
+crash_rate: 30
+existing_savings: 0
 life_events: []

@@ -57,7 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // Set existing savings default
             document.getElementById('existing_savings').value = defaults.existing_savings || 0;
             document.getElementById('current_age').value = defaults.current_age || 30;
+            document.getElementById('crash_enabled').checked = defaults.crash_enabled || false;
             document.getElementById('crash_year').value = defaults.crash_year || 5;
+            document.getElementById('crash_interval').value = defaults.crash_interval || 10;
             document.getElementById('crash_rate').value = defaults.crash_rate || 30;
 
             // Populate life events
@@ -298,9 +300,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const lifeEventsData = getLifeEventsData(); // Get life events data
         
         // 暴落設定の取得
-        const crashYear = parseInt(document.getElementById('crash_year').value, 10);
-        const crashRate = parseFloat(document.getElementById('crash_rate').value);
-        const marketEvent = (crashYear > 0 && !isNaN(crashRate)) ? { year: crashYear, rate: crashRate } : null;
+        const marketEvent = {
+            enabled: document.getElementById('crash_enabled').checked,
+            start_year: parseInt(document.getElementById('crash_year').value, 10),
+            interval_years: parseInt(document.getElementById('crash_interval').value, 10),
+            rate: parseFloat(document.getElementById('crash_rate').value)
+        };
 
         // Basic validation for investment data
         if (isNaN(investment1Data.initial) || isNaN(investment1Data.monthly) || isNaN(investment1Data.return) || isNaN(investment1Data.risk) || isNaN(investment1Data.period) ||

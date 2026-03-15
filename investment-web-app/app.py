@@ -32,7 +32,9 @@ def load_defaults():
         },
         "existing_savings": 0,
         "current_age": 30,
+        "crash_enabled": False,
         "crash_year": 5,
+        "crash_interval": 10,
         "crash_rate": 30,
         "life_events": []
     }
@@ -72,8 +74,12 @@ def load_defaults():
                     default_values["existing_savings"] = loaded_defaults["existing_savings"]
                 if "current_age" in loaded_defaults:
                     default_values["current_age"] = loaded_defaults["current_age"]
+                if "crash_enabled" in loaded_defaults:
+                    default_values["crash_enabled"] = loaded_defaults["crash_enabled"]
                 if "crash_year" in loaded_defaults:
                     default_values["crash_year"] = loaded_defaults["crash_year"]
+                if "crash_interval" in loaded_defaults:
+                    default_values["crash_interval"] = loaded_defaults["crash_interval"]
                 if "crash_rate" in loaded_defaults:
                     default_values["crash_rate"] = loaded_defaults["crash_rate"]
                 if "life_events" in loaded_defaults and isinstance(loaded_defaults["life_events"], list):

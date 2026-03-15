@@ -15,18 +15,31 @@ def get_normal_random(mean, std_dev):
 def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, life_events, 
                                market_event=None, num_simulations=5000, num_sample_paths=100):
     """
-    market_event: {"year": 5, "rate": 30} 指定した年の最初に一回、-30%の下落が発生
+    market_event: {
+        "enabled": true,
+        "start_year": 5,
+        "interval_years": 10,
+        "rate": 30
+    }
     """
     all_simulation_paths = []
     total_investment_period_years = max(investment_data1['period'], investment_data2['period'])
     total_months = total_investment_period_years * 12
 
-    # 市場イベントの月を特定 (1年後の1月は13ヶ月目。n年後の1月は (n-1)*12 + 1)
-    crash_month = -1
+    # 市場イベント（周期的な暴落）の月リストを作成
+    crash_months = []
     crash_factor = 1.0
-    if market_event and market_event.get('year') and market_event.get('rate'):
-        crash_month = (int(market_event['year']) - 1) * 12 + 1
-        crash_factor = 1.0 - (float(market_event['rate']) / 100.0)
+    if market_event and market_event.get('enabled'):
+        start_year = int(market_event['start_year'])
+        interval_years = int(market_event['interval_years'])
+        crash_rate = float(market_event['rate'])
+        crash_factor = 1.0 - (crash_rate / 100.0)
+
+        current_crash_year = start_year
+        while current_crash_year <= total_investment_period_years:
+            m = (current_crash_year - 1) * 12 + 1
+            crash_months.append(m)
+            current_crash_year += interval_years
 
     # ライフイベントを月単位に変換
     life_events_by_month = {}
@@ -51,7 +64,6 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
     # 月次リターン・リスクへの変換
     r1_monthly_mean = (investment_data1['return'] / 100) / 12
     s1_monthly_std = (investment_data1['risk'] / 100) / math.sqrt(12)
-    
     r2_monthly_mean = (investment_data2['return'] / 100) / 12
     s2_monthly_std = (investment_data2['risk'] / 100) / math.sqrt(12)
 
@@ -78,16 +90,14 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
             m_ret1 = get_normal_random(r1_monthly_mean, s1_monthly_std)
             m_ret2 = get_normal_random(r2_monthly_mean, s2_monthly_std)
             
-            # ブラックスワン・イベント (暴落) の適用
-            if m == crash_month:
-                # 指定の月は、通常のリターンは無視して暴落のみが発生すると仮定
+            if m in crash_months:
                 val1 = val1 * crash_factor
                 val2 = val2 * crash_factor
             else:
                 val1 = val1 * (1 + m_ret1)
                 val2 = val2 * (1 + m_ret2)
 
-            # 2. 積立の実施 (期間内のみ)
+            # 2. 積立の実施
             if m <= investment_data1['period'] * 12:
                 val1 += current_monthly1
             if m <= investment_data2['period'] * 12:
