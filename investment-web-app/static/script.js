@@ -130,27 +130,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     x: {
                         title: {
                             display: true,
-                            text: '年/月',
+                            text: '年/月 (年齢)',
                         },
                         grid: {
                             display: true,
                             color: function(context) {
                                 if (context.tick && context.tick.label) {
-                                    // 1月のグリッド線を少しだけ濃く、それ以外は薄く
-                                    return context.tick.label.endsWith('/1') ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+                                    // ラベルが "/1 " を含む場合（1月）に線を強調 (例: 2027/1 (31歳))
+                                    return context.tick.label.includes('/1 ') ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.05)';
                                 }
                                 return 'rgba(0, 0, 0, 0.05)';
                             },
-                            lineWidth: 1 // 全ての線を細く統一
+                            lineWidth: 1
                         },
                         ticks: {
                             maxRotation: 45,
                             minRotation: 45,
-                            autoSkip: false, // 手動で制御するため false
+                            autoSkip: false,
                             callback: function(value, index, values) {
                                 const label = this.getLabelForValue(value);
                                 // 最初のデータ（現在月）または1月のラベルのみ表示
-                                if (index === 0 || label.endsWith('/1')) {
+                                if (index === 0 || label.includes('/1 ')) {
                                     return label;
                                 }
                                 return null;
@@ -167,12 +167,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const now = new Date();
         const startYear = now.getFullYear();
         const startMonth = now.getMonth() + 1;
+        const currentAge = parseInt(document.getElementById('current_age').value, 10) || 0;
 
         const chartLabels = globalMonthlyResults.map(res => {
             const totalMonths = startMonth - 1 + res.month;
             const y = startYear + Math.floor(totalMonths / 12);
             const m = (totalMonths % 12) + 1;
-            return `${y}/${m}`;
+            const age = currentAge + Math.floor(totalMonths / 12);
+            return `${y}/${m} (${age}歳)`;
         });
 
         const datasets = [
@@ -277,6 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listeners for sample paths control
     toggleSamplePaths.addEventListener('change', updateChartData);
+    document.getElementById('current_age').addEventListener('input', updateChartData);
     samplePathsSlider.addEventListener('input', () => {
         samplePathsCountSpan.textContent = samplePathsSlider.value;
         updateChartData();
@@ -354,16 +357,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const now = new Date();
             const startYear = now.getFullYear();
             const startMonth = now.getMonth() + 1;
+            const currentAgeValue = parseInt(document.getElementById('current_age').value, 10) || 0;
 
             globalMonthlyResults.forEach(res => {
                 const totalMonths = startMonth - 1 + res.month;
                 const y = startYear + Math.floor(totalMonths / 12);
                 const m = (totalMonths % 12) + 1;
+                const age = currentAgeValue + Math.floor(totalMonths / 12);
 
                 // 最初の月、または1月のデータのみテーブルに表示
                 if (res.month === 0 || m === 1) {
                     const row = resultsTableBody.insertRow();
-                    row.insertCell().textContent = `${y}/${m}`;
+                    row.insertCell().textContent = `${y}/${m} (${age}歳)`;
                     row.insertCell().textContent = formatCurrency(res.min * 10000);
                     row.insertCell().textContent = formatCurrency(res.p10 * 10000);
                     row.insertCell().textContent = formatCurrency(res.median * 10000);
