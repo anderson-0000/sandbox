@@ -10,22 +10,26 @@
     <div class="container">
         <h1>投資信託シミュレーター</h1>
 
-        <div class="general-settings investment-form-container" style="max-width: 600px; margin: 0 auto 20px auto; text-align: center;">
-            <div style="display: flex; justify-content: center; gap: 20px; align-items: center;">
+        <div class="general-settings investment-form-container" style="max-width: 800px; margin: 0 auto 20px auto; text-align: center;">
+            <div style="display: flex; justify-content: center; gap: 20px; align-items: center; flex-wrap: wrap;">
                 <div>
                     <label for="current_age">現在の年齢:</label>
-                    <input type="number" id="current_age" min="0" value="30" style="width: 80px;">
+                    <input type="number" id="current_age" min="0" value="33" style="width: 80px;">
                 </div>
                 <div>
                     <label for="existing_savings">既存貯金 (万円):</label>
                     <input type="number" id="existing_savings" min="0" value="0" style="width: 120px;">
+                </div>
+                <div>
+                    <label for="total_period">シミュレーション合計期間 (年):</label>
+                    <input type="number" id="total_period" min="1" value="50" style="width: 80px;">
                 </div>
             </div>
         </div>
 
         <div class="forms-section">
             <div class="investment-form-container">
-                <h2>投資信託 1</h2>
+                <h2>投資信託 1 (FANG+)</h2>
                 <div class="input-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
                     <div style="flex: 1;">
                         <label for="inv1_initial">初期投資 (万):</label>
@@ -36,7 +40,6 @@
                         <input type="number" id="inv1_monthly" min="0" style="width: 100%; box-sizing: border-box;">
                     </div>
                 </div>
-
                 <div class="input-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
                     <div style="flex: 1;">
                         <label for="inv1_return">リターン (%):</label>
@@ -47,25 +50,15 @@
                         <input type="number" id="inv1_risk" step="0.1" min="0" style="width: 100%; box-sizing: border-box;">
                     </div>
                 </div>
-
-                <label for="inv1_period">投資期間 (年):</label>
+                <label for="inv1_period">積立期間 (年):</label>
                 <input type="number" id="inv1_period" min="1">
-
                 <h3>積立額変更設定</h3>
-                <div id="inv1_change_settings_container">
-                    <div class="change-setting-item">
-                        <label>何年後:</label>
-                        <input type="number" class="change-setting-year" min="1" value="">
-                        <label>変更後の積立額 (万円):</label>
-                        <input type="number" class="change-setting-monthly" min="0" value="">
-                        <button type="button" class="remove-change-setting">削除</button>
-                    </div>
-                </div>
+                <div id="inv1_change_settings_container"></div>
                 <button type="button" id="addInv1ChangeSettingButton">積立額変更を追加</button>
             </div>
 
             <div class="investment-form-container">
-                <h2>投資信託 2</h2>
+                <h2>投資信託 2 (S&P500)</h2>
                 <div class="input-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
                     <div style="flex: 1;">
                         <label for="inv2_initial">初期投資 (万):</label>
@@ -76,7 +69,6 @@
                         <input type="number" id="inv2_monthly" min="0" style="width: 100%; box-sizing: border-box;">
                     </div>
                 </div>
-
                 <div class="input-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
                     <div style="flex: 1;">
                         <label for="inv2_return">リターン (%):</label>
@@ -87,20 +79,10 @@
                         <input type="number" id="inv2_risk" step="0.1" min="0" style="width: 100%; box-sizing: border-box;">
                     </div>
                 </div>
-
-                <label for="inv2_period">投資期間 (年):</label>
+                <label for="inv2_period">積立期間 (年):</label>
                 <input type="number" id="inv2_period" min="1">
-
                 <h3>積立額変更設定</h3>
-                <div id="inv2_change_settings_container">
-                    <div class="change-setting-item">
-                        <label>何年後:</label>
-                        <input type="number" class="change-setting-year" min="1" value="">
-                        <label>変更後の積立額 (万円):</label>
-                        <input type="number" class="change-setting-monthly" min="0" value="">
-                        <button type="button" class="remove-change-setting">削除</button>
-                    </div>
-                </div>
+                <div id="inv2_change_settings_container"></div>
                 <button type="button" id="addInv2ChangeSettingButton">積立額変更を追加</button>
             </div>
         </div>
@@ -110,27 +92,36 @@
                 <h2 style="margin: 0; display: inline-block;">ライフイベント費用</h2>
                 <span class="dropdown-arrow">▼</span>
             </summary>
-            <div id="life_events_container" style="margin-top: 15px;">
-                <div class="life-event-item">
-                    <label>何年後:</label>
-                    <input type="number" class="life-event-year" min="1" value="">
-                    <label>金額 (万円):</label>
-                    <input type="number" class="life-event-amount" min="0" value="">
-                    <button type="button" class="remove-life-event">削除</button>
-                </div>
-            </div>
+            <div id="life_events_container" style="margin-top: 15px;"></div>
             <button type="button" id="addLifeEventButton" style="margin-top: 10px;">ライフイベントを追加</button>
         </details>
 
         <div class="market-event-section investment-form-container" style="max-width: 800px; margin: 20px auto; padding: 15px;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
                 <input type="checkbox" id="crash_enabled" style="width: 25px; height: 25px;">
-                <h2 style="margin: 0; display: inline-block;">過去の統計に基づく相場急落をシミュレート (ストレスチェック)</h2>
+                <h2 style="margin: 0; display: inline-block;">統計に基づく暴落シミュレート (ストレスチェック)</h2>
             </div>
-            <p class="help-text" style="font-size: 0.9em; color: #666; margin-top: 10px; text-align: center;">
-                ※有効にすると、過去100年の市場データ（5〜7年に一度の弱気相場）に基づき、ランダムなタイミングと規模の暴落を各シミュレーションに注入します。
-            </p>
         </div>
+
+        <details class="withdrawal-section investment-form-container" style="max-width: 800px; margin: 20px auto; padding: 10px;">
+            <summary style="display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; list-style: none;">
+                <h2 style="margin: 0; display: inline-block;">取り崩し設定 (リタイア後)</h2>
+                <span class="dropdown-arrow">▼</span>
+            </summary>
+            <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center;">
+                <div>
+                    <label for="withdrawal_monthly">毎月の取り崩し額 (万円):</label>
+                    <input type="number" id="withdrawal_monthly" min="0" value="0" style="width: 100%; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label for="withdrawal_start">取り崩し開始年 (何年後):</label>
+                    <input type="number" id="withdrawal_start" min="0" value="10" style="width: 100%; box-sizing: border-box;">
+                </div>
+            </div>
+            <p class="help-text" style="font-size: 0.8em; color: #666; margin-top: 10px; text-align: center;">
+                ※リターンの低い投資信託から優先的に取り崩します。
+            </p>
+        </details>
 
         <button id="simulateButton">シミュレーション実行</button>
 
@@ -141,55 +132,29 @@
                 <button id="downloadChartButton">グラフをダウンロード</button>
             </div>
             <div class="chart-controls">
-                <label>
-                    <input type="checkbox" id="toggleSamplePaths"> 個別パスを表示
-                </label>
-                <label>
-                    表示パス数: <span id="samplePathsCount">5</span>
-                    <input type="range" id="samplePathsSlider" min="0" max="100" value="5">
-                </label>
+                <label><input type="checkbox" id="toggleSamplePaths"> 個別パスを表示</label>
+                <label>表示数: <span id="samplePathsCount">5</span> <input type="range" id="samplePathsSlider" min="0" max="100" value="5"></label>
             </div>
             <h3>年次推移</h3>
             <div class="table-container">
                 <table id="resultsTable">
                     <thead>
-                        <tr>
-                            <th>年</th>
-                            <th>最小値</th>
-                            <th>10%</th>
-                            <th>中央値 (50%)</th>
-                            <th>90%</th>
-                            <th>最大値</th>
-                            <th>平均値</th>
-                        </tr>
+                        <tr><th>年/月 (年齢)</th><th>最小値</th><th>10%</th><th>中央値</th><th>90%</th><th>最大値</th><th>平均</th></tr>
                     </thead>
-                    <tbody>
-                        <!-- Results will be inserted here -->
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
-
-            <h3>最終結果の要約 (最終年)</h3>
+            <h3>最終結果 (シミュレーション終了時)</h3>
             <div class="table-container">
                 <table id="summaryTable">
                     <thead>
-                        <tr>
-                            <th>最小値</th>
-                            <th>10%</th>
-                            <th>中央値 (50%)</th>
-                            <th>90%</th>
-                            <th>最大値</th>
-                            <th>平均値</th>
-                        </tr>
+                        <tr><th>最小値</th><th>10%</th><th>中央値</th><th>90%</th><th>最大値</th><th>平均</th></tr>
                     </thead>
-                    <tbody>
-                        <!-- Summary will be inserted here -->
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="/script.js"></script>
 </body>

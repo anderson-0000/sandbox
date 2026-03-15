@@ -17,11 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const addLifeEventButton = document.getElementById('addLifeEventButton');
     const lifeEventsContainer = document.getElementById('life_events_container');
 
-    // Investment 1 Change Setting elements
+    // Investment elements
     const addInv1ChangeSettingButton = document.getElementById('addInv1ChangeSettingButton');
     const inv1ChangeSettingsContainer = document.getElementById('inv1_change_settings_container');
-
-    // Investment 2 Change Setting elements
     const addInv2ChangeSettingButton = document.getElementById('addInv2ChangeSettingButton');
     const inv2ChangeSettingsContainer = document.getElementById('inv2_change_settings_container');
 
@@ -50,8 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
             populateForm('inv1', defaults.inv1);
             populateForm('inv2', defaults.inv2);
             document.getElementById('existing_savings').value = defaults.existing_savings || 0;
-            document.getElementById('current_age').value = defaults.current_age || 30;
+            document.getElementById('current_age').value = defaults.current_age || 33;
+            document.getElementById('total_period').value = defaults.total_period || 50;
             document.getElementById('crash_enabled').checked = defaults.crash_enabled || false;
+            document.getElementById('withdrawal_monthly').value = defaults.withdrawal_monthly || 0;
+            document.getElementById('withdrawal_start').value = defaults.withdrawal_start || 10;
 
             lifeEventsContainer.innerHTML = '';
             if (defaults.life_events && defaults.life_events.length > 0) {
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     title: { display: true, text: 'ポートフォリオ価値の推移' },
                     tooltip: {
                         callbacks: {
-                            label: function(context) {
+                            label: (context) => {
                                 let label = context.dataset.label || '';
                                 if (label) label += ': ';
                                 if (context.parsed.y !== null) label += formatCurrency(context.parsed.y);
@@ -199,33 +200,32 @@ document.addEventListener('DOMContentLoaded', () => {
         simulateButton.disabled = true;
         downloadChartButton.style.display = 'none';
 
-        const investment1Data = getInvestmentData('inv1');
-        const investment2Data = getInvestmentData('inv2');
-        const existingSavings = parseFloat(document.getElementById('existing_savings').value);
-        const lifeEventsData = getLifeEventsData();
+        const inv1Data = getInvestmentData('inv1');
+        const inv2Data = getInvestmentData('inv2');
+        const savings = parseFloat(document.getElementById('existing_savings').value);
+        const totalPeriod = parseInt(document.getElementById('total_period').value, 10);
+        const lifeEvents = getLifeEventsData();
         const crashEnabled = document.getElementById('crash_enabled').checked;
-
-        if (isNaN(investment1Data.initial) || isNaN(existingSavings)) {
-            alert('有効な数値を入力してください。');
-            simulateButton.disabled = false; return;
-        }
+        const wMonthly = parseFloat(document.getElementById('withdrawal_monthly').value);
+        const wStart = parseInt(document.getElementById('withdrawal_start').value, 10);
 
         try {
             const response = await fetch('/simulate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    investment1: investment1Data, investment2: investment2Data,
-                    existing_savings: existingSavings, life_events: lifeEventsData,
-                    market_event_enabled: crashEnabled,
+                    investment1: inv1Data, investment2: inv2Data,
+                    existing_savings: savings, total_period: totalPeriod,
+                    life_events: lifeEvents, market_event_enabled: crashEnabled,
+                    withdrawal_monthly: wMonthly, withdrawal_start: wStart
                 }),
             });
 
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-            const simulationOutput = await response.json();
-            globalMonthlyResults = simulationOutput.monthly_results;
-            globalSamplePaths = simulationOutput.sample_paths;
+            const output = await response.json();
+            globalMonthlyResults = output.monthly_results;
+            globalSamplePaths = output.sample_paths;
 
             resultsTableBody.innerHTML = '';
             const now = new Date();
@@ -253,20 +253,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             summaryTableBody.innerHTML = '';
             if (globalMonthlyResults.length > 0) {
-                const lastResult = globalMonthlyResults[globalMonthlyResults.length - 1];
+                const last = globalMonthlyResults[globalMonthlyResults.length - 1];
                 const row = summaryTableBody.insertRow();
-                row.insertCell().textContent = formatCurrency(lastResult.min * 10000);
-                row.insertCell().textContent = formatCurrency(lastResult.p10 * 10000);
-                row.insertCell().textContent = formatCurrency(lastResult.median * 10000);
-                row.insertCell().textContent = formatCurrency(lastResult.p90 * 10000);
-                row.insertCell().textContent = formatCurrency(lastResult.max * 10000);
-                row.insertCell().textContent = formatCurrency(lastResult.average * 10000);
+                row.insertCell().textContent = formatCurrency(last.min * 10000);
+                row.insertCell().textContent = formatCurrency(last.p10 * 10000);
+                row.insertCell().textContent = formatCurrency(last.median * 10000);
+                row.insertCell().textContent = formatCurrency(last.p90 * 10000);
+                row.insertCell().textContent = formatCurrency(last.max * 10000);
+                row.insertCell().textContent = formatCurrency(last.average * 10000);
             }
             updateChartData();
             downloadChartButton.style.display = 'block';
         } catch (error) {
-            console.error('Error during simulation:', error);
-            alert('シミュレーション中にエラーが発生しました: ' + error.message);
+            console.error('Error:', error);
+            alert('エラーが発生しました: ' + error.message);
         } finally { simulateButton.disabled = false; }
     });
 });
