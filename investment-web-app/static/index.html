@@ -79,7 +79,7 @@
             <input type="number" id="existing_savings" min="0" value="0">
         </div>
 
-        <div class="market-event-section">
+        <div class="market-event-section investment-form-container" style="width: 100%; margin-top: 20px;">
             <h2>相場急落シミュレーション (ストレスチェック)</h2>
             <div class="input-group">
                 <label for="crash_year">発生年 (何年後):</label>
@@ -87,7 +87,9 @@
                 <label for="crash_rate">下落率 (%):</label>
                 <input type="number" id="crash_rate" min="0" max="100" placeholder="例: 30">
             </div>
-            <p class="help-text">※指定した年の最初の月に、設定した割合の暴落が全資産に発生すると仮定します。</p>
+            <p class="help-text" style="font-size: 0.8em; color: #666; margin-top: 10px;">
+                ※過去の統計（リーマンショックやITバブル崩壊）では、10年に一度程度、30〜50%の下落が発生しています。
+            </p>
         </div>
 
         <div class="life-events-section">

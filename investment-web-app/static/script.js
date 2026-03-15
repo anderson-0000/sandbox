@@ -57,6 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Set existing savings default
             document.getElementById('existing_savings').value = defaults.existing_savings || 0;
             document.getElementById('current_age').value = defaults.current_age || 30;
+            document.getElementById('crash_year').value = defaults.crash_year || 5;
+            document.getElementById('crash_rate').value = defaults.crash_rate || 30;
 
             // Populate life events
             lifeEventsContainer.innerHTML = ''; // Clear existing
