@@ -13,9 +13,6 @@ def get_normal_random(mean, std_dev):
 def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, life_events, 
                                market_event_enabled=False, withdrawal_settings=None, total_simulation_years=50,
                                num_simulations=5000, num_sample_paths=100):
-    """
-    withdrawal_settings: {"monthly": 50, "start_year": 10} 毎月50万円を10年後から取り崩す
-    """
     all_simulation_paths = []
     total_months = total_simulation_years * 12
 
@@ -26,12 +23,9 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
         if m not in life_events_by_month: life_events_by_month[m] = 0
         life_events_by_month[m] += event['amount']
 
-    # 取り崩し設定の計算
-    withdrawal_start_month = -1
-    withdrawal_monthly_amount = 0
-    if withdrawal_settings and withdrawal_settings.get('monthly'):
-        withdrawal_start_month = int(withdrawal_settings.get('start_year', 0) * 12)
-        withdrawal_monthly_amount = float(withdrawal_settings['monthly']) * 10000
+    # 取り崩し設定
+    w_start_m = int(withdrawal_settings.get('start_year', 0) * 12) if withdrawal_settings else -1
+    w_monthly = float(withdrawal_settings.get('monthly', 0)) * 10000 if withdrawal_settings else 0
 
     def get_monthly_changes(change_settings):
         changes = {}
@@ -66,13 +60,13 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
             else:
                 val1 *= (1 + m_ret1); val2 *= (1 + m_ret2)
 
-            # 2. 積立 (設定された期間内のみ)
-            if m <= investment_data1['period'] * 12: val1 += cur_m1
-            if m <= investment_data2['period'] * 12: val2 += cur_m2
+            # 2. 積立 (無期限に継続。停止したい場合は設定で0円にする)
+            val1 += cur_m1
+            val2 += cur_m2
 
             # 3. 取り崩し & ライフイベント
             expense = life_events_by_month.get(m, 0)
-            if m >= withdrawal_start_month: expense += withdrawal_monthly_amount
+            if m >= w_start_m: expense += w_monthly
 
             if expense > 0:
                 if inv1_is_lower:

@@ -9,8 +9,8 @@ CORS(app)
 
 def load_defaults():
     default_values = {
-        "inv1": {"initial": 10, "monthly": 1, "return": 5.0, "risk": 10.0, "period": 20, "change_settings": []},
-        "inv2": {"initial": 10, "monthly": 1, "return": 5.0, "risk": 10.0, "period": 20, "change_settings": []},
+        "inv1": {"initial": 10, "monthly": 1, "return": 5.0, "risk": 10.0, "change_settings": []},
+        "inv2": {"initial": 10, "monthly": 1, "return": 5.0, "risk": 10.0, "change_settings": []},
         "existing_savings": 0, "current_age": 33, "total_period": 50,
         "crash_enabled": False,
         "withdrawal_monthly": 0, "withdrawal_start": 10,
@@ -28,7 +28,7 @@ def load_defaults():
                     if inv in loaded:
                         if "change_settings" in loaded[inv]:
                             default_values[inv]["change_settings"] = [{**s, "monthly": s["monthly"] * 10000} for s in loaded[inv]["change_settings"]]
-                        for k in ["initial", "monthly", "return", "risk", "period"]:
+                        for k in ["initial", "monthly", "return", "risk"]:
                             if k in loaded[inv]: default_values[inv][k] = loaded[inv][k]
                 for k in ["existing_savings", "current_age", "total_period", "crash_enabled", "withdrawal_monthly", "withdrawal_start"]:
                     if k in loaded: default_values[k] = loaded[k]
@@ -38,18 +38,14 @@ def load_defaults():
 
 @app.route('/')
 def serve_index(): return send_from_directory(app.static_folder, 'index.html')
-@app.route('/<path:filename>')
-def serve_static(filename): return send_from_directory(app.static_folder, filename)
 @app.route('/defaults')
 def get_defaults(): return jsonify(load_defaults())
 
 @app.route('/simulate', methods=['POST'])
 def simulate():
     data = request.get_json()
-    if not data: return jsonify({"error": "No data"}), 400
     inv1, inv2 = data.get('investment1'), data.get('investment2')
-    if not inv1 or not inv2: return jsonify({"error": "Missing data"}), 400
-
+    
     # 単位変換
     inv1['initial'] *= 10000; inv1['monthly'] *= 10000
     for s in inv1.get('change_settings', []): s['monthly'] *= 10000
