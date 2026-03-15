@@ -12,10 +12,21 @@ def get_normal_random(mean, std_dev):
     """正規分布に従う乱数を生成"""
     return mean + get_gaussian_random() * std_dev
 
-def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, life_events, num_simulations=5000, num_sample_paths=100):
+def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, life_events, 
+                               market_event=None, num_simulations=5000, num_sample_paths=100):
+    """
+    market_event: {"year": 5, "rate": 30} 指定した年の最初に一回、-30%の下落が発生
+    """
     all_simulation_paths = []
     total_investment_period_years = max(investment_data1['period'], investment_data2['period'])
     total_months = total_investment_period_years * 12
+
+    # 市場イベントの月を特定 (1年後の1月は13ヶ月目。n年後の1月は (n-1)*12 + 1)
+    crash_month = -1
+    crash_factor = 1.0
+    if market_event and market_event.get('year') and market_event.get('rate'):
+        crash_month = (int(market_event['year']) - 1) * 12 + 1
+        crash_factor = 1.0 - (float(market_event['rate']) / 100.0)
 
     # ライフイベントを月単位に変換
     life_events_by_month = {}
@@ -44,7 +55,6 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
     r2_monthly_mean = (investment_data2['return'] / 100) / 12
     s2_monthly_std = (investment_data2['risk'] / 100) / math.sqrt(12)
 
-    # どちらの投資信託のリターンが低いか判定 (リターンの低い方から優先的に引き出す)
     inv1_is_lower_return = investment_data1['return'] <= investment_data2['return']
 
     for _ in range(num_simulations):
@@ -53,46 +63,47 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
         
         combined_path = []
         initial_total = val1 + val2 + existing_savings
-        combined_path.append(initial_total) # 0ヶ月目
+        combined_path.append(initial_total)
 
         current_monthly1 = investment_data1['monthly']
         current_monthly2 = investment_data2['monthly']
 
         for m in range(1, total_months + 1):
-            # 積立額の更新
             if m in inv1_monthly_changes:
                 current_monthly1 = inv1_monthly_changes[m]
             if m in inv2_monthly_changes:
                 current_monthly2 = inv2_monthly_changes[m]
 
-            # 1. リターンの適用と積立の実施
+            # 1. リターンの適用 (正規分布)
             m_ret1 = get_normal_random(r1_monthly_mean, s1_monthly_std)
-            if m <= investment_data1['period'] * 12:
-                val1 = val1 * (1 + m_ret1) + current_monthly1
+            m_ret2 = get_normal_random(r2_monthly_mean, s2_monthly_std)
+            
+            # ブラックスワン・イベント (暴落) の適用
+            if m == crash_month:
+                # 指定の月は、通常のリターンは無視して暴落のみが発生すると仮定
+                val1 = val1 * crash_factor
+                val2 = val2 * crash_factor
             else:
                 val1 = val1 * (1 + m_ret1)
-
-            m_ret2 = get_normal_random(r2_monthly_mean, s2_monthly_std)
-            if m <= investment_data2['period'] * 12:
-                val2 = val2 * (1 + m_ret2) + current_monthly2
-            else:
                 val2 = val2 * (1 + m_ret2)
 
-            # 2. ライフイベント費用の差し引き
+            # 2. 積立の実施 (期間内のみ)
+            if m <= investment_data1['period'] * 12:
+                val1 += current_monthly1
+            if m <= investment_data2['period'] * 12:
+                val2 += current_monthly2
+
+            # 3. ライフイベント費用の差し引き
             if m in life_events_by_month:
                 expense = life_events_by_month[m]
                 if inv1_is_lower_return:
-                    # 投資1(低リターン)から優先的に引く
-                    if val1 >= expense:
-                        val1 -= expense
+                    if val1 >= expense: val1 -= expense
                     else:
                         remaining = expense - val1
                         val1 = 0
                         val2 -= remaining
                 else:
-                    # 投資2(低リターン)から優先的に引く
-                    if val2 >= expense:
-                        val2 -= expense
+                    if val2 >= expense: val2 -= expense
                     else:
                         remaining = expense - val2
                         val2 = 0
@@ -103,22 +114,15 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
         all_simulation_paths.append(combined_path)
 
     def get_percentile(data, percentile):
-        if not data:
-            return 0
+        if not data: return 0
         k = (len(data) - 1) * percentile / 100.0
-        f = math.floor(k)
-        c = math.ceil(k)
-        if f == c:
-            return data[int(k)]
-        d0 = data[int(f)] * (c - k)
-        d1 = data[int(c)] * (k - f)
-        return d0 + d1
+        f = math.floor(k); c = math.ceil(k)
+        if f == c: return data[int(k)]
+        return data[int(f)] * (c - k) + data[int(c)] * (k - f)
 
-    # 月次結果の集計
     monthly_results = []
     for m in range(total_months + 1):
         m_values = sorted([path[m] for path in all_simulation_paths])
-        
         monthly_results.append({
             "month": m,
             "min": m_values[0],

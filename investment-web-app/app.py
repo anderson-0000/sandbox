@@ -111,7 +111,8 @@ def simulate():
     investment1 = data.get('investment1')
     investment2 = data.get('investment2')
     existing_savings = data.get('existing_savings', 0)
-    life_events = data.get('life_events', []) # ライフイベントを取得、デフォルトは空リスト
+    life_events = data.get('life_events', [])
+    market_event = data.get('market_event')
 
     if not all([investment1, investment2]):
         return jsonify({"error": "Missing investment data"}), 400
@@ -132,7 +133,7 @@ def simulate():
         event['amount'] *= 10000
 
     try:
-        simulation_output = run_monte_carlo_simulation(investment1, investment2, existing_savings, life_events)
+        simulation_output = run_monte_carlo_simulation(investment1, investment2, existing_savings, life_events, market_event)
         return jsonify(simulation_output) # 辞書全体を返す
     except Exception as e:
         app.logger.error(f"Simulation error: {e}")

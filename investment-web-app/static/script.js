@@ -294,6 +294,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const investment2Data = getInvestmentData('inv2');
         const existingSavings = parseFloat(document.getElementById('existing_savings').value);
         const lifeEventsData = getLifeEventsData(); // Get life events data
+        
+        // 暴落設定の取得
+        const crashYear = parseInt(document.getElementById('crash_year').value, 10);
+        const crashRate = parseFloat(document.getElementById('crash_rate').value);
+        const marketEvent = (crashYear > 0 && !isNaN(crashRate)) ? { year: crashYear, rate: crashRate } : null;
 
         // Basic validation for investment data
         if (isNaN(investment1Data.initial) || isNaN(investment1Data.monthly) || isNaN(investment1Data.return) || isNaN(investment1Data.risk) || isNaN(investment1Data.period) ||
@@ -339,7 +344,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     investment1: investment1Data,
                     investment2: investment2Data,
                     existing_savings: existingSavings,
-                    life_events: lifeEventsData, // Add life events
+                    life_events: lifeEventsData,
+                    market_event: marketEvent,
                 }),
             });
 
