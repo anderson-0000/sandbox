@@ -93,6 +93,11 @@ h3 {
     cursor: not-allowed;
 }
 
+button#simulateButton.loading {
+    background-color: #666;
+    cursor: wait;
+}
+
 .results-section {
     margin-top: 30px;
     padding-top: 20px;

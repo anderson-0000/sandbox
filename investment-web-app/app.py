@@ -27,7 +27,7 @@ def load_defaults():
                 for inv in ["inv1", "inv2"]:
                     if inv in loaded:
                         if "change_settings" in loaded[inv]:
-                            default_values[inv]["change_settings"] = [{**s, "monthly": s["monthly"] * 10000} for s in loaded[inv]["change_settings"]]
+                            default_values[inv]["change_settings"] = loaded[inv]["change_settings"]
                         for k in ["initial", "monthly", "return", "risk"]:
                             if k in loaded[inv]: default_values[inv][k] = loaded[inv][k]
                 for k in ["existing_savings", "current_age", "total_period", "crash_enabled", "withdrawal_monthly", "withdrawal_start"]:

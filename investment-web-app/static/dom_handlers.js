@@ -6,7 +6,6 @@ export const populateForm = (prefix, data) => {
     document.getElementById(`${prefix}_monthly`).value = data.monthly;
     document.getElementById(`${prefix}_return`).value = data.return;
     document.getElementById(`${prefix}_risk`).value = data.risk;
-    document.getElementById(`${prefix}_period`).value = data.period;
 
     // 積立額変更設定を初期表示 (変更)
     const changeSettingsContainer = document.getElementById(`${prefix}_change_settings_container`);
@@ -51,7 +50,6 @@ export const getInvestmentData = (prefix) => { // 変更
         monthly: parseFloat(document.getElementById(`${prefix}_monthly`).value),
         return: parseFloat(document.getElementById(`${prefix}_return`).value),
         risk: parseFloat(document.getElementById(`${prefix}_risk`).value),
-        period: parseInt(document.getElementById(`${prefix}_period`).value, 10),
         change_settings: changeSettings, // 複数の変更設定を配列として追加
     };
 };

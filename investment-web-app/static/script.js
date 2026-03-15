@@ -197,7 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     simulateButton.addEventListener('click', async () => {
+        const originalText = simulateButton.textContent;
         simulateButton.disabled = true;
+        simulateButton.textContent = 'シミュレーション中...';
+        simulateButton.classList.add('loading');
+        
         downloadChartButton.style.display = 'none';
 
         const inv1Data = getInvestmentData('inv1');
@@ -267,6 +271,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error:', error);
             alert('エラーが発生しました: ' + error.message);
-        } finally { simulateButton.disabled = false; }
+        } finally {
+            simulateButton.disabled = false;
+            simulateButton.textContent = 'シミュレーション実行';
+            simulateButton.classList.remove('loading');
+        }
     });
 });
