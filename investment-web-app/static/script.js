@@ -140,7 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to update chart datasets based on results and controls
     const updateChartData = () => {
-        const chartLabels = globalYearlyResults.map(res => res.year);
+        const currentYear = new Date().getFullYear();
+        const chartLabels = globalYearlyResults.map(res => currentYear + res.year);
         const datasets = [
             {
                 label: '中央値 (50%)',
@@ -314,9 +315,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Render table results
             resultsTableBody.innerHTML = ''; // Clear previous results
+            const currentYear = new Date().getFullYear();
             globalYearlyResults.forEach(res => { // globalYearlyResults を使用
                 const row = resultsTableBody.insertRow();
-                row.insertCell().textContent = res.year;
+                row.insertCell().textContent = currentYear + res.year;
                 row.insertCell().textContent = formatCurrency(res.min * 10000);
                 row.insertCell().textContent = formatCurrency(res.p10 * 10000);
                 row.insertCell().textContent = formatCurrency(res.median * 10000);
