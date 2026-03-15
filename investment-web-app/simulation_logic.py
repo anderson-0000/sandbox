@@ -1,6 +1,7 @@
 import random
 import math
 import statistics
+from datetime import datetime
 
 def get_gaussian_random():
     """Box-Muller変換を使用して、標準正規分布に従う乱数を生成"""
@@ -13,79 +14,85 @@ def get_normal_random(mean, std_dev):
 
 def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, life_events, num_simulations=5000, num_sample_paths=100):
     all_simulation_paths = []
-    total_investment_period = max(investment_data1['period'], investment_data2['period'])
+    total_investment_period_years = max(investment_data1['period'], investment_data2['period'])
+    total_months = total_investment_period_years * 12
 
-    life_events_by_year = {}
+    # ライフイベントを月単位に変換
+    life_events_by_month = {}
     for event in life_events:
-        year = event['year']
+        month = int(event['year'] * 12)
         amount = event['amount']
-        if year not in life_events_by_year:
-            life_events_by_year[year] = 0
-        life_events_by_year[year] += amount
+        if month not in life_events_by_month:
+            life_events_by_month[month] = 0
+        life_events_by_month[month] += amount
 
-    def get_monthly_changes_by_year(change_settings):
+    def get_monthly_changes_by_month(change_settings):
         changes = {}
         sorted_settings = sorted(change_settings, key=lambda x: x['year'])
         for setting in sorted_settings:
-            changes[setting['year']] = setting['monthly']
+            month = int(setting['year'] * 12)
+            changes[month] = setting['monthly']
         return changes
 
-    inv1_monthly_changes = get_monthly_changes_by_year(investment_data1.get('change_settings', []))
-    inv2_monthly_changes = get_monthly_changes_by_year(investment_data2.get('change_settings', []))
+    inv1_monthly_changes = get_monthly_changes_by_month(investment_data1.get('change_settings', []))
+    inv2_monthly_changes = get_monthly_changes_by_month(investment_data2.get('change_settings', []))
+
+    # 年利・年リスクを月次リターン・月次リスクに変換
+    # 簡略化のため r_monthly = r_annual / 12, sigma_monthly = sigma_annual / sqrt(12) を使用
+    r1_monthly_mean = (investment_data1['return'] / 100) / 12
+    s1_monthly_std = (investment_data1['risk'] / 100) / math.sqrt(12)
+    
+    r2_monthly_mean = (investment_data2['return'] / 100) / 12
+    s2_monthly_std = (investment_data2['risk'] / 100) / math.sqrt(12)
 
     for _ in range(num_simulations):
-        # 0年目の値を初期値とする
         val1 = investment_data1['initial']
         val2 = investment_data2['initial']
         
         path1_values = [val1]
         path2_values = [val2]
 
-        monthly1 = investment_data1['monthly']
-        for year_idx in range(investment_data1['period']):
-            current_year = year_idx + 1 # 1年目からperiod年目まで
-            if current_year in inv1_monthly_changes:
-                monthly1 = inv1_monthly_changes[current_year]
-
-            annual_return = get_normal_random(investment_data1['return'] / 100, investment_data1['risk'] / 100)
-            val1 = val1 * (1 + annual_return) + (monthly1 * 12 * (1 + annual_return / 2))
+        # 投資1のシミュレーション
+        current_monthly_contribution1 = investment_data1['monthly']
+        for m in range(1, total_months + 1):
+            if m in inv1_monthly_changes:
+                current_monthly_contribution1 = inv1_monthly_changes[m]
+            
+            if m <= investment_data1['period'] * 12:
+                # 複利計算 (毎月の積立は月末に行うと仮定し、その月のリターンを乗算)
+                monthly_return = get_normal_random(r1_monthly_mean, s1_monthly_std)
+                val1 = val1 * (1 + monthly_return) + current_monthly_contribution1
+            else:
+                # 期間終了後は運用のみ継続（もし必要なら。現状は期間終了後のデータも必要）
+                monthly_return = get_normal_random(r1_monthly_mean, s1_monthly_std)
+                val1 = val1 * (1 + monthly_return)
             path1_values.append(val1)
 
-        monthly2 = investment_data2['monthly']
-        for year_idx in range(investment_data2['period']):
-            current_year = year_idx + 1 # 1年目からperiod年目まで
-            if current_year in inv2_monthly_changes:
-                monthly2 = inv2_monthly_changes[current_year]
+        # 投資2のシミュレーション
+        current_monthly_contribution2 = investment_data2['monthly']
+        for m in range(1, total_months + 1):
+            if m in inv2_monthly_changes:
+                current_monthly_contribution2 = inv2_monthly_changes[m]
             
-            annual_return = get_normal_random(investment_data2['return'] / 100, investment_data2['risk'] / 100)
-            val2 = val2 * (1 + annual_return) + (monthly2 * 12 * (1 + annual_return / 2))
+            if m <= investment_data2['period'] * 12:
+                monthly_return = get_normal_random(r2_monthly_mean, s2_monthly_std)
+                val2 = val2 * (1 + monthly_return) + current_monthly_contribution2
+            else:
+                monthly_return = get_normal_random(r2_monthly_mean, s2_monthly_std)
+                val2 = val2 * (1 + monthly_return)
             path2_values.append(val2)
         
         combined_path = []
-        # 0年目の合計値を設定
         initial_total = investment_data1['initial'] + investment_data2['initial'] + existing_savings
+        combined_path.append(initial_total) # 0ヶ月目
+
+        for m in range(1, total_months + 1):
+            current_month_total = path1_values[m] + path2_values[m] + existing_savings
+            if m in life_events_by_month:
+                current_month_total -= life_events_by_month[m]
+            combined_path.append(current_month_total)
         
-        # ライフイベントは0年目には適用しない（通常1年後以降に発生すると仮定）
-        # ただし、もし0年目のライフイベントも考慮する場合はここで調整が必要
-        combined_path.append(initial_total) # 0年目のデータ
-
-        for year_idx in range(total_investment_period): # 1年目からperiod年目まで
-            # path_valuesは0年目からデータを持つため、year_idx+1でアクセス
-            year_val1 = path1_values[year_idx+1] if year_idx < investment_data1['period'] else path1_values[investment_data1['period']]
-            year_val2 = path2_values[year_idx+1] if year_idx < investment_data2['period'] else path2_values[investment_data2['period']]
-            
-            current_year_total = year_val1 + year_val2 + existing_savings
-
-            if (year_idx + 1) in life_events_by_year: # ライフイベントは1年後から
-                current_year_total -= life_events_by_year[year_idx + 1]
-
-            combined_path.append(current_year_total)
         all_simulation_paths.append(combined_path)
-
-    yearly_results = []
-    # 0年目の結果を計算して追加
-    initial_year_values = [path[0] for path in all_simulation_paths]
-    initial_year_values.sort()
 
     def get_percentile(data, percentile):
         if not data:
@@ -99,37 +106,26 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
         d1 = data[int(c)] * (k - f)
         return d0 + d1
 
-    yearly_results.append({
-        "year": 0,
-        "min": initial_year_values[0],
-        "p10": get_percentile(initial_year_values, 10),
-        "p25": get_percentile(initial_year_values, 25),
-        "median": statistics.median(initial_year_values) if initial_year_values else 0,
-        "p75": get_percentile(initial_year_values, 75),
-        "p90": get_percentile(initial_year_values, 90),
-        "max": initial_year_values[-1],
-        "average": statistics.mean(initial_year_values) if initial_year_values else 0
-    })
-
-    for year_idx in range(total_investment_period): # 1年目からperiod年目まで
-        year_values = sorted([path[year_idx+1] for path in all_simulation_paths]) # path[year_idx+1] に変更
+    # 月次結果の集計
+    monthly_results = []
+    for m in range(total_months + 1):
+        m_values = sorted([path[m] for path in all_simulation_paths])
         
-        yearly_results.append({
-            "year": year_idx + 1,
-            "min": year_values[0],
-            "p10": get_percentile(year_values, 10),
-            "p25": get_percentile(year_values, 25),
-            "median": statistics.median(year_values) if year_values else 0,
-            "p75": get_percentile(year_values, 75),
-            "p90": get_percentile(year_values, 90),
-            "max": year_values[-1],
-            "average": statistics.mean(year_values) if year_values else 0
+        monthly_results.append({
+            "month": m,
+            "min": m_values[0],
+            "p10": get_percentile(m_values, 10),
+            "p25": get_percentile(m_values, 25),
+            "median": statistics.median(m_values),
+            "p75": get_percentile(m_values, 75),
+            "p90": get_percentile(m_values, 90),
+            "max": m_values[-1],
+            "average": statistics.mean(m_values)
         })
     
-    # ランダムなサンプルパスを選択
     sample_paths = random.sample(all_simulation_paths, min(num_sample_paths, len(all_simulation_paths)))
 
     return {
-        "yearly_results": yearly_results,
+        "monthly_results": monthly_results,
         "sample_paths": sample_paths
     }

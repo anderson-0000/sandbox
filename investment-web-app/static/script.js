@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Chart.register(customCanvasBackgroundColor); // Register the plugin
 
     let simulationChart; // To hold the Chart.js instance
-    let globalYearlyResults = []; // 全体の結果を保持
+    let globalMonthlyResults = []; // 全体の結果を保持 (月次)
     let globalSamplePaths = [];   // サンプルパスを保持
 
     // Function to load default values
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         simulationChart = new Chart(chartCanvas, {
             type: 'line',
             data: {
-                labels: [], // Will be filled with years
+                labels: [], // Will be filled with YYYY/MM
                 datasets: [] // Will be filled with percentile data
             },
             options: {
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     title: {
                         display: true,
-                        text: 'ポートフォリオ価値の年次推移',
+                        text: 'ポートフォリオ価値の推移',
                     },
                     tooltip: {
                         callbacks: {
@@ -130,8 +130,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     x: {
                         title: {
                             display: true,
-                            text: '年',
+                            text: '年月',
                         },
+                        grid: {
+                            display: true,
+                            color: function(context) {
+                                if (context.tick && context.tick.label) {
+                                    // ラベルが "/1" で終わる場合（1月）に線を強調
+                                    return context.tick.label.endsWith('/1') ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.05)';
+                                }
+                                return 'rgba(0, 0, 0, 0.05)';
+                            },
+                            lineWidth: function(context) {
+                                if (context.tick && context.tick.label) {
+                                    return context.tick.label.endsWith('/1') ? 2 : 1;
+                                }
+                                return 1;
+                            }
+                        },
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45,
+                            autoSkip: true,
+                            maxTicksLimit: 20
+                        }
                     },
                 },
             },
@@ -140,37 +162,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to update chart datasets based on results and controls
     const updateChartData = () => {
-        const currentYear = new Date().getFullYear();
-        const chartLabels = globalYearlyResults.map(res => currentYear + res.year);
+        const now = new Date();
+        const startYear = now.getFullYear();
+        const startMonth = now.getMonth() + 1;
+
+        const chartLabels = globalMonthlyResults.map(res => {
+            const totalMonths = startMonth - 1 + res.month;
+            const y = startYear + Math.floor(totalMonths / 12);
+            const m = (totalMonths % 12) + 1;
+            return `${y}/${m}`;
+        });
+
         const datasets = [
             {
                 label: '中央値 (50%)',
-                data: globalYearlyResults.map(res => res.median),
+                data: globalMonthlyResults.map(res => res.median),
                 borderColor: 'rgb(75, 192, 192)',
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 tension: 0.1,
+                pointRadius: 0, // 点を非表示にしてスッキリさせる
             },
             {
                 label: '90% パーセンタイル',
-                data: globalYearlyResults.map(res => res.p90),
+                data: globalMonthlyResults.map(res => res.p90),
                 borderColor: 'rgb(53, 162, 235)',
                 backgroundColor: 'rgba(53, 162, 235, 0.5)',
                 tension: 0.1,
+                pointRadius: 0,
             },
             {
                 label: '10% パーセンタイル',
-                data: globalYearlyResults.map(res => res.p10),
+                data: globalMonthlyResults.map(res => res.p10),
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 tension: 0.1,
+                pointRadius: 0,
             },
         ];
 
         if (toggleSamplePaths.checked && globalSamplePaths.length > 0) {
             const numPathsToShow = parseInt(samplePathsSlider.value, 10);
             for (let i = 0; i < Math.min(numPathsToShow, globalSamplePaths.length); i++) {
-                // サンプルパスの色を動的に生成
-                const r = Math.floor(Math.random() * 200) + 50; // 50-249
+                const r = Math.floor(Math.random() * 200) + 50;
                 const g = Math.floor(Math.random() * 200) + 50;
                 const b = Math.floor(Math.random() * 200) + 50;
 
@@ -179,9 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     data: globalSamplePaths[i],
                     borderColor: `rgba(${r}, ${g}, ${b}, 0.7)`,
                     backgroundColor: `rgba(${r}, ${g}, ${b}, 0.3)`,
-                    borderDash: [5, 5], // 点線
+                    borderDash: [5, 5],
                     tension: 0.1,
-                    hidden: false, // デフォルトで表示
+                    pointRadius: 0,
+                    hidden: false,
                 });
             }
         }
@@ -307,37 +341,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const simulationOutput = await response.json(); // results から simulationOutput に変更
+            const simulationOutput = await response.json();
             console.log("Simulation results:", simulationOutput);
 
-            globalYearlyResults = simulationOutput.yearly_results; // 結果をグローバル変数に保存
+            globalMonthlyResults = simulationOutput.monthly_results; // 結果をグローバル変数に保存
             globalSamplePaths = simulationOutput.sample_paths;   // サンプルパスをグローバル変数に保存
 
             // Render table results
             resultsTableBody.innerHTML = ''; // Clear previous results
-            const currentYear = new Date().getFullYear();
-            globalYearlyResults.forEach(res => { // globalYearlyResults を使用
-                const row = resultsTableBody.insertRow();
-                row.insertCell().textContent = currentYear + res.year;
-                row.insertCell().textContent = formatCurrency(res.min * 10000);
-                row.insertCell().textContent = formatCurrency(res.p10 * 10000);
-                row.insertCell().textContent = formatCurrency(res.median * 10000);
-                row.insertCell().textContent = formatCurrency(res.p90 * 10000);
-                row.insertCell().textContent = formatCurrency(res.max * 10000);
-                row.insertCell().textContent = formatCurrency(res.average * 10000);
+            const now = new Date();
+            const startYear = now.getFullYear();
+            const startMonth = now.getMonth() + 1;
+
+            globalMonthlyResults.forEach(res => {
+                const totalMonths = startMonth - 1 + res.month;
+                const y = startYear + Math.floor(totalMonths / 12);
+                const m = (totalMonths % 12) + 1;
+
+                // 最初の月、または1月のデータのみテーブルに表示
+                if (res.month === 0 || m === 1) {
+                    const row = resultsTableBody.insertRow();
+                    row.insertCell().textContent = `${y}/${m}`;
+                    row.insertCell().textContent = formatCurrency(res.min * 10000);
+                    row.insertCell().textContent = formatCurrency(res.p10 * 10000);
+                    row.insertCell().textContent = formatCurrency(res.median * 10000);
+                    row.insertCell().textContent = formatCurrency(res.p90 * 10000);
+                    row.insertCell().textContent = formatCurrency(res.max * 10000);
+                    row.insertCell().textContent = formatCurrency(res.average * 10000);
+                }
             });
 
             // Render summary table
             summaryTableBody.innerHTML = '';
-            if (globalYearlyResults.length > 0) { // globalYearlyResults を使用
-                const lastResult = globalYearlyResults[globalYearlyResults.length - 1];
+            if (globalMonthlyResults.length > 0) {
+                const lastResult = globalMonthlyResults[globalMonthlyResults.length - 1];
                 const row = summaryTableBody.insertRow();
-                row.insertCell().textContent = formatCurrency(lastResult.min * 10000); // Final min
-                row.insertCell().textContent = formatCurrency(lastResult.p10 * 10000); // Final 10%
-                row.insertCell().textContent = formatCurrency(lastResult.median * 10000); // Final median
-                row.insertCell().textContent = formatCurrency(lastResult.p90 * 10000); // Final 90%
-                row.insertCell().textContent = formatCurrency(lastResult.max * 10000); // Final max
-                row.insertCell().textContent = formatCurrency(lastResult.average * 10000); // Final average
+                row.insertCell().textContent = formatCurrency(lastResult.min * 10000);
+                row.insertCell().textContent = formatCurrency(lastResult.p10 * 10000);
+                row.insertCell().textContent = formatCurrency(lastResult.median * 10000);
+                row.insertCell().textContent = formatCurrency(lastResult.p90 * 10000);
+                row.insertCell().textContent = formatCurrency(lastResult.max * 10000);
+                row.insertCell().textContent = formatCurrency(lastResult.average * 10000);
             }
             
             updateChartData(); // グラフ更新関数を呼び出す
