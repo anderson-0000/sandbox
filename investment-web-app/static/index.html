@@ -5,24 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>投資信託シミュレーター</title>
     <link rel="stylesheet" href="/style.css">
+    <style>
+        .help-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background-color: #ddd;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 5px;
+            position: relative;
+        }
+        .help-icon:hover::after {
+            content: attr(data-help);
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 100;
+            white-space: normal;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>投資信託シミュレーター</h1>
 
-        <div class="general-settings investment-form-container" style="max-width: 800px; margin: 0 auto 20px auto; text-align: center;">
+        <div class="general-settings investment-form-container" style="max-width: 900px; margin: 0 auto 20px auto; text-align: center;">
             <div style="display: flex; justify-content: center; gap: 20px; align-items: center; flex-wrap: wrap;">
                 <div>
                     <label for="current_age">現在の年齢:</label>
-                    <input type="number" id="current_age" min="0" value="33" style="width: 80px;">
+                    <input type="number" id="current_age" min="0" value="33" style="width: 60px;">
                 </div>
                 <div>
                     <label for="existing_savings">既存貯金 (万円):</label>
-                    <input type="number" id="existing_savings" min="0" value="0" style="width: 120px;">
+                    <input type="number" id="existing_savings" min="0" value="0" style="width: 100px;">
                 </div>
                 <div>
-                    <label for="total_period">シミュレーション合計期間 (年):</label>
-                    <input type="number" id="total_period" min="1" value="50" style="width: 80px;">
+                    <label for="total_period">シミュレーション期間 (年):</label>
+                    <input type="number" id="total_period" min="1" value="50" style="width: 60px;">
                 </div>
             </div>
         </div>
@@ -50,8 +81,10 @@
                         <input type="number" id="inv1_risk" step="0.1" min="0" style="width: 100%; box-sizing: border-box;">
                     </div>
                 </div>
-                <label for="inv1_period">積立期間 (年):</label>
-                <input type="number" id="inv1_period" min="1">
+                <div style="margin-bottom: 10px;">
+                    <label for="inv1_period">積立期間 (年):</label>
+                    <input type="number" id="inv1_period" min="1" style="width: 60px;">
+                </div>
                 <h3>積立額変更設定</h3>
                 <div id="inv1_change_settings_container"></div>
                 <button type="button" id="addInv1ChangeSettingButton">積立額変更を追加</button>
@@ -79,8 +112,10 @@
                         <input type="number" id="inv2_risk" step="0.1" min="0" style="width: 100%; box-sizing: border-box;">
                     </div>
                 </div>
-                <label for="inv2_period">積立期間 (年):</label>
-                <input type="number" id="inv2_period" min="1">
+                <div style="margin-bottom: 10px;">
+                    <label for="inv2_period">積立期間 (年):</label>
+                    <input type="number" id="inv2_period" min="1" style="width: 60px;">
+                </div>
                 <h3>積立額変更設定</h3>
                 <div id="inv2_change_settings_container"></div>
                 <button type="button" id="addInv2ChangeSettingButton">積立額変更を追加</button>
@@ -97,9 +132,10 @@
         </details>
 
         <div class="market-event-section investment-form-container" style="max-width: 800px; margin: 20px auto; padding: 15px;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                 <input type="checkbox" id="crash_enabled" style="width: 25px; height: 25px;">
                 <h2 style="margin: 0; display: inline-block;">統計に基づく暴落シミュレート (ストレスチェック)</h2>
+                <span class="help-icon" data-help="有効にすると、過去100年の市場データ（5〜7年に一度の弱気相場）に基づき、ランダムなタイミングと規模の暴落を各シミュレーションに注入します。">?</span>
             </div>
         </div>
 
