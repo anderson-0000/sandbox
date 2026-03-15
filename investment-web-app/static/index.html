@@ -142,6 +142,7 @@
         <details class="withdrawal-section investment-form-container" style="max-width: 800px; margin: 20px auto; padding: 10px;">
             <summary style="display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; list-style: none;">
                 <h2 style="margin: 0; display: inline-block;">取り崩し設定 (リタイア後)</h2>
+                <span class="help-icon" data-help="シミュレーション計算時、期待リターンの低い投資信託から優先的に売却して資金を捻出します。">?</span>
                 <span class="dropdown-arrow">▼</span>
             </summary>
             <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center;">
@@ -154,9 +155,6 @@
                     <input type="number" id="withdrawal_start" min="0" value="10" style="width: 100%; box-sizing: border-box;">
                 </div>
             </div>
-            <p class="help-text" style="font-size: 0.8em; color: #666; margin-top: 10px; text-align: center;">
-                ※リターンの低い投資信託から優先的に取り崩します。
-            </p>
         </details>
 
         <button id="simulateButton">シミュレーション実行</button>
