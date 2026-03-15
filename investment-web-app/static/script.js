@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             populateForm('inv2', defaults.inv2);
             // Set existing savings default
             document.getElementById('existing_savings').value = defaults.existing_savings || 0;
+            document.getElementById('current_age').value = defaults.current_age || 30;
 
             // Populate life events
             lifeEventsContainer.innerHTML = ''; // Clear existing

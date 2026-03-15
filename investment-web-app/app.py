@@ -31,6 +31,7 @@ def load_defaults():
             "change_settings": []
         },
         "existing_savings": 0,
+        "current_age": 30,
         "life_events": []
     }
 
@@ -67,6 +68,8 @@ def load_defaults():
                 
                 if "existing_savings" in loaded_defaults:
                     default_values["existing_savings"] = loaded_defaults["existing_savings"]
+                if "current_age" in loaded_defaults:
+                    default_values["current_age"] = loaded_defaults["current_age"]
                 if "life_events" in loaded_defaults and isinstance(loaded_defaults["life_events"], list):
                     # life_events の amount も万円から円に変換
                     default_values["life_events"] = [

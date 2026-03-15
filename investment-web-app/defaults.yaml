@@ -12,5 +12,6 @@ inv2:
   risk: 10.0
   period: 20
   change_settings: []
+current_age: 30
 existing_savings: 0
 life_events: []
