@@ -26,21 +26,6 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
     total_investment_period_years = max(investment_data1['period'], investment_data2['period'])
     total_months = total_investment_period_years * 12
 
-    # 市場イベント（周期的な暴落）の月リストを作成
-    crash_months = []
-    crash_factor = 1.0
-    if market_event and market_event.get('enabled'):
-        start_year = int(market_event['start_year'])
-        interval_years = int(market_event['interval_years'])
-        crash_rate = float(market_event['rate'])
-        crash_factor = 1.0 - (crash_rate / 100.0)
-
-        current_crash_year = start_year
-        while current_crash_year <= total_investment_period_years:
-            m = (current_crash_year - 1) * 12 + 1
-            crash_months.append(m)
-            current_crash_year += interval_years
-
     # ライフイベントを月単位に変換
     life_events_by_month = {}
     for event in life_events:
@@ -73,6 +58,26 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
         val1 = investment_data1['initial']
         val2 = investment_data2['initial']
         
+        # 暴落が発生する月をシミュレーションごとにランダムに揺らす
+        crash_months = {} # month -> crash_factor
+        if market_event and market_event.get('enabled'):
+            start_year = int(market_event['start_year'])
+            interval_years = int(market_event['interval_years'])
+            base_rate = float(market_event['rate'])
+
+            current_crash_year = start_year
+            while current_crash_year <= total_investment_period_years:
+                # 発生年を ±1年 (±12ヶ月) 揺らす
+                year_jitter = random.randint(-12, 12)
+                m = max(1, (current_crash_year - 1) * 12 + 1 + year_jitter)
+                
+                # 下落率を base_rate ± 10% 揺らす (例: 30%なら 20%〜40%)
+                rate_jitter = random.uniform(-10, 10)
+                actual_rate = max(0, min(100, base_rate + rate_jitter))
+                crash_months[m] = 1.0 - (actual_rate / 100.0)
+                
+                current_crash_year += interval_years
+
         combined_path = []
         initial_total = val1 + val2 + existing_savings
         combined_path.append(initial_total)
@@ -86,22 +91,21 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
             if m in inv2_monthly_changes:
                 current_monthly2 = inv2_monthly_changes[m]
 
-            # 1. リターンの適用 (正規分布)
+            # 1. リターンの適用
             m_ret1 = get_normal_random(r1_monthly_mean, s1_monthly_std)
             m_ret2 = get_normal_random(r2_monthly_mean, s2_monthly_std)
             
             if m in crash_months:
-                val1 = val1 * crash_factor
-                val2 = val2 * crash_factor
+                # 暴落月はそのファクターを適用
+                val1 = val1 * crash_months[m]
+                val2 = val2 * crash_months[m]
             else:
                 val1 = val1 * (1 + m_ret1)
                 val2 = val2 * (1 + m_ret2)
 
             # 2. 積立の実施
-            if m <= investment_data1['period'] * 12:
-                val1 += current_monthly1
-            if m <= investment_data2['period'] * 12:
-                val2 += current_monthly2
+            if m <= investment_data1['period'] * 12: val1 += current_monthly1
+            if m <= investment_data2['period'] * 12: val2 += current_monthly2
 
             # 3. ライフイベント費用の差し引き
             if m in life_events_by_month:
@@ -109,15 +113,11 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
                 if inv1_is_lower_return:
                     if val1 >= expense: val1 -= expense
                     else:
-                        remaining = expense - val1
-                        val1 = 0
-                        val2 -= remaining
+                        remaining = expense - val1; val1 = 0; val2 -= remaining
                 else:
                     if val2 >= expense: val2 -= expense
                     else:
-                        remaining = expense - val2
-                        val2 = 0
-                        val1 -= remaining
+                        remaining = expense - val2; val2 = 0; val1 -= remaining
             
             combined_path.append(val1 + val2 + existing_savings)
         
@@ -135,14 +135,10 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
         m_values = sorted([path[m] for path in all_simulation_paths])
         monthly_results.append({
             "month": m,
-            "min": m_values[0],
-            "p10": get_percentile(m_values, 10),
-            "p25": get_percentile(m_values, 25),
-            "median": statistics.median(m_values),
-            "p75": get_percentile(m_values, 75),
-            "p90": get_percentile(m_values, 90),
-            "max": m_values[-1],
-            "average": statistics.mean(m_values)
+            "min": m_values[0], "p10": get_percentile(m_values, 10),
+            "p25": get_percentile(m_values, 25), "median": statistics.median(m_values),
+            "p75": get_percentile(m_values, 75), "p90": get_percentile(m_values, 90),
+            "max": m_values[-1], "average": statistics.mean(m_values)
         })
     
     sample_paths = random.sample(all_simulation_paths, min(num_sample_paths, len(all_simulation_paths)))
