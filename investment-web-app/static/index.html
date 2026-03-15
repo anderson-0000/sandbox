@@ -79,26 +79,26 @@
             <input type="number" id="existing_savings" min="0" value="0">
         </div>
 
-        <div class="market-event-section investment-form-container" style="width: 100%; margin-top: 20px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="market-event-section investment-form-container" style="max-width: 800px; margin: 20px auto;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                 <input type="checkbox" id="crash_enabled" style="width: 20px; height: 20px;">
                 <h2 style="margin: 0;">定期的な相場急落 (ストレスチェック)</h2>
             </div>
-            <div id="crash_settings" style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div id="crash_settings" style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: center;">
                 <div>
                     <label for="crash_year">初回発生 (何年後):</label>
-                    <input type="number" id="crash_year" min="1" value="5">
+                    <input type="number" id="crash_year" min="1" value="5" style="width: 100%; box-sizing: border-box;">
                 </div>
                 <div>
                     <label for="crash_interval">発生周期 (年):</label>
-                    <input type="number" id="crash_interval" min="1" value="10">
+                    <input type="number" id="crash_interval" min="1" value="10" style="width: 100%; box-sizing: border-box;">
                 </div>
                 <div>
                     <label for="crash_rate">下落率 (%):</label>
-                    <input type="number" id="crash_rate" min="0" max="100" value="30">
+                    <input type="number" id="crash_rate" min="0" max="100" value="30" style="width: 100%; box-sizing: border-box;">
                 </div>
             </div>
-            <p class="help-text" style="font-size: 0.8em; color: #666; margin-top: 10px;">
+            <p class="help-text" style="font-size: 0.8em; color: #666; margin-top: 10px; text-align: center;">
                 ※有効にすると、指定した周期で資産全体に暴落が発生します。過去の統計では10年に一度、30〜50%の下落が観測されています。
             </p>
         </div>
