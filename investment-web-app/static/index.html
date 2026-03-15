@@ -10,6 +10,19 @@
     <div class="container">
         <h1>投資信託シミュレーター</h1>
 
+        <div class="general-settings investment-form-container" style="max-width: 600px; margin: 0 auto 20px auto; text-align: center;">
+            <div style="display: flex; justify-content: center; gap: 20px; align-items: center;">
+                <div>
+                    <label for="current_age">現在の年齢:</label>
+                    <input type="number" id="current_age" min="0" value="30" style="width: 80px;">
+                </div>
+                <div>
+                    <label for="existing_savings">既存貯金 (万円):</label>
+                    <input type="number" id="existing_savings" min="0" value="0" style="width: 120px;">
+                </div>
+            </div>
+        </div>
+
         <div class="forms-section">
             <div class="investment-form-container">
                 <h2>投資信託 1</h2>
@@ -70,13 +83,6 @@
                 </div>
                 <button type="button" id="addInv2ChangeSettingButton">積立額変更を追加</button>
             </div>
-        </div>
-
-        <div class="general-settings">
-            <label for="current_age">現在の年齢:</label>
-            <input type="number" id="current_age" min="0" value="30">
-            <label for="existing_savings">既存貯金 (万円):</label>
-            <input type="number" id="existing_savings" min="0" value="0">
         </div>
 
         <div class="market-event-section investment-form-container" style="max-width: 800px; margin: 20px auto;">
