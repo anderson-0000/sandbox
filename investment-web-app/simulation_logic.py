@@ -37,60 +37,68 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
     inv1_monthly_changes = get_monthly_changes_by_month(investment_data1.get('change_settings', []))
     inv2_monthly_changes = get_monthly_changes_by_month(investment_data2.get('change_settings', []))
 
-    # 年利・年リスクを月次リターン・月次リスクに変換
-    # 簡略化のため r_monthly = r_annual / 12, sigma_monthly = sigma_annual / sqrt(12) を使用
+    # 月次リターン・リスクへの変換
     r1_monthly_mean = (investment_data1['return'] / 100) / 12
     s1_monthly_std = (investment_data1['risk'] / 100) / math.sqrt(12)
     
     r2_monthly_mean = (investment_data2['return'] / 100) / 12
     s2_monthly_std = (investment_data2['risk'] / 100) / math.sqrt(12)
 
+    # どちらの投資信託のリターンが低いか判定 (リターンの低い方から優先的に引き出す)
+    inv1_is_lower_return = investment_data1['return'] <= investment_data2['return']
+
     for _ in range(num_simulations):
         val1 = investment_data1['initial']
         val2 = investment_data2['initial']
         
-        path1_values = [val1]
-        path2_values = [val2]
-
-        # 投資1のシミュレーション
-        current_monthly_contribution1 = investment_data1['monthly']
-        for m in range(1, total_months + 1):
-            if m in inv1_monthly_changes:
-                current_monthly_contribution1 = inv1_monthly_changes[m]
-            
-            if m <= investment_data1['period'] * 12:
-                # 複利計算 (毎月の積立は月末に行うと仮定し、その月のリターンを乗算)
-                monthly_return = get_normal_random(r1_monthly_mean, s1_monthly_std)
-                val1 = val1 * (1 + monthly_return) + current_monthly_contribution1
-            else:
-                # 期間終了後は運用のみ継続（もし必要なら。現状は期間終了後のデータも必要）
-                monthly_return = get_normal_random(r1_monthly_mean, s1_monthly_std)
-                val1 = val1 * (1 + monthly_return)
-            path1_values.append(val1)
-
-        # 投資2のシミュレーション
-        current_monthly_contribution2 = investment_data2['monthly']
-        for m in range(1, total_months + 1):
-            if m in inv2_monthly_changes:
-                current_monthly_contribution2 = inv2_monthly_changes[m]
-            
-            if m <= investment_data2['period'] * 12:
-                monthly_return = get_normal_random(r2_monthly_mean, s2_monthly_std)
-                val2 = val2 * (1 + monthly_return) + current_monthly_contribution2
-            else:
-                monthly_return = get_normal_random(r2_monthly_mean, s2_monthly_std)
-                val2 = val2 * (1 + monthly_return)
-            path2_values.append(val2)
-        
         combined_path = []
-        initial_total = investment_data1['initial'] + investment_data2['initial'] + existing_savings
+        initial_total = val1 + val2 + existing_savings
         combined_path.append(initial_total) # 0ヶ月目
 
+        current_monthly1 = investment_data1['monthly']
+        current_monthly2 = investment_data2['monthly']
+
         for m in range(1, total_months + 1):
-            current_month_total = path1_values[m] + path2_values[m] + existing_savings
+            # 積立額の更新
+            if m in inv1_monthly_changes:
+                current_monthly1 = inv1_monthly_changes[m]
+            if m in inv2_monthly_changes:
+                current_monthly2 = inv2_monthly_changes[m]
+
+            # 1. リターンの適用と積立の実施
+            m_ret1 = get_normal_random(r1_monthly_mean, s1_monthly_std)
+            if m <= investment_data1['period'] * 12:
+                val1 = val1 * (1 + m_ret1) + current_monthly1
+            else:
+                val1 = val1 * (1 + m_ret1)
+
+            m_ret2 = get_normal_random(r2_monthly_mean, s2_monthly_std)
+            if m <= investment_data2['period'] * 12:
+                val2 = val2 * (1 + m_ret2) + current_monthly2
+            else:
+                val2 = val2 * (1 + m_ret2)
+
+            # 2. ライフイベント費用の差し引き
             if m in life_events_by_month:
-                current_month_total -= life_events_by_month[m]
-            combined_path.append(current_month_total)
+                expense = life_events_by_month[m]
+                if inv1_is_lower_return:
+                    # 投資1(低リターン)から優先的に引く
+                    if val1 >= expense:
+                        val1 -= expense
+                    else:
+                        remaining = expense - val1
+                        val1 = 0
+                        val2 -= remaining
+                else:
+                    # 投資2(低リターン)から優先的に引く
+                    if val2 >= expense:
+                        val2 -= expense
+                    else:
+                        remaining = expense - val2
+                        val2 = 0
+                        val1 -= remaining
+            
+            combined_path.append(val1 + val2 + existing_savings)
         
         all_simulation_paths.append(combined_path)
 
