@@ -105,6 +105,20 @@
             </div>
         </div>
 
+        <div class="life-events-section">
+            <h2>ライフイベント費用</h2>
+            <div id="life_events_container">
+                <div class="life-event-item">
+                    <label>何年後:</label>
+                    <input type="number" class="life-event-year" min="1" value="">
+                    <label>金額 (万円):</label>
+                    <input type="number" class="life-event-amount" min="0" value="">
+                    <button type="button" class="remove-life-event">削除</button>
+                </div>
+            </div>
+            <button type="button" id="addLifeEventButton">ライフイベントを追加</button>
+        </div>
+
         <div class="market-event-section investment-form-container" style="max-width: 800px; margin: 20px auto;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                 <input type="checkbox" id="crash_enabled" style="width: 20px; height: 20px;">
@@ -127,20 +141,6 @@
             <p class="help-text" style="font-size: 0.8em; color: #666; margin-top: 10px; text-align: center;">
                 ※有効にすると、指定した周期で資産全体に暴落が発生します。過去の統計では10年に一度、30〜50%の下落が観測されています。
             </p>
-        </div>
-
-        <div class="life-events-section">
-            <h2>ライフイベント費用</h2>
-            <div id="life_events_container">
-                <div class="life-event-item">
-                    <label>何年後:</label>
-                    <input type="number" class="life-event-year" min="1" value="">
-                    <label>金額 (万円):</label>
-                    <input type="number" class="life-event-amount" min="0" value="">
-                    <button type="button" class="remove-life-event">削除</button>
-                </div>
-            </div>
-            <button type="button" id="addLifeEventButton">ライフイベントを追加</button>
         </div>
 
         <button id="simulateButton">シミュレーション実行</button>
