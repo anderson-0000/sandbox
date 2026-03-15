@@ -8,5 +8,9 @@ inv1:
 inv2:
   initial: 10 # 10万円
   monthly: 1  # 1万円
+  return: 5.0
+  risk: 10.0
+  period: 20
+  change_settings: []
 existing_savings: 0
 life_events: []

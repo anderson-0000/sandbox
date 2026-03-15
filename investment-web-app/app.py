@@ -34,8 +34,17 @@ def load_defaults():
         "life_events": []
     }
 
-    defaults_file_path = os.path.join(os.path.dirname(__file__), 'defaults.yaml')
-    if os.path.exists(defaults_file_path):
+    user_defaults_path = os.path.expanduser('~/parameter/investment-web-app-defaults.yaml')
+    local_defaults_path = os.path.join(os.path.dirname(__file__), 'defaults.yaml')
+
+    if os.path.exists(user_defaults_path):
+        defaults_file_path = user_defaults_path
+    elif os.path.exists(local_defaults_path):
+        defaults_file_path = local_defaults_path
+    else:
+        defaults_file_path = None
+
+    if defaults_file_path:
         try:
             with open(defaults_file_path, 'r', encoding='utf-8') as f:
                 loaded_defaults = yaml.safe_load(f)
