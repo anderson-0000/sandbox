@@ -12,7 +12,7 @@ def get_normal_random(mean, std_dev):
 
 def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savings, life_events, 
                                market_event_enabled=False, withdrawal_settings=None, total_simulation_years=50,
-                               num_simulations=2000, num_sample_paths=100):
+                               num_simulations=5000, num_sample_paths=100):
     all_simulation_paths = []
     total_months = total_simulation_years * 12
 
@@ -60,7 +60,7 @@ def run_monte_carlo_simulation(investment_data1, investment_data2, existing_savi
             else:
                 val1 *= (1 + m_ret1); val2 *= (1 + m_ret2)
 
-            # 2. 積立
+            # 2. 積立 (無期限に継続。停止したい場合は設定で0円にする)
             val1 += cur_m1
             val2 += cur_m2
 
