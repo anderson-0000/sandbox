@@ -151,8 +151,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         ticks: {
                             maxRotation: 45,
                             minRotation: 45,
-                            autoSkip: true,
-                            maxTicksLimit: 20
+                            autoSkip: false, // 手動で制御するため false
+                            callback: function(value, index, values) {
+                                const label = this.getLabelForValue(value);
+                                // 最初のデータ（現在月）または1月のラベルのみ表示
+                                if (index === 0 || label.endsWith('/1')) {
+                                    return label;
+                                }
+                                return null;
+                            }
                         }
                     },
                 },
