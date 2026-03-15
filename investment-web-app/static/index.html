@@ -26,17 +26,27 @@
         <div class="forms-section">
             <div class="investment-form-container">
                 <h2>投資信託 1</h2>
-                <label for="inv1_initial">初期投資額 (万円):</label>
-                <input type="number" id="inv1_initial" min="0">
+                <div class="input-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div style="flex: 1;">
+                        <label for="inv1_initial">初期投資 (万):</label>
+                        <input type="number" id="inv1_initial" min="0" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="inv1_monthly">毎月積立 (万):</label>
+                        <input type="number" id="inv1_monthly" min="0" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                </div>
 
-                <label for="inv1_monthly">毎月の積立額 (万円):</label>
-                <input type="number" id="inv1_monthly" min="0">
-
-                <label for="inv1_return">期待リターン率 (%):</label>
-                <input type="number" id="inv1_return" step="0.1" min="0">
-
-                <label for="inv1_risk">リスク (標準偏差 %):</label>
-                <input type="number" id="inv1_risk" step="0.1" min="0">
+                <div class="input-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div style="flex: 1;">
+                        <label for="inv1_return">リターン (%):</label>
+                        <input type="number" id="inv1_return" step="0.1" min="0" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="inv1_risk">リスク (%):</label>
+                        <input type="number" id="inv1_risk" step="0.1" min="0" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                </div>
 
                 <label for="inv1_period">投資期間 (年):</label>
                 <input type="number" id="inv1_period" min="1">
@@ -56,17 +66,27 @@
 
             <div class="investment-form-container">
                 <h2>投資信託 2</h2>
-                <label for="inv2_initial">初期投資額 (万円):</label>
-                <input type="number" id="inv2_initial" min="0">
+                <div class="input-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div style="flex: 1;">
+                        <label for="inv2_initial">初期投資 (万):</label>
+                        <input type="number" id="inv2_initial" min="0" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="inv2_monthly">毎月積立 (万):</label>
+                        <input type="number" id="inv2_monthly" min="0" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                </div>
 
-                <label for="inv2_monthly">毎月の積立額 (万円):</label>
-                <input type="number" id="inv2_monthly" min="0">
-
-                <label for="inv2_return">期待リターン率 (%):</label>
-                <input type="number" id="inv2_return" step="0.1" min="0">
-
-                <label for="inv2_risk">リスク (標準偏差 %):</label>
-                <input type="number" id="inv2_risk" step="0.1" min="0">
+                <div class="input-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div style="flex: 1;">
+                        <label for="inv2_return">リターン (%):</label>
+                        <input type="number" id="inv2_return" step="0.1" min="0" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="inv2_risk">リスク (%):</label>
+                        <input type="number" id="inv2_risk" step="0.1" min="0" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                </div>
 
                 <label for="inv2_period">投資期間 (年):</label>
                 <input type="number" id="inv2_period" min="1">
