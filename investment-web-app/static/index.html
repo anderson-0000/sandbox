@@ -119,11 +119,12 @@
             <button type="button" id="addLifeEventButton">ライフイベントを追加</button>
         </div>
 
-        <div class="market-event-section investment-form-container" style="max-width: 800px; margin: 20px auto;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <input type="checkbox" id="crash_enabled" style="width: 20px; height: 20px;">
-                <h2 style="margin: 0;">定期的な相場急落 (ストレスチェック)</h2>
-            </div>
+        <details class="market-event-section investment-form-container" style="max-width: 800px; margin: 20px auto; padding: 10px;">
+            <summary style="display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; list-style: none;">
+                <input type="checkbox" id="crash_enabled" style="width: 20px; height: 20px;" onclick="event.stopPropagation();">
+                <h2 style="margin: 0; display: inline-block;">定期的な相場急落 (ストレスチェック)</h2>
+                <span class="dropdown-arrow">▼</span>
+            </summary>
             <div id="crash_settings" style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: center;">
                 <div>
                     <label for="crash_year">初回発生 (何年後):</label>
@@ -141,7 +142,7 @@
             <p class="help-text" style="font-size: 0.8em; color: #666; margin-top: 10px; text-align: center;">
                 ※有効にすると、指定した周期で資産全体に暴落が発生します。過去の統計では10年に一度、30〜50%の下落が観測されています。
             </p>
-        </div>
+        </details>
 
         <button id="simulateButton">シミュレーション実行</button>
 
