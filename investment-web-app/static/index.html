@@ -105,9 +105,12 @@
             </div>
         </div>
 
-        <div class="life-events-section">
-            <h2>ライフイベント費用</h2>
-            <div id="life_events_container">
+        <details class="life-events-section investment-form-container" style="max-width: 800px; margin: 20px auto; padding: 10px;">
+            <summary style="display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; list-style: none;">
+                <h2 style="margin: 0; display: inline-block;">ライフイベント費用</h2>
+                <span class="dropdown-arrow">▼</span>
+            </summary>
+            <div id="life_events_container" style="margin-top: 15px;">
                 <div class="life-event-item">
                     <label>何年後:</label>
                     <input type="number" class="life-event-year" min="1" value="">
@@ -116,8 +119,8 @@
                     <button type="button" class="remove-life-event">削除</button>
                 </div>
             </div>
-            <button type="button" id="addLifeEventButton">ライフイベントを追加</button>
-        </div>
+            <button type="button" id="addLifeEventButton" style="margin-top: 10px;">ライフイベントを追加</button>
+        </details>
 
         <details class="market-event-section investment-form-container" style="max-width: 800px; margin: 20px auto; padding: 10px;">
             <summary style="display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; list-style: none;">
