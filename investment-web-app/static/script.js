@@ -70,6 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
             data: { labels: [], datasets: [] },
             options: {
                 responsive: true, maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
                 plugins: {
                     customCanvasBackgroundColor: { color: 'white' },
                     legend: { position: 'top' },
@@ -79,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             label: (context) => {
                                 let label = context.dataset.label || '';
                                 if (label) label += ': ';
-                                if (context.parsed.y !== null) label += formatCurrency(context.parsed.y);
+                                if (context.parsed.y !== null) label += formatNumber(context.parsed.y / 10000) + ' 万円';
                                 return label;
                             }
                         }
@@ -89,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     y: {
                         beginAtZero: true,
                         title: { display: true, text: 'ポートフォリオ価値 (万円)' },
-                        ticks: { callback: (value) => formatNumber(value / 10000) }
+                        ticks: { callback: (value) => formatNumber(value / 10000) + ' 万円' }
                     },
                     x: {
                         title: { display: true, text: '年/月 (年齢)' },
