@@ -136,17 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             display: true,
                             color: function(context) {
                                 if (context.tick && context.tick.label) {
-                                    // ラベルが "/1" で終わる場合（1月）に線を強調
-                                    return context.tick.label.endsWith('/1') ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.05)';
+                                    // 1月のグリッド線を少しだけ濃く、それ以外は薄く
+                                    return context.tick.label.endsWith('/1') ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.05)';
                                 }
                                 return 'rgba(0, 0, 0, 0.05)';
                             },
-                            lineWidth: function(context) {
-                                if (context.tick && context.tick.label) {
-                                    return context.tick.label.endsWith('/1') ? 2 : 1;
-                                }
-                                return 1;
-                            }
+                            lineWidth: 1 // 全ての線を細く統一
                         },
                         ticks: {
                             maxRotation: 45,
