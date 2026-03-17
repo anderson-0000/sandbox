@@ -1,6 +1,6 @@
 // static/script.js
 import { formatCurrency, formatNumber } from './utils.js';
-import { populateForm, addLifeEventItem, addChangeSettingItem, getInvestmentData, getLifeEventsData } from './dom_handlers.js';
+import { populateForm, addLifeEventItem, addChangeSettingItem, getInvestmentData, getLifeEventsData, populateWithdrawalSettings, addWithdrawalSettingItem, getWithdrawalSettingsData } from './dom_handlers.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const simulateButton = document.getElementById('simulateButton');
@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const inv1ChangeSettingsContainer = document.getElementById('inv1_change_settings_container');
     const addInv2ChangeSettingButton = document.getElementById('addInv2ChangeSettingButton');
     const inv2ChangeSettingsContainer = document.getElementById('inv2_change_settings_container');
+
+    // Withdrawal elements
+    const addWithdrawalSettingButton = document.getElementById('addWithdrawalSettingButton');
+    const withdrawalSettingsContainer = document.getElementById('withdrawal_settings_container');
 
     // Define and register custom plugin for chart background
     const customCanvasBackgroundColor = {
@@ -51,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('current_age').value = defaults.current_age || 33;
             document.getElementById('total_period').value = defaults.total_period || 50;
             document.getElementById('crash_enabled').checked = defaults.crash_enabled || false;
-            document.getElementById('withdrawal_monthly').value = defaults.withdrawal_monthly || 0;
-            document.getElementById('withdrawal_start').value = defaults.withdrawal_start || 10;
+            
+            populateWithdrawalSettings(withdrawalSettingsContainer, defaults.withdrawal_settings);
 
             lifeEventsContainer.innerHTML = '';
             if (defaults.life_events && defaults.life_events.length > 0) {
@@ -131,13 +135,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const datasets = [
             {
-                label: '中央値 (50%)', data: globalMonthlyResults.map(res => res.median),
-                borderColor: 'rgb(75, 192, 192)', backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                label: '90% パーセンタイル', data: globalMonthlyResults.map(res => res.p90),
+                borderColor: 'rgb(53, 162, 235)', backgroundColor: 'rgba(53, 162, 235, 0.5)',
                 tension: 0.1, pointRadius: 0,
             },
             {
-                label: '90% パーセンタイル', data: globalMonthlyResults.map(res => res.p90),
-                borderColor: 'rgb(53, 162, 235)', backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                label: '中央値 (50%)', data: globalMonthlyResults.map(res => res.median),
+                borderColor: 'rgb(75, 192, 192)', backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 tension: 0.1, pointRadius: 0,
             },
             {
@@ -184,6 +188,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.classList.contains('remove-change-setting')) event.target.closest('.change-setting-item').remove();
     });
 
+    addWithdrawalSettingButton.addEventListener('click', () => addWithdrawalSettingItem(withdrawalSettingsContainer));
+    withdrawalSettingsContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('remove-withdrawal-setting')) event.target.closest('.withdrawal-setting-item').remove();
+    });
+
     downloadChartButton.addEventListener('click', () => {
         if (simulationChart) {
             const image = simulationChart.toBase64Image('image/jpeg', 1.0);
@@ -214,8 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalPeriod = parseInt(document.getElementById('total_period').value, 10);
         const lifeEvents = getLifeEventsData();
         const crashEnabled = document.getElementById('crash_enabled').checked;
-        const wMonthly = parseFloat(document.getElementById('withdrawal_monthly').value);
-        const wStart = parseInt(document.getElementById('withdrawal_start').value, 10);
+        const withdrawalSettings = getWithdrawalSettingsData();
 
         try {
             const response = await fetch('/simulate', {
@@ -225,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     investment1: inv1Data, investment2: inv2Data,
                     existing_savings: savings, total_period: totalPeriod,
                     life_events: lifeEvents, market_event_enabled: crashEnabled,
-                    withdrawal_monthly: wMonthly, withdrawal_start: wStart
+                    withdrawal_settings: withdrawalSettings
                 }),
             });
 
@@ -241,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const startMonth = now.getMonth() + 1;
             const currentAgeValue = parseInt(document.getElementById('current_age').value, 10) || 0;
 
-            globalMonthlyResults.forEach(res => {
+            globalMonthlyResults.forEach((res, index) => {
                 const totalMonths = startMonth - 1 + res.month;
                 const y = startYear + Math.floor(totalMonths / 12);
                 const m = (totalMonths % 12) + 1;
@@ -250,12 +258,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (res.month === 0 || m === 1) {
                     const row = resultsTableBody.insertRow();
                     row.insertCell().textContent = `${y}/${m} (${age}歳)`;
-                    row.insertCell().textContent = formatCurrency(res.min * 10000);
-                    row.insertCell().textContent = formatCurrency(res.p10 * 10000);
-                    row.insertCell().textContent = formatCurrency(res.median * 10000);
-                    row.insertCell().textContent = formatCurrency(res.p90 * 10000);
-                    row.insertCell().textContent = formatCurrency(res.max * 10000);
-                    row.insertCell().textContent = formatCurrency(res.average * 10000);
+                    row.insertCell().textContent = formatCurrency(res.min);
+                    row.insertCell().textContent = formatCurrency(res.p10);
+                    row.insertCell().textContent = formatCurrency(res.median);
+                    row.insertCell().textContent = formatCurrency(res.p90);
+                    row.insertCell().textContent = formatCurrency(res.max);
+                    row.insertCell().textContent = formatCurrency(res.average);
+                    
+                    // その年から12ヶ月分（または期間終了まで）の取崩額を合計
+                    let annualWithdrawal = 0;
+                    for (let i = 0; i < 12; i++) {
+                        if (globalMonthlyResults[index + i]) {
+                            annualWithdrawal += (globalMonthlyResults[index + i].withdrawal || 0);
+                        }
+                    }
+                    row.insertCell().textContent = formatCurrency(annualWithdrawal);
                 }
             });
 
@@ -263,12 +280,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (globalMonthlyResults.length > 0) {
                 const last = globalMonthlyResults[globalMonthlyResults.length - 1];
                 const row = summaryTableBody.insertRow();
-                row.insertCell().textContent = formatCurrency(last.min * 10000);
-                row.insertCell().textContent = formatCurrency(last.p10 * 10000);
-                row.insertCell().textContent = formatCurrency(last.median * 10000);
-                row.insertCell().textContent = formatCurrency(last.p90 * 10000);
-                row.insertCell().textContent = formatCurrency(last.max * 10000);
-                row.insertCell().textContent = formatCurrency(last.average * 10000);
+                row.insertCell().textContent = formatCurrency(last.min);
+                row.insertCell().textContent = formatCurrency(last.p10);
+                row.insertCell().textContent = formatCurrency(last.median);
+                row.insertCell().textContent = formatCurrency(last.p90);
+                row.insertCell().textContent = formatCurrency(last.max);
+                row.insertCell().textContent = formatCurrency(last.average);
             }
             updateChartData();
             downloadChartButton.style.display = 'block';

@@ -13,7 +13,7 @@ def load_defaults():
         "inv2": {"initial": 10, "monthly": 1, "return": 5.0, "risk": 10.0, "change_settings": []},
         "existing_savings": 0, "current_age": 33, "total_period": 50,
         "crash_enabled": False,
-        "withdrawal_monthly": 0, "withdrawal_start": 10,
+        "withdrawal_settings": [],
         "life_events": []
     }
     user_defaults_path = os.path.expanduser('~/parameter/investment-web-app-defaults.yaml')
@@ -30,8 +30,14 @@ def load_defaults():
                             default_values[inv]["change_settings"] = loaded[inv]["change_settings"]
                         for k in ["initial", "monthly", "return", "risk"]:
                             if k in loaded[inv]: default_values[inv][k] = loaded[inv][k]
-                for k in ["existing_savings", "current_age", "total_period", "crash_enabled", "withdrawal_monthly", "withdrawal_start"]:
+                for k in ["existing_savings", "current_age", "total_period", "crash_enabled"]:
                     if k in loaded: default_values[k] = loaded[k]
+                if "withdrawal_settings" in loaded:
+                    default_values["withdrawal_settings"] = loaded["withdrawal_settings"]
+                elif "withdrawal_monthly" in loaded and "withdrawal_start" in loaded:
+                    # 後方互換性のため
+                    default_values["withdrawal_settings"] = [{"year": loaded["withdrawal_start"], "value": loaded["withdrawal_monthly"], "type": "amount"}]
+                
                 if "life_events" in loaded: default_values["life_events"] = loaded["life_events"]
         except Exception: pass
     return default_values
@@ -56,10 +62,10 @@ def simulate():
     life_events = [{**e, "amount": e["amount"] * 10000} for e in data.get('life_events', [])]
     crash_enabled = data.get('market_event_enabled', False)
     total_period = data.get('total_period', 50)
-    withdrawal = {"monthly": data.get('withdrawal_monthly', 0), "start_year": data.get('withdrawal_start', 0)}
+    withdrawal_settings = data.get('withdrawal_settings', [])
 
     try:
-        res = run_monte_carlo_simulation(inv1, inv2, savings, life_events, crash_enabled, withdrawal, total_period)
+        res = run_monte_carlo_simulation(inv1, inv2, savings, life_events, crash_enabled, withdrawal_settings, total_period)
         return jsonify(res)
     except Exception as e: return jsonify({"error": str(e)}), 500
 

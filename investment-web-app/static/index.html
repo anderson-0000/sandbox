@@ -134,19 +134,11 @@
         <details class="withdrawal-section investment-form-container" style="max-width: 800px; margin: 20px auto; padding: 10px;">
             <summary style="display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; list-style: none;">
                 <h2 style="margin: 0; display: inline-block;">取り崩し設定 (リタイア後)</h2>
-                <span class="help-icon" data-help="シミュレーション計算時、期待リターンの低い投資信託から優先的に売却して資金を捻出します。">?</span>
+                <span class="help-icon" data-help="シミュレーション計算時、期待リターンの低い投資信託から優先的に売却して資金を捻出します。例：4%ルールを適用する場合、4% ÷ 12ヶ月 ＝ 毎月 約0.33% と入力してください。">?</span>
                 <span class="dropdown-arrow">▼</span>
             </summary>
-            <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center;">
-                <div>
-                    <label for="withdrawal_monthly">毎月の取り崩し額 (万円):</label>
-                    <input type="number" id="withdrawal_monthly" min="0" value="0" style="width: 100%; box-sizing: border-box;">
-                </div>
-                <div>
-                    <label for="withdrawal_start">取り崩し開始年 (何年後):</label>
-                    <input type="number" id="withdrawal_start" min="0" value="10" style="width: 100%; box-sizing: border-box;">
-                </div>
-            </div>
+            <div id="withdrawal_settings_container" style="margin-top: 15px;"></div>
+            <button type="button" id="addWithdrawalSettingButton" style="margin-top: 10px;">取り崩し設定を追加</button>
         </details>
 
         <button id="simulateButton">シミュレーション実行</button>
@@ -165,7 +157,7 @@
             <div class="table-container">
                 <table id="resultsTable">
                     <thead>
-                        <tr><th>年/月 (年齢)</th><th>最小値</th><th>10%</th><th>中央値</th><th>90%</th><th>最大値</th><th>平均</th></tr>
+                        <tr><th>年/月 (年齢)</th><th>最小値</th><th>10%</th><th>中央値</th><th>90%</th><th>最大値</th><th>平均</th><th>取り崩し額</th></tr>
                     </thead>
                     <tbody></tbody>
                 </table>
