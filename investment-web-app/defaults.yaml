@@ -1,19 +1,24 @@
+# 投資枠1の設定
 inv1:
-  initial: 10 # 10万円
-  monthly: 1  # 1万円
-  return: 5.0
-  risk: 10.0
-  change_settings: []
+  initial: 10         # 初期投資額 (単位: 万円)
+  monthly: 1          # 毎月の積立額 (単位: 万円)
+  return: 5.0         # 年間期待収益率 (%)
+  risk: 10.0          # 年間リスク/標準偏差 (%)
+  change_settings: [] # 途中の設定変更 (例: [{year: 10, monthly: 5}])
+
+# 投資枠2の設定 (新NISAの成長投資枠など)
 inv2:
-  initial: 10 # 10万円
-  monthly: 1  # 1万円
-  return: 5.0
-  risk: 10.0
-  change_settings: []
-current_age: 33
-existing_savings: 0
-total_period: 50
-crash_enabled: false
-withdrawal_monthly: 0
-withdrawal_start: 10
-life_events: []
+  initial: 10         # 初期投資額 (単位: 万円)
+  monthly: 1          # 毎月の積立額 (単位: 万円)
+  return: 5.0         # 年間期待収益率 (%)
+  risk: 10.0          # 年間リスク/標準偏差 (%)
+  change_settings: [] # 途中の設定変更
+
+current_age: 33       # シミュレーション開始時の年齢
+existing_savings: 0   # 投資とは別の現在の貯蓄額 (単位: 万円)
+total_period: 50      # シミュレーションを行う期間 (単位: 年)
+crash_enabled: false  # 暴落（リーマンショック級など）をシミュレーションに含めるか (true/false)
+
+withdrawal_monthly: 0 # 取り崩し開始後の毎月の受け取り額 (単位: 万円)
+withdrawal_start: 10  # シミュレーション開始から何年後に取り崩しを始めるか (単位: 年)
+life_events: []       # 特定の年における一時的な支出 (例: [{year: 5, amount: 300, label: '結婚資金'}])
