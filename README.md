@@ -13,6 +13,8 @@
 - **[kustomize/](./kustomize/)**: Kustomize の検証
 
 ### アプリケーション・ツール
+- **[can-i-orbit/](./can-i-orbit/)**: 衛星投入 3D シミュレーター (React / Three.js)
+  - **起動方法**: `cd can-i-orbit && npm install && npm run dev`
 - **[blood-pressure-app/](./blood-pressure-app/)**: 血圧管理アプリ (JS/HTML/CSS)
 - **[investment-web-app/](./investment-web-app/)**: 投資シミュレーション Web アプリ (Python)
 - **[open-weather-map/](./open-weather-map/)**: OpenWeatherMap API 連携
