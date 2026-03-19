@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@import "tailwindcss/preflight";
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  color: #fff;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+canvas {
+  display: block;
+}
