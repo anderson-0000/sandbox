@@ -14,7 +14,7 @@ const TimeControls: React.FC = () => {
   });
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 bg-black/60 backdrop-blur-xl p-6 rounded-3xl border border-white/20 shadow-[0_0_50px_rgba(0,0,0,0.5)] z-[100] w-[420px] pointer-events-auto">
+    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 bg-black/60 backdrop-blur-xl p-6 rounded-3xl border border-white/20 shadow-[0_0_50px_rgba(0,0,0,0.5)] z-[150] w-[420px] pointer-events-auto">
       <div className="text-white text-xl font-mono tracking-wider flex items-center gap-3 bg-white/5 px-4 py-2 rounded-full border border-white/5">
         <Calendar className="w-5 h-5 opacity-70" />
         {formattedDate}

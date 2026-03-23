@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Line } from '@react-three/drei';
-import { type OrbitalElements, getPlanetPosition, SUN_GALACTIC_VELOCITY } from '../../engine/kepler';
+import { type OrbitalElements, getPlanetPosition } from '../../engine/kepler';
 import { useStore } from '../../hooks/useStore';
 
 interface OrbitLineProps {
@@ -30,23 +30,21 @@ const OrbitLine: React.FC<OrbitLineProps> = ({ data, isMoon = false }) => {
       // Relative position to the sun at that specific time
       const relPos = getPlanetPosition(data, sampleDate, isMoon);
       
-      // Galactic displacement: how far the sun moves between 'currentDate' and 'sampleDate'
-      // displacement = velocity * delta_t
-      const displacement = SUN_GALACTIC_VELOCITY.clone().multiplyScalar(offsetDays);
-      
-      pts.push(relPos.add(displacement));
+      pts.push(relPos);
     }
     return pts;
   }, [data, isMoon, currentDate]); // Re-calculate when currentDate changes to "animate" the spiral
 
   return (
-    <Line
-      points={points}
-      color={data.color}
-      lineWidth={isMoon ? 0.3 : 0.8}
-      transparent
-      opacity={isMoon ? 0.1 : 0.25}
-    />
+    <group>
+      <Line
+        points={points.map(p => [p.x, p.y, p.z])}
+        color={data.color}
+        lineWidth={isMoon ? 1.5 : 3.0} // Increased thickness
+        transparent
+        opacity={isMoon ? 0.4 : 0.8} // Increased opacity
+      />
+    </group>
   );
 };
 

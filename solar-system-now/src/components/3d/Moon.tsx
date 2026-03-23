@@ -14,11 +14,15 @@ const Moon: React.FC<MoonProps> = ({ data }) => {
   const currentDate = useStore((state) => state.currentDate);
   const setSelectedObjectName = useStore((state) => state.setSelectedObjectName);
   const showLabels = useStore((state) => state.showLabels);
+  const orreryMode = useStore((state) => state.orreryMode);
+  const viewMode = useStore((state) => state.viewMode);
 
   useFrame(() => {
     if (meshRef.current) {
       const pos = getPlanetPosition(data, currentDate, true);
-      meshRef.current.position.copy(pos);
+      if (!isNaN(pos.x) && !isNaN(pos.y) && !isNaN(pos.z)) {
+        meshRef.current.position.copy(pos);
+      }
       
       // Update rotation
       if (data.rotationPeriod) {
@@ -29,36 +33,41 @@ const Moon: React.FC<MoonProps> = ({ data }) => {
     }
   });
 
+  const visualScale = (orreryMode || viewMode === 'solar_system') ? 25 : 1.0;
+  const radius = data.radius * visualScale;
+
   return (
-    <mesh 
-      ref={meshRef}
-      name={data.id}
-      userData={{ radius: data.radius }}
-      castShadow 
-      receiveShadow
-      rotation={[data.axialTilt ? data.axialTilt * (Math.PI / 180) : 0, 0, 0]}
-      onClick={(e) => {
-        e.stopPropagation();
-        setSelectedObjectName(data.id);
-      }}
-    >
-      <sphereGeometry args={[data.radius, 16, 16]} />
-      <meshStandardMaterial 
-        color={data.color} 
-        emissive={data.color}
-        emissiveIntensity={0.2}
-        roughness={0.8} 
-        metalness={0.1} 
-      />
-      
-      {showLabels && (
-        <Html distanceFactor={15}>
-          <div className="text-white text-[10px] font-bold whitespace-nowrap bg-black/40 px-1 rounded pointer-events-none select-none">
-            {data.name}
-          </div>
-        </Html>
-      )}
-    </mesh>
+    <group>
+      <mesh 
+        ref={meshRef}
+        name={data.id}
+        userData={{ radius: radius }}
+        castShadow 
+        receiveShadow
+        rotation={[data.axialTilt ? data.axialTilt * (Math.PI / 180) : 0, 0, 0]}
+        onClick={(e) => {
+          e.stopPropagation();
+          setSelectedObjectName(data.id);
+        }}
+      >
+        <sphereGeometry args={[radius, 16, 16]} />
+        <meshStandardMaterial 
+          color={data.color} 
+          emissive={data.color}
+          emissiveIntensity={0.8}
+          roughness={0.8} 
+          metalness={0.1} 
+        />
+        
+        {showLabels && (
+          <Html position={[0, radius * 1.5, 0]}>
+            <div className="text-white text-[10px] font-bold whitespace-nowrap bg-black/40 px-1 rounded pointer-events-none select-none">
+              {data.name}
+            </div>
+          </Html>
+        )}
+      </mesh>
+    </group>
   );
 };
 

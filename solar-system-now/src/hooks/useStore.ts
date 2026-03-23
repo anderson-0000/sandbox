@@ -2,6 +2,15 @@ import { create } from 'zustand';
 import { Vector3 } from 'three';
 import { SUN_GALACTIC_VELOCITY } from '../engine/kepler';
 
+export type ViewMode = 
+  | 'earth' 
+  | 'solar_system' 
+  | 'orion_arm' 
+  | 'milky_way' 
+  | 'local_group' 
+  | 'virgo_supercluster'
+  | 'galactic'; 
+
 interface SolarSystemState {
   currentDate: Date;
   timeSpeed: number; // multiplier for time passage
@@ -10,11 +19,13 @@ interface SolarSystemState {
   surfaceTargetName: string | null;
   cameraTarget: Vector3;
   sunPosition: Vector3;
-  viewMode: 'orbit' | 'surface' | 'galactic';
+  viewMode: ViewMode;
   orreryMode: boolean;
   showOrbits: boolean;
   showMoonOrbits: boolean;
   showSunOrbit: boolean;
+  showSunDirection: boolean;
+  showVectors: boolean;
   showLabels: boolean;
   zoomDistance: number;
   
@@ -25,11 +36,13 @@ interface SolarSystemState {
   setSelectedObjectName: (name: string | null) => void;
   setSurfaceTargetName: (name: string | null) => void;
   setCameraTarget: (target: Vector3) => void;
-  setViewMode: (mode: 'orbit' | 'surface' | 'galactic') => void;
+  setViewMode: (mode: ViewMode) => void;
   setOrreryMode: (active: boolean) => void;
   setShowOrbits: (show: boolean) => void;
   setShowMoonOrbits: (show: boolean) => void;
   setShowSunOrbit: (show: boolean) => void;
+  setShowSunDirection: (show: boolean) => void;
+  setShowVectors: (show: boolean) => void;
   setShowLabels: (show: boolean) => void;
   setZoomDistance: (distance: number) => void;
   advanceTime: (deltaTimeSeconds: number) => void;
@@ -43,11 +56,13 @@ export const useStore = create<SolarSystemState>((set) => ({
   surfaceTargetName: null,
   cameraTarget: new Vector3(0, 0, 0),
   sunPosition: new Vector3(0, 0, 0),
-  viewMode: 'orbit',
+  viewMode: 'solar_system',
   orreryMode: false,
   showOrbits: true,
   showMoonOrbits: true,
   showSunOrbit: true,
+  showSunDirection: false,
+  showVectors: false,
   showLabels: true,
   zoomDistance: 5000,
 
@@ -56,7 +71,7 @@ export const useStore = create<SolarSystemState>((set) => ({
   setIsPaused: (paused) => set({ isPaused: paused }),
   setSelectedObjectName: (name) => set((state) => ({ 
     selectedObjectName: name, 
-    viewMode: state.viewMode === 'galactic' ? 'galactic' : 'orbit', 
+    viewMode: (state.viewMode === 'solar_system' || state.viewMode === 'earth') ? state.viewMode : state.viewMode, 
     surfaceTargetName: null 
   })), 
   setSurfaceTargetName: (name) => set({ surfaceTargetName: name }),
@@ -66,6 +81,8 @@ export const useStore = create<SolarSystemState>((set) => ({
   setShowOrbits: (show) => set({ showOrbits: show }),
   setShowMoonOrbits: (show) => set({ showMoonOrbits: show }),
   setShowSunOrbit: (show) => set({ showSunOrbit: show }),
+  setShowSunDirection: (show) => set({ showSunDirection: show }),
+  setShowVectors: (show) => set({ showVectors: show }),
   setShowLabels: (show) => set({ showLabels: show }),
   setZoomDistance: (distance) => set({ zoomDistance: distance }),
   
@@ -74,9 +91,10 @@ export const useStore = create<SolarSystemState>((set) => ({
     const deltaDays = deltaTimeSeconds * (state.timeSpeed / 1.0);
     const newDate = new Date(state.currentDate.getTime() + deltaDays * 24 * 60 * 60 * 1000);
     
-    const displacement = SUN_GALACTIC_VELOCITY.clone().multiplyScalar(deltaDays);
-    const newSunPos = state.sunPosition.clone().add(displacement);
+    // Displacement disabled for debugging
+    // const displacement = SUN_GALACTIC_VELOCITY.clone().multiplyScalar(deltaDays);
+    // const newSunPos = state.sunPosition.clone().add(displacement);
     
-    return { currentDate: newDate, sunPosition: newSunPos };
+    return { currentDate: newDate }; // Keep sunPosition (0,0,0)
   }),
 }));

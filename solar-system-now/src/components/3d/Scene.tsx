@@ -5,32 +5,33 @@ import * as THREE from 'three';
 import SolarSystem from './SolarSystem';
 import CameraController from './CameraController';
 import SpaceDust from './SpaceDust';
+import UniverseContext from './UniverseContext';
 
 const Scene: React.FC = () => {
   return (
     <div className="w-full h-full relative">
       <Canvas 
-        shadows 
+        shadows={false} // Disable shadows for debugging
         gl={{ 
           antialias: true,
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 0.8
+          alpha: true
         }}
       >
         <Suspense fallback={null}>
           <PerspectiveCamera 
             makeDefault 
-            position={[5000, 3000, 8000]} 
+            position={[0, 1000, 2000]} // Start closer to center
             fov={45} 
-            far={2000000} 
-            near={0.01} // Extreme close-ups allowed
+            far={1000000} // Reduce far plane to a more reasonable range
+            near={1} 
           />
           <CameraController />
           
-          <ambientLight intensity={0.05} />
-          <Stars radius={150000} depth={50000} count={50000} factor={40} saturation={0.5} fade speed={0.5} />
+          <ambientLight intensity={1.5} /> // Much stronger light
+          <Stars radius={100000} depth={50000} count={5000} factor={4} saturation={0} fade speed={1} />
           
           <SpaceDust />
+          <UniverseContext />
           <SolarSystem />
         </Suspense>
       </Canvas>

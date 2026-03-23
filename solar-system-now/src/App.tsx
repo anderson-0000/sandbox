@@ -2,6 +2,8 @@ import Scene from './components/3d/Scene';
 import TimeControls from './components/ui/TimeControls';
 import InfoPanel from './components/ui/InfoPanel';
 import PlanetSelector from './components/ui/PlanetSelector';
+import ViewModeSelector from './components/ui/ViewModeSelector';
+import AddressDisplay from './components/ui/AddressDisplay';
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
       </div>
 
       {/* UI Components - They have their own absolute/fixed positioning and high z-index */}
+      <AddressDisplay />
+      <ViewModeSelector />
       <PlanetSelector />
       <InfoPanel />
       <TimeControls />

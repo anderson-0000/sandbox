@@ -138,3 +138,12 @@ export function getPlanetPosition(planet: OrbitalElements, date: Date, isMoon: b
   
   return new THREE.Vector3(x * DISTANCE_SCALE, z * DISTANCE_SCALE, y * DISTANCE_SCALE);
 }
+
+export function getPlanetVelocity(planet: OrbitalElements, date: Date, isMoon: boolean = false): THREE.Vector3 {
+  const p1 = getPlanetPosition(planet, date, isMoon);
+  // Calculate position 1 hour later
+  const nextHour = new Date(date.getTime() + 1000 * 60 * 60);
+  const p2 = getPlanetPosition(planet, nextHour, isMoon);
+  
+  return p2.clone().sub(p1); // Vector per hour
+}
