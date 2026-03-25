@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Vector3 } from 'three';
+import { SUN_GALACTIC_VELOCITY } from '../engine/kepler';
 
 export type ViewMode = 
   | 'earth' 
@@ -92,6 +93,13 @@ export const useStore = create<SolarSystemState>((set) => ({
     const deltaDays = deltaTimeSeconds * (state.timeSpeed / 1.0);
     const newDate = new Date(state.currentDate.getTime() + deltaDays * 24 * 60 * 60 * 1000);
     
-    return { currentDate: newDate };
+    // Calculate Sun's displacement in Galactic coordinates
+    const displacement = SUN_GALACTIC_VELOCITY.clone().multiplyScalar(deltaDays);
+    const newSunPos = state.sunPosition.clone().add(displacement);
+    
+    return { 
+      currentDate: newDate,
+      sunPosition: newSunPos
+    };
   }),
 }));

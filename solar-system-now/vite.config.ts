@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import fs from 'node:fs'
 import path from 'node:path'
-import https from 'node:https'
 
 /**
  * Cache proxy middleware as mandated by GEMINI.md.

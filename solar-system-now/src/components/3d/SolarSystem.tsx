@@ -25,14 +25,19 @@ const SolarSystem: React.FC = () => {
 
   return (
     <>
+      {/* Absolute context objects (don't move with Sun's group) */}
       {showSunOrbit && <SunOrbitLine />}
+      {Object.values(PLANETS_DATA).map((planet) => (
+        <React.Fragment key={`${planet.id}-abs`}>
+          {showOrbits && <OrbitLine data={planet} />}
+        </React.Fragment>
+      ))}
+
+      {/* Moving context objects (relative to Sun) */}
       <group ref={groupRef}>
         <Sun />
         {Object.values(PLANETS_DATA).map((planet) => (
-          <React.Fragment key={planet.id}>
-            {showOrbits && <OrbitLine data={planet} />}
-            <Planet data={planet} />
-          </React.Fragment>
+          <Planet key={planet.id} data={planet} />
         ))}
       </group>
     </>

@@ -5,62 +5,69 @@ import { useStore } from '../../hooks/useStore';
 
 const UniverseContext: React.FC = () => {
   const viewMode = useStore((state) => state.viewMode);
+  const showLabels = useStore((state) => state.showLabels);
 
-  // Positions relative to sunPosition (current) or absolute?
-  // Let's define Sagittarius A* as absolute (0,0,0) for simplicity in Galactic view,
-  // but sunPosition moves.
-  // Actually, Sagittarius A* is at some fixed point. 
-  // Let's say Sagittarius A* is at (0,0,0).
-  // Then sunPosition is at its current galactic position.
-  
+  // Positions in arbitrary galactic coordinates
   const points = useMemo(() => ({
     sagittariusA: new THREE.Vector3(0, 0, 0),
-    localGroupCM: new THREE.Vector3(10000000, 5000000, 20000000), // Approximate
-    andromeda: new THREE.Vector3(20000000, 10000000, 40000000),
-    greatAttractor: new THREE.Vector3(100000000, 50000000, -100000000),
+    localGroupCM: new THREE.Vector3(10000000, 5000000, 20000000), 
+    andromeda: new THREE.Vector3(25000000, 12000000, 45000000),
+    greatAttractor: new THREE.Vector3(150000000, 80000000, -120000000),
   }), []);
+
+  // Display conditions for large scale objects
+  const showGalacticCenter = showLabels && ['milky_way', 'local_group', 'virgo_supercluster'].includes(viewMode);
+  const showLocalGroup = showLabels && ['local_group', 'virgo_supercluster'].includes(viewMode);
+  const showSupercluster = showLabels && ['virgo_supercluster'].includes(viewMode);
+  
+  // Orion Arm mode should only show the Sun's vicinity
+  const isGalacticPlus = ['milky_way', 'local_group', 'virgo_supercluster', 'galactic'].includes(viewMode);
 
   return (
     <group>
-      {/* Sagittarius A* (Galactic Center) */}
-      <mesh position={points.sagittariusA}>
-        <sphereGeometry args={[500000, 32, 32]} />
-        <meshBasicMaterial color="#ffccaa" transparent opacity={0.6} />
-        <Html distanceFactor={5000000}>
-          <div className="text-[10px] text-orange-200 whitespace-nowrap bg-black/50 px-2 py-1 rounded">いて座A* (銀河中心)</div>
-        </Html>
-      </mesh>
+      {/* Sagittarius A* (Galactic Center) - Only label, no mesh as requested */}
+      {showGalacticCenter && (
+        <group position={points.sagittariusA}>
+          <Html distanceFactor={50000000} center>
+            <div className="text-[12px] text-orange-200 whitespace-nowrap bg-black/70 px-2 py-1 rounded border border-orange-500/30">いて座A* (銀河中心)</div>
+          </Html>
+        </group>
+      )}
 
       {/* Local Group Common Center of Mass */}
-      <mesh position={points.localGroupCM}>
-        <sphereGeometry args={[200000, 32, 32]} />
-        <meshBasicMaterial color="#aaccff" transparent opacity={0.4} />
-        <Html distanceFactor={10000000}>
-          <div className="text-[10px] text-blue-200 whitespace-nowrap bg-black/50 px-2 py-1 rounded">局所銀河群 共通重心</div>
-        </Html>
-      </mesh>
+      {showLocalGroup && (
+        <>
+          <group position={points.localGroupCM}>
+            <Html distanceFactor={100000000} center>
+              <div className="text-[12px] text-blue-200 whitespace-nowrap bg-black/70 px-2 py-1 rounded border border-blue-500/30">局所銀河群 共通重心</div>
+            </Html>
+          </group>
 
-      {/* Andromeda */}
-      <mesh position={points.andromeda}>
-        <sphereGeometry args={[800000, 32, 32]} />
-        <meshBasicMaterial color="#ccaaff" transparent opacity={0.3} />
-        <Html distanceFactor={20000000}>
-          <div className="text-[10px] text-purple-200 whitespace-nowrap bg-black/50 px-2 py-1 rounded">アンドロメダ銀河 (M31)</div>
-        </Html>
-      </mesh>
+          {/* Andromeda */}
+          <group position={points.andromeda}>
+            <Html distanceFactor={150000000} center>
+              <div className="text-[12px] text-purple-200 whitespace-nowrap bg-black/70 px-2 py-1 rounded border border-purple-500/30">アンドロメダ銀河 (M31)</div>
+            </Html>
+          </group>
+        </>
+      )}
 
       {/* Great Attractor */}
-      <mesh position={points.greatAttractor}>
-        <sphereGeometry args={[5000000, 32, 32]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0.1} />
-        <Html distanceFactor={100000000}>
-          <div className="text-[10px] text-white whitespace-nowrap bg-black/50 px-2 py-1 rounded font-bold">グレート・アトラクター (巨大引力源)</div>
-        </Html>
-      </mesh>
+      {showSupercluster && (
+        <group position={points.greatAttractor}>
+          <Html distanceFactor={500000000} center>
+            <div className="text-[14px] text-white whitespace-nowrap bg-black/80 px-3 py-1 rounded border border-white/50 font-bold">グレート・アトラクター (巨大引力源)</div>
+          </Html>
+        </group>
+      )}
 
-      {/* Galactic Plane reference (around Sag A*) */}
-      {(viewMode === 'milky_way' || viewMode === 'orion_arm') && (
-        <gridHelper args={[100000000, 50, 0x444444, 0x222222]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0]} />
+      {/* Galactic Plane reference */}
+      {isGalacticPlus && (
+        <gridHelper 
+          args={[500000000, 100, 0x444444, 0x222222]} 
+          rotation={[Math.PI / 2, 0, 0]} 
+          position={[0, 0, 0]} 
+        />
       )}
     </group>
   );

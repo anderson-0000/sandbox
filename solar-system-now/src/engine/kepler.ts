@@ -4,14 +4,18 @@ import * as THREE from 'three';
  * Orbital elements at Epoch J2000 (roughly Year 2000 Jan 1.5)
  * Reference: NASA JPL Approximate Positions of the Planets
  * 
- * Rates are per century. For this prototype, we use the constants at J2000.
+ * SCALE definition:
+ * Earth Radius = 1.0 unit
+ * Earth Mean Distance (1 AU) = 149,597,870 km
+ * Earth Mean Radius = 6,371 km
+ * Ratio (1 AU / Earth Radius) = 23481.1
  */
 
-export const SUN_RADIUS = 109.1; // Earth = 1.0
+export const SUN_RADIUS = 109.1; // Relative to Earth = 1.0
 
 export interface OrbitalElements {
-  id: string; // Internal ID (e.g. 'Earth')
-  name: string; // Display name (e.g. '地球')
+  id: string; 
+  name: string; 
   a: number;   // AU
   e: number;
   i: number;   // deg
@@ -20,7 +24,7 @@ export interface OrbitalElements {
   lan: number; // deg (longitude of ascending node)
   color: string;
   radius: number; // Relative to Earth (1.0)
-  rotationPeriod?: number; // Days (negative for retrograde)
+  rotationPeriod?: number; // Days
   axialTilt?: number; // Degrees
 }
 
@@ -58,12 +62,6 @@ export const MOONS_DATA: Record<string, MoonOrbitalElements[]> = {
   ]
 };
 
-// Aliases for MOONS_DATA to support Japanese names if used
-MOONS_DATA['地球'] = MOONS_DATA['Earth'];
-MOONS_DATA['木星'] = MOONS_DATA['Jupiter'];
-MOONS_DATA['土星'] = MOONS_DATA['Saturn'];
-MOONS_DATA['海王星'] = MOONS_DATA['Neptune'];
-
 const DEG2RAD = Math.PI / 180;
 
 export function getJulianDate(date: Date): number {
@@ -85,11 +83,10 @@ function solveKepler(M: number, e: number): number {
   return E;
 }
 
-// 1 AU = 1000 units
-const SCALE = 1000;
+// 1 AU = 23481.1 Earth Radii
+export const SCALE = 23481.1;
 
-// Sun's velocity in Galactic coordinates (approximate vector towards Solar Apex)
-// Speed is ~230 km/s, which is ~0.13 AU per day.
+// Sun's velocity in Galactic coordinates
 export const SUN_GALACTIC_VELOCITY = new THREE.Vector3(0.05, 0.12, 0.03).multiplyScalar(SCALE);
 
 export function getPlanetPosition(planet: OrbitalElements, date: Date, isMoon: boolean = false): THREE.Vector3 {
@@ -98,12 +95,12 @@ export function getPlanetPosition(planet: OrbitalElements, date: Date, isMoon: b
 
   let orbitalPeriod;
   if (isMoon) {
-    orbitalPeriod = Math.pow(planet.a, 1.5) * 580; 
+    orbitalPeriod = 27.321 / 365.25; 
   } else {
     orbitalPeriod = Math.pow(planet.a, 1.5);
   }
 
-  const meanMotion = (360 * 36525) / (365.25 * orbitalPeriod); // deg per century
+  const meanMotion = (360 * 36525) / (365.25 * orbitalPeriod); 
   
   let L = planet.L + meanMotion * T;
   L = L % 360;
@@ -133,17 +130,12 @@ export function getPlanetPosition(planet: OrbitalElements, date: Date, isMoon: b
   const y = x_plane * (sin_lan * cos_w + cos_lan * sin_w * cos_i) + y_plane * (cos_lan * cos_w * cos_i - sin_lan * sin_w);
   const z = x_plane * (sin_w * sin_i) + y_plane * (cos_w * sin_i);
 
-  // Scale moon distance to be visible relative to planet size
-  const DISTANCE_SCALE = isMoon ? SCALE * 15 : SCALE;
-  
-  return new THREE.Vector3(x * DISTANCE_SCALE, z * DISTANCE_SCALE, y * DISTANCE_SCALE);
+  return new THREE.Vector3(x * SCALE, z * SCALE, y * SCALE);
 }
 
 export function getPlanetVelocity(planet: OrbitalElements, date: Date, isMoon: boolean = false): THREE.Vector3 {
   const p1 = getPlanetPosition(planet, date, isMoon);
-  // Calculate position 1 hour later
   const nextHour = new Date(date.getTime() + 1000 * 60 * 60);
   const p2 = getPlanetPosition(planet, nextHour, isMoon);
-  
-  return p2.clone().sub(p1); // Vector per hour
+  return p2.clone().sub(p1); 
 }

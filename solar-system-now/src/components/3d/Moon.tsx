@@ -7,21 +7,21 @@ import { useStore } from '../../hooks/useStore';
 
 interface MoonProps {
   data: MoonOrbitalElements;
+  parentScale: number;
 }
 
-const Moon: React.FC<MoonProps> = ({ data }) => {
+const Moon: React.FC<MoonProps> = ({ data, parentScale }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const currentDate = useStore((state) => state.currentDate);
   const setSelectedObjectName = useStore((state) => state.setSelectedObjectName);
   const showLabels = useStore((state) => state.showLabels);
-  const orreryMode = useStore((state) => state.orreryMode);
-  const viewMode = useStore((state) => state.viewMode);
 
   useFrame(() => {
     if (meshRef.current) {
       const pos = getPlanetPosition(data, currentDate, true);
       if (!isNaN(pos.x) && !isNaN(pos.y) && !isNaN(pos.z)) {
-        meshRef.current.position.copy(pos);
+        // Apply the same visual scale as parent planet to keep separation correct
+        meshRef.current.position.copy(pos).multiplyScalar(parentScale);
       }
       
       // Update rotation
@@ -33,8 +33,7 @@ const Moon: React.FC<MoonProps> = ({ data }) => {
     }
   });
 
-  const visualScale = (orreryMode || viewMode === 'solar_system') ? 25 : 1.0;
-  const radius = data.radius * visualScale;
+  const radius = data.radius * parentScale;
 
   return (
     <group>
@@ -42,8 +41,6 @@ const Moon: React.FC<MoonProps> = ({ data }) => {
         ref={meshRef}
         name={data.id}
         userData={{ radius: radius }}
-        castShadow 
-        receiveShadow
         rotation={[data.axialTilt ? data.axialTilt * (Math.PI / 180) : 0, 0, 0]}
         onClick={(e) => {
           e.stopPropagation();

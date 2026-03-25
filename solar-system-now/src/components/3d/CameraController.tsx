@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
-import { useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { CameraControls } from '@react-three/drei';
 import { useStore } from '../../hooks/useStore';
 
@@ -13,6 +13,7 @@ const CameraController: React.FC = () => {
   const zoomDistance = useStore((state) => state.zoomDistance);
   const setZoomDistance = useStore((state) => state.setZoomDistance);
   const sunPosition = useStore((state) => state.sunPosition);
+  const cameraTarget = useStore((state) => state.cameraTarget);
   
   const isInternalUpdate = useRef(false);
 
@@ -46,6 +47,16 @@ const CameraController: React.FC = () => {
       setTimeout(() => { isInternalUpdate.current = false; }, 50);
     }
   }, [zoomDistance]);
+
+  // Every frame, follow the cameraTarget (this keeps camera locked to the moving object)
+  useFrame(() => {
+    if (!cameraControlsRef.current) return;
+    const controls = cameraControlsRef.current;
+    
+    // Smoothly track the target without resetting orientation
+    // controls.moveTo moves only the target point
+    controls.moveTo(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
+  });
 
   // Handle Focus (selectedObjectName) and Mode Changes
   useEffect(() => {
@@ -106,23 +117,24 @@ const CameraController: React.FC = () => {
     }
 
     isInternalUpdate.current = true;
+    // Offset camera position for better view (diagonal look)
     controls.setLookAt(target.x, target.y + dist, target.z + dist, target.x, target.y, target.z, true);
     setZoomDistance(dist);
     setTimeout(() => { isInternalUpdate.current = false; }, 100);
-  }, [viewMode, selectedObjectName, sunPosition, scene, setZoomDistance, zoomDistance]);
+  }, [viewMode, selectedObjectName, scene, setZoomDistance]);
 
   return (
     <CameraControls
       ref={cameraControlsRef}
       minDistance={0.001}
-      maxDistance={2000000000}
+      maxDistance={4000000000}
       dollyToCursor={true}
       dollySpeed={3.0}
-      truckSpeed={0}
+      truckSpeed={1.0} // Enable free movement
       mouseButtons={{
-        left: 1,
-        middle: 8,
-        right: 0,
+        left: 1, // Rotate
+        middle: 8, // Zoom
+        right: 2, // Truck (Free move)
         wheel: 8,
       }}
     />

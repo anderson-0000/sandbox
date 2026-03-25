@@ -25,7 +25,10 @@ const Planet: React.FC<PlanetProps> = ({ data }) => {
   const viewMode = useStore((state) => state.viewMode);
   const zoomDistance = useStore((state) => state.zoomDistance);
 
-  // Update position based on time
+  // Use a consistent scale to make planets visible
+  // To keep Moon-Planet ratio correct, we MUST apply this scale to Moon DISTANCE as well.
+  const visualScale = (orreryMode || viewMode === 'solar_system' || viewMode === 'galactic') ? 100 : 1.0;
+
   useFrame(() => {
     if (groupRef.current) {
       const pos = getPlanetPosition(data, currentDate);
@@ -49,21 +52,18 @@ const Planet: React.FC<PlanetProps> = ({ data }) => {
 
   const isSelected = selectedObjectName === data.id;
   const moons = MOONS_DATA[data.id] || [];
-
-  // Determine a visual scale factor so planets are actually visible in wide views
-  // In solar_system view, planets are too small to see at true scale
-  const visualScale = (orreryMode || viewMode === 'solar_system') 
-    ? (data.id === 'Jupiter' || data.id === 'Saturn' ? 15 : 40) // Scale factor adjustment
-    : 1.0;
-
   const planetRadius = data.radius * visualScale;
 
   return (
     <group ref={groupRef} name={data.id} userData={{ radius: planetRadius }}>
       <MovementVector velocity={velocity} color={data.color} scale={50} />
-      {/* Render moon orbits relative to planet */}
+      
+      {/* 
+        IMPORTANT: We pass visualScale to children so they can scale their distance correctly.
+        This keeps the Earth-Moon visual ratio accurate even when they are enlarged.
+      */}
       {showMoonOrbits && moons.map((moon) => (
-        <OrbitLine key={`${moon.id}-orbit`} data={moon} isMoon />
+        <OrbitLine key={`${moon.id}-orbit`} data={moon} isMoon parentScale={visualScale} />
       ))}
 
       <mesh
@@ -99,9 +99,9 @@ const Planet: React.FC<PlanetProps> = ({ data }) => {
         </Html>
       )}
 
-      {/* Render moons */}
+      {/* Render moons with the same scale factor for their distance */}
       {moons.map((moon) => (
-        <Moon key={moon.name} data={moon} />
+        <Moon key={moon.name} data={moon} parentScale={visualScale} />
       ))}
     </group>
   );
