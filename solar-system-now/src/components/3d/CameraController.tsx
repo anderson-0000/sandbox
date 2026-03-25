@@ -1,9 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useThree } from '@react-three/fiber';
 import { CameraControls } from '@react-three/drei';
 import { useStore } from '../../hooks/useStore';
-import { SUN_GALACTIC_VELOCITY } from '../../engine/kepler';
 
 const CameraController: React.FC = () => {
   const cameraControlsRef = useRef<CameraControls | null>(null);
@@ -11,12 +10,10 @@ const CameraController: React.FC = () => {
 
   const selectedObjectName = useStore((state) => state.selectedObjectName);
   const viewMode = useStore((state) => state.viewMode);
-  const setCameraTarget = useStore((state) => state.setCameraTarget);
   const zoomDistance = useStore((state) => state.zoomDistance);
   const setZoomDistance = useStore((state) => state.setZoomDistance);
   const sunPosition = useStore((state) => state.sunPosition);
   
-  const initialized = useRef(false);
   const isInternalUpdate = useRef(false);
 
   // Constants for specific centers
@@ -38,31 +35,6 @@ const CameraController: React.FC = () => {
     controls.addEventListener('control', onControl);
     return () => controls.removeEventListener('control', onControl);
   }, [setZoomDistance]);
-
-  useFrame(() => {
-    if (!cameraControlsRef.current) return;
-    const controls = cameraControlsRef.current;
-
-    let targetPos = new THREE.Vector3(0, 0, 0); // Default to center
-
-    if (viewMode === 'solar_system' || viewMode === 'earth') {
-        const targetObj = scene.getObjectByName(selectedObjectName || 'Sun');
-        if (targetObj) {
-            targetObj.getWorldPosition(targetPos);
-        }
-    }
-
-    // Sanity check for position values
-    if (isNaN(targetPos.x) || isNaN(targetPos.y) || isNaN(targetPos.z)) return;
-    
-    setCameraTarget(targetPos);
-    
-    // Smoothly interpolate to target instead of setLookAt every frame which can reset the camera state
-    // controls.setLookAt(...) should only be used for major focus changes.
-    // For tracking, we use the displacement logic but let's just make it focus on (0,0,0) initially.
-    
-    initialized.current = true;
-  });
 
   // Synchronize store to camera (Slider -> Camera)
   useEffect(() => {
@@ -137,7 +109,7 @@ const CameraController: React.FC = () => {
     controls.setLookAt(target.x, target.y + dist, target.z + dist, target.x, target.y, target.z, true);
     setZoomDistance(dist);
     setTimeout(() => { isInternalUpdate.current = false; }, 100);
-  }, [viewMode, selectedObjectName, scene]);
+  }, [viewMode, selectedObjectName, sunPosition, scene, setZoomDistance, zoomDistance]);
 
   return (
     <CameraControls

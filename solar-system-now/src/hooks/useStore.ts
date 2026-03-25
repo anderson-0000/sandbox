@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { Vector3 } from 'three';
-import { SUN_GALACTIC_VELOCITY } from '../engine/kepler';
 
 export type ViewMode = 
   | 'earth' 
@@ -36,6 +35,7 @@ interface SolarSystemState {
   setSelectedObjectName: (name: string | null) => void;
   setSurfaceTargetName: (name: string | null) => void;
   setCameraTarget: (target: Vector3) => void;
+  setSunPosition: (pos: Vector3) => void;
   setViewMode: (mode: ViewMode) => void;
   setOrreryMode: (active: boolean) => void;
   setShowOrbits: (show: boolean) => void;
@@ -76,6 +76,7 @@ export const useStore = create<SolarSystemState>((set) => ({
   })), 
   setSurfaceTargetName: (name) => set({ surfaceTargetName: name }),
   setCameraTarget: (target) => set({ cameraTarget: target }),
+  setSunPosition: (pos) => set({ sunPosition: pos }),
   setViewMode: (mode) => set({ viewMode: mode }),
   setOrreryMode: (active) => set({ orreryMode: active }),
   setShowOrbits: (show) => set({ showOrbits: show }),
@@ -91,10 +92,6 @@ export const useStore = create<SolarSystemState>((set) => ({
     const deltaDays = deltaTimeSeconds * (state.timeSpeed / 1.0);
     const newDate = new Date(state.currentDate.getTime() + deltaDays * 24 * 60 * 60 * 1000);
     
-    // Displacement disabled for debugging
-    // const displacement = SUN_GALACTIC_VELOCITY.clone().multiplyScalar(deltaDays);
-    // const newSunPos = state.sunPosition.clone().add(displacement);
-    
-    return { currentDate: newDate }; // Keep sunPosition (0,0,0)
+    return { currentDate: newDate };
   }),
 }));

@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Stars, PerspectiveCamera } from '@react-three/drei';
-import * as THREE from 'three';
 import SolarSystem from './SolarSystem';
 import CameraController from './CameraController';
 import SpaceDust from './SpaceDust';
 import UniverseContext from './UniverseContext';
+import Tracker from './Tracker';
 
 const Scene: React.FC = () => {
   return (
@@ -25,6 +25,7 @@ const Scene: React.FC = () => {
             far={1000000} // Reduce far plane to a more reasonable range
             near={1} 
           />
+          <Tracker />
           <CameraController />
           
           <ambientLight intensity={1.5} /> // Much stronger light
