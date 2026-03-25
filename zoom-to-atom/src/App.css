@@ -1,0 +1,59 @@
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #050505;
+}
+
+.app-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.ui-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  color: white;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  pointer-events: none;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.ui-overlay h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+.scale-info {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.scale-info p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.scale-info strong {
+  color: #3498db;
+  font-size: 1.1rem;
+}
+
+.hint {
+  font-style: italic;
+  font-size: 0.8rem !important;
+  margin-top: 10px !important;
+  opacity: 0.5 !important;
+}
