@@ -15,8 +15,17 @@
 ### アプリケーション・ツール
 - **[can-i-orbit/](./can-i-orbit/)**: 衛星投入 3D シミュレーター (React / Three.js)
   - **起動方法**: `cd can-i-orbit && npm install && npm run dev`
+- **[orbit-visualizer/](./orbit-visualizer/)**: 衛星軌道の 3D 可視化ツール (React / Three.js / R3F)
+  - **起動方法**: `cd orbit-visualizer && npm install && npm run dev`
+- **[wealth-orbit/](./wealth-orbit/)**: 資産目標到達 3D シミュレーター (React / R3F)
+  - **起動方法**: `cd wealth-orbit && npm install && npm run dev`
+- **[space-debris-cleaner/](./space-debris-cleaner/)**: 宇宙ゴミ回収 3D ゲーム (React / R3F / satellite.js)
+  - **起動方法**: `cd space-debris-cleaner && npm install && npm run dev`
+- **[solar-system-now/](./solar-system-now/)**: 太陽系の現在の惑星位置シミュレーター
+- **[zoom-to-atom/](./zoom-to-atom/)**: 宇宙のスケールから原子までズームする科学的可視化ツール
 - **[blood-pressure-app/](./blood-pressure-app/)**: 血圧管理アプリ (JS/HTML/CSS)
 - **[investment-web-app/](./investment-web-app/)**: 投資シミュレーション Web アプリ (Python)
+- **[job-draft/](./job-draft/)**: 求人情報やユーザーランキングの取得ツール
 - **[open-weather-map/](./open-weather-map/)**: OpenWeatherMap API 連携
 - **[slack/](./slack/)**, **[switch-bot/](./switch-bot/)**: 各種 API/デバイス連携ツール
 - **[print-kids/](./print-kids/)**: 学習プリント用ダウンロードスクリプト
