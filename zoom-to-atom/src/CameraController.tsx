@@ -4,7 +4,7 @@ import { useZoomStore } from './store'
 import * as THREE from 'three'
 
 export const CameraController = () => {
-  const { camera, gl } = useThree()
+  const { gl } = useThree()
   const zoomLevel = useZoomStore((state) => state.zoomLevel)
   const setZoomLevel = useZoomStore((state) => state.setZoomLevel)
   
@@ -12,19 +12,15 @@ export const CameraController = () => {
   const lastTouchDistance = useRef<number | null>(null)
 
   useEffect(() => {
-    // --- マウスホイール / トラックパッド スクロール ---
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault()
-      // ズーム感度の調整
-      // 上にスクロール / ピンチアウト (deltaY < 0) でズームイン (targetZoom 増加)
-      const sensitivity = 0.005
-      targetZoom.current -= e.deltaY * sensitivity
-      
-      // 範囲制限 (0: 人間, 14.0: 原子核の深淵)
-      targetZoom.current = Math.min(Math.max(targetZoom.current, 0), 14.0)
+      // 感度調整：スクロールで zoomLevel を増減させる
+      const sensitivity = 0.002
+      targetZoom.current += e.deltaY * sensitivity
+      // 0倍（人間）から 18倍（クォーク）まで
+      targetZoom.current = Math.min(Math.max(targetZoom.current, 0), 18.0)
     }
 
-    // --- タッチ操作 (ピンチイン/アウト) ---
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length === 2) {
         e.preventDefault()
@@ -34,10 +30,9 @@ export const CameraController = () => {
 
         if (lastTouchDistance.current !== null) {
           const delta = distance - lastTouchDistance.current
-          // ピンチアウト (delta > 0) でズームイン (targetZoom 増加)
           const touchSensitivity = 0.01
-          targetZoom.current += delta * touchSensitivity
-          targetZoom.current = Math.min(Math.max(targetZoom.current, 0), 14.0)
+          targetZoom.current -= delta * touchSensitivity
+          targetZoom.current = Math.min(Math.max(targetZoom.current, 0), 18.0)
         }
         lastTouchDistance.current = distance
       }
@@ -60,19 +55,11 @@ export const CameraController = () => {
   }, [gl])
 
   useFrame(() => {
-    // スムーズなズーム遷移
+    // スムーズな数値遷移
     const newZoom = THREE.MathUtils.lerp(zoomLevel, targetZoom.current, 0.1)
     setZoomLevel(newZoom)
-
-    // ズームレベルに応じたカメラ位置の計算
-    // z = 5 * (0.1 ^ zoomLevel)
-    const zPos = 5 * Math.pow(0.1, newZoom)
-    camera.position.z = zPos
     
-    // Near/Far の調整（極小スケールに対応するため、より小さい値を設定）
-    camera.near = Math.min(0.1, zPos * 0.001)
-    camera.far = 100
-    camera.updateProjectionMatrix()
+    // カメラ位置は固定（z=5）することで、浮動小数点の精度問題を回避
   })
 
   return null

@@ -6,17 +6,16 @@ interface ScaleContainerProps {
   children: React.ReactNode
   range: [number, number] // 可視範囲 [minZoom, maxZoom]
   currentZoom: number
+  baseScale?: number // そのスケールが「等倍」で見えるべき中心のzoomLevel
 }
 
 /**
- * ズームレベルに応じて中身の透明度を制御するコンポーネント。
+ * ズームレベルに応じて中身の透明度と「スケール」を制御するコンポーネント。
  */
-export const ScaleContainer: React.FC<ScaleContainerProps> = ({ children, range, currentZoom }) => {
+export const ScaleContainer: React.FC<ScaleContainerProps> = ({ children, range, currentZoom, baseScale = 0 }) => {
   const groupRef = useRef<THREE.Group>(null!)
   const [min, max] = range
 
-  // ズームに応じた透明度の計算
-  // min に近い時は 0 -> 1 に、中央で 1、max に近づくと 1 -> 0 に。
   const calculateOpacity = (zoom: number) => {
     if (zoom < min || zoom > max) return 0
     const center = (min + max) / 2
@@ -29,7 +28,12 @@ export const ScaleContainer: React.FC<ScaleContainerProps> = ({ children, range,
     const opacity = calculateOpacity(currentZoom)
     groupRef.current.visible = opacity > 0.01
 
-    // 子要素のマテリアルの透明度を一括操作する（簡易的な実装）
+    // スケール計算: zoomLevel が 1 上がるごとに 10倍大きくする
+    // baseScale において 1倍 (10^0) になるようにオフセット
+    const s = Math.pow(10, currentZoom - baseScale)
+    groupRef.current.scale.set(s, s, s)
+
+    // 子要素のマテリアルの透明度を一括操作する
     groupRef.current.traverse((obj) => {
       if ((obj as THREE.Mesh).isMesh) {
         const material = (obj as THREE.Mesh).material as THREE.Material

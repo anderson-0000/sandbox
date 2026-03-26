@@ -8,7 +8,7 @@ interface ZoomState {
 }
 
 export const useZoomStore = create<ZoomState>((set) => ({
-  zoomLevel: 1, // 初期ズーム（人間スケールを1とする）
+  zoomLevel: 0, // 初期ズーム（等倍）
   setZoomLevel: (level) => set({ zoomLevel: level }),
   cameraPosition: [0, 0, 5],
   setCameraPosition: (pos) => set({ cameraPosition: pos }),
